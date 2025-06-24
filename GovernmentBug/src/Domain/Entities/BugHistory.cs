@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Events
 {
-    internal class BugHistory : BaseAuditableEntity
+    public class BugHistory : BaseAuditableEntity
     {
         [Key]
         public int HistoryID {  get; set; }
