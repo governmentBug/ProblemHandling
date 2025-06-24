@@ -6,18 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Entities;
-public class User
+public class User: BaseAuditableEntity
 {
     [Key]
     public int UserId { get; set; }
-    public string FullName {  get; set; }
-    public string Email { get; set; }
-    public string Role { get; set; }
-    public User(int UserId,string FullName,string Email,string Role)
-    {
-        this.UserId = UserId;
-        this.FullName = FullName;
-        this.Email = Email;
-        this.Role = Role;
-    }
+    public string FullName { get; set; } = string.Empty;
+    public string Email { get; set; }= string.Empty;
+    public string Role { get; set; }=string.Empty;  
 }
