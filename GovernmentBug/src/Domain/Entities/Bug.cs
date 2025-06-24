@@ -9,6 +9,7 @@ namespace GovernmentBug.Domain.Common
 {
     public class Bug : BaseEvent
     {
+        [Key]
         public int BugID { get; set; }
 
         [StringLength(225)]
