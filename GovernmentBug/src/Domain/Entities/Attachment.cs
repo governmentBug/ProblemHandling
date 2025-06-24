@@ -8,7 +8,7 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace GovernmentBug.Domain.Entities
 {
-    public class Attachment
+    public class Attachment:BaseAuditableEntity
     {
        
         [Key]
