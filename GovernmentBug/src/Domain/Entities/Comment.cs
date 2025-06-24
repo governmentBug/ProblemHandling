@@ -19,7 +19,7 @@ namespace GovernmentBug.Domain.Entities
         /// Foreign key to the Bugs table
         /// </summary>
         public int BugID { get; set; }
-
+        public virtual Bug Bug { get; set; } = null!;
         /// <summary>
         /// The content of the comment
         /// </summary>
