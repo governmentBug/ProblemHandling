@@ -14,11 +14,14 @@ namespace GovernmentBug.Domain.Entities
         [Key]
         public int AttachmentId { get; set; }
         public int BugId { get; set; }
+
         [MaxLength(255)]
         public virtual Bug Bug { get; set; } = null!;
         public string FileName { get; set; } = string.Empty;
+
         [MaxLength(50)]
         public string FileType { get; set; } = string.Empty;
+
         [MaxLength(500)]
         public string FilePath { get; set; } = string.Empty;
 

@@ -12,6 +12,8 @@ namespace GovernmentBug.Domain.Events
         [Key]
         public int HistoryID {  get; set; }
         public int BugID { get; set; }
+        public virtual Bug Bug { get; set; } = null!;
+
 
         [StringLength(100)]
         public string ChangedField { get; set; }=string.Empty;

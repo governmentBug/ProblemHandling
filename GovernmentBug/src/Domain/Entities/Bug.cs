@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Common
 {
-    public class Bug : BaseEvent
+    public class Bug : BaseAuditableEntity
     {
         [Key]
         public int BugID { get; set; }
@@ -22,10 +22,8 @@ namespace GovernmentBug.Domain.Common
 
         [StringLength(50)]
         public string StatusId { get; set; } = string.Empty;
-
         public int CreatedBy { get; set; }
         public virtual User CreatedByUser { get; set; } = null!;
-
         public DateTime CreatedDate { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
