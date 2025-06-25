@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace GovernmentBug.Domain.Entities;
 public class User: BaseAuditableEntity
 {
     [Key]
-    public int UserId { get; set; }
+    public int UserId { get; set; 
     [StringLength(100)]
     public string FullName { get; set; } = string.Empty;
     [StringLength(100)]
