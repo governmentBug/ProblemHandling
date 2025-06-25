@@ -14,6 +14,6 @@ public class User: BaseAuditableEntity
     public string FullName { get; set; } = string.Empty;
     [MaxLength(100)]
     public string Email { get; set; }= string.Empty;
-    [MaxLength(500)]
+    [MaxLength(50)]
     public string Role { get; set; }=string.Empty;  
 }
