@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,11 +9,12 @@ namespace GovernmentBug.Domain.Entities;
 public class User: BaseAuditableEntity
 {
     [Key]
-    public int UserId { get; set; }
-    [MaxLength(100)]
+    public int UserId { get; set; 
+    [StringLength(100)]
     public string FullName { get; set; } = string.Empty;
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Email { get; set; }= string.Empty;
-    [MaxLength(50)]
+    [StringLength(50)]
     public string Role { get; set; }=string.Empty;  
+    public ICollection<Bug> CreatedBugs { get; set; } = new List<Bug>();
 }
