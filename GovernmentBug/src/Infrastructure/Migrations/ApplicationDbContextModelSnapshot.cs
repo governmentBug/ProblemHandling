@@ -77,10 +77,13 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BugID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("CreatedByUserUserId")
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -88,6 +91,15 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PriortyId")
@@ -107,9 +119,9 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.HasKey("BugID");
 
-                    b.HasIndex("CreatedByUserUserId");
+                    b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Bugs");
+                    b.ToTable("Bug");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.BugHistory", b =>
@@ -160,6 +172,8 @@ namespace GovernmentBug.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("HistoryID");
+
+                    b.HasIndex("BugID");
 
                     b.ToTable("BugHistories");
                 });
@@ -543,12 +557,23 @@ namespace GovernmentBug.Infrastructure.Migrations
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Bug", b =>
                 {
                     b.HasOne("GovernmentBug.Domain.Entities.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserUserId")
+                        .WithMany("CreatedBugs")
+                        .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.BugHistory", b =>
+                {
+                    b.HasOne("GovernmentBug.Domain.Entities.Bug", "Bug")
+                        .WithMany()
+                        .HasForeignKey("BugID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bug");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Comment", b =>
@@ -655,6 +680,11 @@ namespace GovernmentBug.Infrastructure.Migrations
             modelBuilder.Entity("GovernmentBug.Domain.Entities.TodoList", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.User", b =>
+                {
+                    b.Navigation("CreatedBugs");
                 });
 #pragma warning restore 612, 618
         }

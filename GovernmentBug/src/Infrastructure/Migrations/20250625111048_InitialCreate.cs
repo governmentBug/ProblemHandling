@@ -71,29 +71,6 @@ namespace GovernmentBug.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BugHistories",
-                columns: table => new
-                {
-                    HistoryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BugID = table.Column<int>(type: "int", nullable: false),
-                    ChangedField = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    OldValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    NewValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    ChangedBy = table.Column<int>(type: "int", nullable: false),
-                    ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BugHistories", x => x.HistoryID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TodoLists",
                 columns: table => new
                 {
@@ -112,7 +89,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bugs",
+                name: "Bug",
                 columns: table => new
                 {
                     BugID = table.Column<int>(type: "int", nullable: false)
@@ -121,16 +98,20 @@ namespace GovernmentBug.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PriortyId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StatusId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: false),
-                    CreatedByUserUserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bugs", x => x.BugID);
+                    table.PrimaryKey("PK_Bug", x => x.BugID);
                     table.ForeignKey(
-                        name: "FK_Bugs_AppUsers_CreatedByUserUserId",
-                        column: x => x.CreatedByUserUserId,
+                        name: "FK_Bug_AppUsers_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
                         principalTable: "AppUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -290,9 +271,38 @@ namespace GovernmentBug.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Attachments", x => x.AttachmentId);
                     table.ForeignKey(
-                        name: "FK_Attachments_Bugs_BugId",
+                        name: "FK_Attachments_Bug_BugId",
                         column: x => x.BugId,
-                        principalTable: "Bugs",
+                        principalTable: "Bug",
+                        principalColumn: "BugID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BugHistories",
+                columns: table => new
+                {
+                    HistoryID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BugID = table.Column<int>(type: "int", nullable: false),
+                    ChangedField = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    OldValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    NewValue = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ChangedBy = table.Column<int>(type: "int", nullable: false),
+                    ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BugHistories", x => x.HistoryID);
+                    table.ForeignKey(
+                        name: "FK_BugHistories_Bug_BugID",
+                        column: x => x.BugID,
+                        principalTable: "Bug",
                         principalColumn: "BugID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -317,9 +327,9 @@ namespace GovernmentBug.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentID);
                     table.ForeignKey(
-                        name: "FK_Comments_Bugs_BugID",
+                        name: "FK_Comments_Bug_BugID",
                         column: x => x.BugID,
-                        principalTable: "Bugs",
+                        principalTable: "Bug",
                         principalColumn: "BugID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -369,9 +379,14 @@ namespace GovernmentBug.Infrastructure.Migrations
                 column: "BugId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bugs_CreatedByUserUserId",
-                table: "Bugs",
-                column: "CreatedByUserUserId");
+                name: "IX_Bug_CreatedByUserId",
+                table: "Bug",
+                column: "CreatedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BugHistories_BugID",
+                table: "BugHistories",
+                column: "BugID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_BugID",
@@ -421,7 +436,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Bugs");
+                name: "Bug");
 
             migrationBuilder.DropTable(
                 name: "TodoLists");
