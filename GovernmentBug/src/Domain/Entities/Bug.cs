@@ -24,6 +24,7 @@ namespace GovernmentBug.Domain.Common
         public string StatusId { get; set; } = string.Empty;
 
         public int CreatedBy { get; set; }
+        public virtual User CreatedByUser { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
