@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GovernmentBug.Domain.Common
+namespace GovernmentBug.Domain.Entities
 {
     public class Bug : BaseEvent
     {
