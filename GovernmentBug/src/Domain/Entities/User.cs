@@ -10,7 +10,10 @@ public class User: BaseAuditableEntity
 {
     [Key]
     public int UserId { get; set; }
+    [MaxLength(100)]
     public string FullName { get; set; } = string.Empty;
+    [MaxLength(100)]
     public string Email { get; set; }= string.Empty;
+    [MaxLength(500)]
     public string Role { get; set; }=string.Empty;  
 }
