@@ -17,7 +17,7 @@ public class BugDto
 
     public string StatusId { get; set; } = string.Empty;
 
-    public int CreatedByUser { get; set; }
+    public int CreatedByUserId { get; set; }
 
     public string CreatedByUserFullName { get; set; } = string.Empty;
 
