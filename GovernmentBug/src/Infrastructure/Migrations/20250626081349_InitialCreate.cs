@@ -89,11 +89,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                name: "Bugs",
-========
                 name: "Bug",
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                 columns: table => new
                 {
                     BugID = table.Column<int>(type: "int", nullable: false)
@@ -102,12 +98,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PriortyId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     StatusId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                    CreattedBy = table.Column<int>(type: "int", nullable: false),
-                    CreatedByUserUserId = table.Column<int>(type: "int", nullable: false),
-========
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -117,17 +108,10 @@ namespace GovernmentBug.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                    table.PrimaryKey("PK_Bugs", x => x.BugID);
-                    table.ForeignKey(
-                        name: "FK_Bugs_AppUsers_CreatedByUserUserId",
-                        column: x => x.CreatedByUserUserId,
-========
                     table.PrimaryKey("PK_Bug", x => x.BugID);
                     table.ForeignKey(
                         name: "FK_Bug_AppUsers_CreatedByUserId",
                         column: x => x.CreatedByUserId,
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                         principalTable: "AppUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -287,15 +271,9 @@ namespace GovernmentBug.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Attachments", x => x.AttachmentId);
                     table.ForeignKey(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                        name: "FK_Attachments_Bugs_BugId",
-                        column: x => x.BugId,
-                        principalTable: "Bugs",
-========
                         name: "FK_Attachments_Bug_BugId",
                         column: x => x.BugId,
                         principalTable: "Bug",
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                         principalColumn: "BugID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -322,15 +300,9 @@ namespace GovernmentBug.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_BugHistories", x => x.HistoryID);
                     table.ForeignKey(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                        name: "FK_BugHistories_Bugs_BugID",
-                        column: x => x.BugID,
-                        principalTable: "Bugs",
-========
                         name: "FK_BugHistories_Bug_BugID",
                         column: x => x.BugID,
                         principalTable: "Bug",
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                         principalColumn: "BugID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -355,15 +327,9 @@ namespace GovernmentBug.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentID);
                     table.ForeignKey(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                        name: "FK_Comments_Bugs_BugID",
-                        column: x => x.BugID,
-                        principalTable: "Bugs",
-========
                         name: "FK_Comments_Bug_BugID",
                         column: x => x.BugID,
                         principalTable: "Bug",
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                         principalColumn: "BugID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -413,27 +379,16 @@ namespace GovernmentBug.Infrastructure.Migrations
                 column: "BugId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-========
                 name: "IX_Bug_CreatedByUserId",
                 table: "Bug",
                 column: "CreatedByUserId");
 
             migrationBuilder.CreateIndex(
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                 name: "IX_BugHistories_BugID",
                 table: "BugHistories",
                 column: "BugID");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                name: "IX_Bugs_CreatedByUserUserId",
-                table: "Bugs",
-                column: "CreatedByUserUserId");
-
-            migrationBuilder.CreateIndex(
-========
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
                 name: "IX_Comments_BugID",
                 table: "Comments",
                 column: "BugID");
@@ -481,11 +436,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:GovernmentBug/src/Infrastructure/Migrations/20250625105521_InitialCreate.cs
-                name: "Bugs");
-========
                 name: "Bug");
->>>>>>>> f1e452e5d080b05155768f5a40dc779d3dd7e31b:GovernmentBug/src/Infrastructure/Migrations/20250625111048_InitialCreate.cs
 
             migrationBuilder.DropTable(
                 name: "TodoLists");
