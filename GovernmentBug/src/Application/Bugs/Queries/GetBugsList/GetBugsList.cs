@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Application.Common.Interfaces;
-using GovernmentBug.Application.Common.Models;
-
-namespace GovernmentBug.Application.Bugs.Queries.GetBugs
+namespace GovernmentBug.Application.Bugs.Queries.GetBugsList
 {
-    public record GetBugsQuery : IRequest<List<BugDto>>;
+    public record GetBugsQuery : IRequest<List<BugListDto>>;
 
-    public class GetBugsQueryHandler : IRequestHandler<GetBugsQuery, List<BugDto>>
+    public class GetBugsQueryHandler : IRequestHandler<GetBugsQuery, List<BugListDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -21,11 +19,11 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugs
             _mapper = mapper;
         }
 
-        public async Task<List<BugDto>> Handle(GetBugsQuery request, CancellationToken cancellationToken)
+        public async Task<List<BugListDto>> Handle(GetBugsQuery request, CancellationToken cancellationToken)
         {
             return await _context.Bugs
                 .AsNoTracking()
-                .ProjectTo<BugDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<BugListDto>(_mapper.ConfigurationProvider)
                 .OrderBy(b => b.Title)
                 .ToListAsync(cancellationToken);
         }
