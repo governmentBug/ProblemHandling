@@ -4,7 +4,7 @@ using GovernmentBug.Infrastructure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // הוספת שירותים - קודם כל כאן
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+//builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // הוספת שירותים נוספים
 builder.AddKeyVaultIfConfigured();
