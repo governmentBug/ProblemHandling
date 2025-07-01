@@ -4,7 +4,7 @@ using GovernmentBug.Infrastructure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // הוספת שירותים - קודם כל כאן
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+//builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // הוספת שירותים נוספים
 builder.AddKeyVaultIfConfigured();
@@ -17,7 +17,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    //await app.InitialiseDatabaseAsync();
 }
 else
 {

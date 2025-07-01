@@ -1,5 +1,4 @@
-﻿using GovernmentBug.Application.Bugs.Queries.GetBugs;
-using GovernmentBug.Application.Common.Models;
+﻿using GovernmentBug.Application.Bugs.Queries.GetBugsList;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GovernmentBug.Web.Endpoints;
@@ -13,7 +12,7 @@ public class Bugs :EndpointGroupBase
             .MapGet(GetBugs);
     }
 
-    public async Task<Ok<List<BugDto>>> GetBugs(ISender sender)
+    public async Task<Ok<List<BugListDto>>> GetBugs(ISender sender)
     {
         var result = await sender.Send(new GetBugsQuery());
 
