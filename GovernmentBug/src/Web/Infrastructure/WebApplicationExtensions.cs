@@ -23,8 +23,11 @@ public static class WebApplicationExtensions
         var endpointGroupTypes = assembly.GetExportedTypes()
             .Where(t => t.IsSubclassOf(endpointGroupType));
 
+
+
         foreach (var type in endpointGroupTypes)
         {
+            Console.WriteLine($"Found endpoint group: {type.FullName}");
             if (Activator.CreateInstance(type) is EndpointGroupBase instance)
             {
                 instance.Map(app);

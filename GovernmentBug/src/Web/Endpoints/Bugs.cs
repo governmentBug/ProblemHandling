@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GovernmentBug.Web.Endpoints;
 
-public class Bugs : EndpointGroupBase
+public class Bugs :EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
