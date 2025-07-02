@@ -29,6 +29,99 @@
         }
       }
     },
+    "/api/Bugs/{id}": {
+      "get": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "GetBugDetialsByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BugDetalsDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "UpdateBug",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBugCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "DeleteBug",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -372,6 +465,89 @@
             "nullable": true
           }
         }
+      },
+      "BugDetalsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "priorityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusName": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignedToUserFullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByUserFullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateBugCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priortyId": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusBug"
+          },
+          "assignedToUserId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "StatusBug": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Closed",
+          "Open",
+          "In_progress"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
       },
       "PaginatedListOfTodoItemBriefDto": {
         "type": "object",
