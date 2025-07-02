@@ -7,9 +7,6 @@
     <RootNamespace>GovernmentBug.Web</RootNamespace>
     <AssemblyName>GovernmentBug.Web</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup>
-    <SkipNSwag>True</SkipNSwag>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
