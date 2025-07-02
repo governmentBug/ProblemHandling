@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Application.Common.Interfaces;
 
-namespace GovernmentBug.Application.Bugs.Command.DeleteBug;
+namespace GovernmentBug.Application.Bugs.Command.DeleteBug
 {
     public record DeleteBugCommand(int BugId) : IRequest;
 

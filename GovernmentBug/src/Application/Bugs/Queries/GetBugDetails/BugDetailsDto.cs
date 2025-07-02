@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugDetails;
-public class BugDetailsDto
+public class BugDetalsDto
 {
 
     public int BugId { get; set; }
