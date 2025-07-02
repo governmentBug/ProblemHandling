@@ -17,6 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IBugsClient {
     getBugs(): Observable<BugSummariesDto[]>;
+    createBug(command: CreateBugCommand): Observable<number>;
 }
 
 @Injectable({
@@ -78,6 +79,59 @@ export class BugsClient implements IBugsClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createBug(command: CreateBugCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/Bugs";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateBug(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateBug(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processCreateBug(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -604,6 +658,77 @@ export class TodoListsClient implements ITodoListsClient {
     }
 }
 
+export interface IUsersClient {
+    createUsers(command: CreateUserCommand): Observable<number>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class UsersClient implements IUsersClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    createUsers(command: CreateUserCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/Users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processCreateUsers(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IWeatherForecastsClient {
     getWeatherForecasts(): Observable<WeatherForecast[]>;
 }
@@ -719,6 +844,384 @@ export interface IBugSummariesDto {
     bugID?: number;
     title?: string | undefined;
     priortyId?: string | undefined;
+}
+
+export class CreateBugCommand implements ICreateBugCommand {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    createdByUserId?: number;
+    createdDate?: Date;
+    status?: StatusBug;
+    comments?: Comment[];
+
+    constructor(data?: ICreateBugCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.priortyId = _data["priortyId"];
+            this.createdByUserId = _data["createdByUserId"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.status = _data["status"];
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(Comment.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateBugCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateBugCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["priortyId"] = this.priortyId;
+        data["createdByUserId"] = this.createdByUserId;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["status"] = this.status;
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICreateBugCommand {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    createdByUserId?: number;
+    createdDate?: Date;
+    status?: StatusBug;
+    comments?: Comment[];
+}
+
+export enum StatusBug {
+    Closed = 0,
+    Open = 1,
+    In_progress = 2,
+}
+
+export abstract class BaseEntity implements IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+
+    constructor(data?: IBaseEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["domainEvents"])) {
+                this.domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    this.domainEvents!.push(BaseEvent.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BaseEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEntity' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+}
+
+export abstract class BaseAuditableEntity extends BaseEntity implements IBaseAuditableEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+
+    constructor(data?: IBaseAuditableEntity) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.lastModifiedBy = _data["lastModifiedBy"];
+        }
+    }
+
+    static override fromJS(data: any): BaseAuditableEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseAuditableEntity' cannot be instantiated.");
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["lastModifiedBy"] = this.lastModifiedBy;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBaseAuditableEntity extends IBaseEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+}
+
+export class Comment extends BaseAuditableEntity implements IComment {
+    commentID?: number;
+    bugID?: number;
+    bug?: Bug;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+
+    constructor(data?: IComment) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.commentID = _data["commentID"];
+            this.bugID = _data["bugID"];
+            this.bug = _data["bug"] ? Bug.fromJS(_data["bug"]) : <any>undefined;
+            this.commentText = _data["commentText"];
+            this.commentedBy = _data["commentedBy"];
+            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): Comment {
+        data = typeof data === 'object' ? data : {};
+        let result = new Comment();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["commentID"] = this.commentID;
+        data["bugID"] = this.bugID;
+        data["bug"] = this.bug ? this.bug.toJSON() : <any>undefined;
+        data["commentText"] = this.commentText;
+        data["commentedBy"] = this.commentedBy;
+        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IComment extends IBaseAuditableEntity {
+    commentID?: number;
+    bugID?: number;
+    bug?: Bug;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+}
+
+export class Bug extends BaseAuditableEntity implements IBug {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    status?: StatusBug;
+    createdByUserId?: number;
+    createdByUser?: Users;
+    createdDate?: Date;
+    comments?: Comment[];
+
+    constructor(data?: IBug) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.priortyId = _data["priortyId"];
+            this.status = _data["status"];
+            this.createdByUserId = _data["createdByUserId"];
+            this.createdByUser = _data["createdByUser"] ? Users.fromJS(_data["createdByUser"]) : <any>undefined;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(Comment.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): Bug {
+        data = typeof data === 'object' ? data : {};
+        let result = new Bug();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["priortyId"] = this.priortyId;
+        data["status"] = this.status;
+        data["createdByUserId"] = this.createdByUserId;
+        data["createdByUser"] = this.createdByUser ? this.createdByUser.toJSON() : <any>undefined;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBug extends IBaseAuditableEntity {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    status?: StatusBug;
+    createdByUserId?: number;
+    createdByUser?: Users;
+    createdDate?: Date;
+    comments?: Comment[];
+}
+
+export class Users extends BaseAuditableEntity implements IUsers {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: Bug[];
+
+    constructor(data?: IUsers) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.role = _data["role"];
+            if (Array.isArray(_data["createdBugs"])) {
+                this.createdBugs = [] as any;
+                for (let item of _data["createdBugs"])
+                    this.createdBugs!.push(Bug.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): Users {
+        data = typeof data === 'object' ? data : {};
+        let result = new Users();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["role"] = this.role;
+        if (Array.isArray(this.createdBugs)) {
+            data["createdBugs"] = [];
+            for (let item of this.createdBugs)
+                data["createdBugs"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IUsers extends IBaseAuditableEntity {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: Bug[];
+}
+
+export abstract class BaseEvent implements IBaseEvent {
+
+    constructor(data?: IBaseEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): BaseEvent {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEvent' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IBaseEvent {
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
@@ -1254,6 +1757,54 @@ export class UpdateTodoListCommand implements IUpdateTodoListCommand {
 export interface IUpdateTodoListCommand {
     id?: number;
     title?: string | undefined;
+}
+
+export class CreateUserCommand implements ICreateUserCommand {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+
+    constructor(data?: ICreateUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): CreateUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface ICreateUserCommand {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
 }
 
 export class WeatherForecast implements IWeatherForecast {

@@ -26,7 +26,7 @@ namespace GovernmentBug.Domain.Entities
 
         public int CreatedByUserId { get; set; }
 
-        public virtual User CreatedByUser { get; set; } = null!;
+        public virtual Users CreatedByUser { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }
 

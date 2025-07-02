@@ -27,6 +27,37 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "CreateBug",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBugCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/TodoItems": {
@@ -329,6 +360,39 @@
         }
       }
     },
+    "/api/Users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "CreateUsers",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WeatherForecasts": {
       "get": {
         "tags": [
@@ -372,6 +436,231 @@
             "nullable": true
           }
         }
+      },
+      "CreateBugCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priortyId": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusBug"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        }
+      },
+      "StatusBug": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Closed",
+          "Open",
+          "In_progress"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "Comment": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "commentID": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "bugID": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "bug": {
+                "$ref": "#/components/schemas/Bug"
+              },
+              "commentText": {
+                "type": "string"
+              },
+              "commentedBy": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "commentDate": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "Bug": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "bugID": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 225,
+                "minLength": 0
+              },
+              "description": {
+                "type": "string"
+              },
+              "priortyId": {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 0
+              },
+              "status": {
+                "$ref": "#/components/schemas/StatusBug"
+              },
+              "createdByUserId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "createdByUser": {
+                "$ref": "#/components/schemas/Users"
+              },
+              "createdDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Users": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "userId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "fullName": {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 0
+              },
+              "email": {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 0
+              },
+              "role": {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 0
+              },
+              "createdBugs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Bug"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "BaseAuditableEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastModifiedBy": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseEntity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "domainEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaseEvent"
+            }
+          }
+        }
+      },
+      "BaseEvent": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
       },
       "PaginatedListOfTodoItemBriefDto": {
         "type": "object",
@@ -598,6 +887,25 @@
           "title": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "CreateUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
           }
         }
       },

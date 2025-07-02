@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GovernmentBug.Domain.Common;
 
 namespace GovernmentBug.Application.Common.Models;
-public class BugDto
+public class BugDto : BaseAuditableEntity
 {
     public int BugID { get; set; }
 
