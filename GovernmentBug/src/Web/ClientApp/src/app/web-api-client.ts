@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IBugsClient {
-    getBugs(): Observable<BugListDto[]>;
+    getBugs(): Observable<BugSummariesDto[]>;
 }
 
 @Injectable({
@@ -32,7 +32,7 @@ export class BugsClient implements IBugsClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getBugs(): Observable<BugListDto[]> {
+    getBugs(): Observable<BugSummariesDto[]> {
         let url_ = this.baseUrl + "/api/Bugs";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -51,14 +51,14 @@ export class BugsClient implements IBugsClient {
                 try {
                     return this.processGetBugs(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BugListDto[]>;
+                    return _observableThrow(e) as any as Observable<BugSummariesDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BugListDto[]>;
+                return _observableThrow(response_) as any as Observable<BugSummariesDto[]>;
         }));
     }
 
-    protected processGetBugs(response: HttpResponseBase): Observable<BugListDto[]> {
+    protected processGetBugs(response: HttpResponseBase): Observable<BugSummariesDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -72,7 +72,7 @@ export class BugsClient implements IBugsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(BugListDto.fromJS(item));
+                    result200!.push(BugSummariesDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -675,6 +675,50 @@ export class WeatherForecastsClient implements IWeatherForecastsClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class BugSummariesDto implements IBugSummariesDto {
+    bugID?: number;
+    title?: string | undefined;
+    priortyId?: string | undefined;
+
+    constructor(data?: IBugSummariesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.priortyId = _data["priortyId"];
+        }
+    }
+
+    static fromJS(data: any): BugSummariesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BugSummariesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["priortyId"] = this.priortyId;
+        return data;
+    }
+}
+
+export interface IBugSummariesDto {
+    bugID?: number;
+    title?: string | undefined;
+    priortyId?: string | undefined;
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
