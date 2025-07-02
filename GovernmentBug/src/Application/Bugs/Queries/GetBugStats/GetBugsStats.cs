@@ -21,8 +21,8 @@
         var query = _context.Bugs.AsQueryable();
 
         int total = await query.CountAsync(cancellationToken);
-        int open = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Open, cancellationToken);
-        int closed = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Closed, cancellationToken);
+        int open = await query.CountAsync(b => b.StatusId == Domain.Enums.StatusBug.Open, cancellationToken);
+        int closed = await query.CountAsync(b => b.StatusId == Domain.Enums.StatusBug.Closed, cancellationToken);
 
         return new BugsStatsDto
         {
