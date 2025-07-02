@@ -9,25 +9,11 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats
     {
         public class BugsStatsDto
         {
-            public int BugID { get; init; }
-
-            public string Title { get; init; } = string.Empty;
-
-            public string PriortyId { get; init; } = string.Empty;
-
-            public string StatusId { get; init; } = string.Empty;
-
-            public int CreatedByUserId { get; init; }
-
-            public DateTime CreatedDate { get; init; }
-            private class Mapping : Profile
-            {
-                public Mapping()
-                {
-                    CreateMap<Bug, BugsStatsDto>();
-                }
-            }
-        }
+        public int TotalBugs { get; set; }
+        public int OpenBugs { get; set; }
+        public int ClosedBugs { get; set; }
+        public double AverageResolutionTime { get; set; }
+    }
 
     }
 

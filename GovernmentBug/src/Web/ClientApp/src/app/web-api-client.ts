@@ -677,66 +677,6 @@ export class WeatherForecastsClient implements IWeatherForecastsClient {
     }
 }
 
-export class BugListDto implements IBugListDto {
-    bugID?: number;
-    title?: string | undefined;
-    description?: string | undefined;
-    priortyId?: string | undefined;
-    statusId?: string | undefined;
-    createdByUserId?: number;
-    createdDate?: Date;
-
-    constructor(data?: IBugListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.bugID = _data["bugID"];
-            this.title = _data["title"];
-            this.description = _data["description"];
-            this.priortyId = _data["priortyId"];
-            this.statusId = _data["statusId"];
-            this.createdByUserId = _data["createdByUserId"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): BugListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new BugListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["bugID"] = this.bugID;
-        data["title"] = this.title;
-        data["description"] = this.description;
-        data["priortyId"] = this.priortyId;
-        data["statusId"] = this.statusId;
-        data["createdByUserId"] = this.createdByUserId;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IBugListDto {
-    bugID?: number;
-    title?: string | undefined;
-    description?: string | undefined;
-    priortyId?: string | undefined;
-    statusId?: string | undefined;
-    createdByUserId?: number;
-    createdDate?: Date;
-}
-
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
     items?: TodoItemBriefDto[];
     pageNumber?: number;

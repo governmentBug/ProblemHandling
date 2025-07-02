@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GovernmentBug.Web.Endpoints;
 
-public class Bugs : EndpointGroupBase
+public class Bugs :EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
@@ -12,9 +12,9 @@ public class Bugs : EndpointGroupBase
             .MapGet(GetBugs);
     }
 
-    public async Task<Ok<List<BugListDto>>> GetBugs(ISender sender)
+    public async Task<Ok<List<BugSummariesDto>>> GetBugs(ISender sender)
     {
-        var result = await sender.Send(new GetBugsQuery());
+        var result = await sender.Send(new GetBugSummaries());
 
         return TypedResults.Ok(result);
     }
