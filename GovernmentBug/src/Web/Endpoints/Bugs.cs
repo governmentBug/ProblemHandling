@@ -1,3 +1,4 @@
+using GovernmentBug.Application.Bugs.Command.CreateBug;
 using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;

@@ -56,7 +56,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             CreatedDate = request.CreatedDate,
             Comments = request.Comments,
             //CreatedByUser = request.CreatedByUser,
-            Status = request.Status
+            StatusId = request.Status
         };
 
 
