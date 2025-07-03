@@ -2,12 +2,13 @@ import { Comment } from './comment.model';
 
 export class Bug {
   constructor(
-    public bugID: number,
+    public bugId: number,
     public title: string,
     public description: string,
-    public priortyId: string,
-    public statusId: string,
-    public createdByUserId: number,
+    public priorityName: string,
+    public statusName: string,
+    public categoryName: string,
+    public assignedToUserFullName: string,
     public createdByUserFullName: string,
     public createdDate: Date,
     public comments: Comment[] = []

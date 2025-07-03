@@ -39,11 +39,11 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
 
-    public CreateBugCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
+    public string Title { get; set; } = string.Empty;
 
+    public string Description { get; set; } = string.Empty;
+
+    public string PriortyId { get; set; } = string.Empty;
     public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
     {
         var entity = new Bug
@@ -56,16 +56,38 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             CreatedDate = request.CreatedDate,
             Comments = request.Comments,
             //CreatedByUser = request.CreatedByUser,
-            Status = request.Status
+            StatusId = request.Status
+        };
+    private readonly IApplicationDbContext _context;
+
+        public CreateBugCommandHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+    public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
+    {
+        var entity = new Bug
+        {
+            BugID = request.BugID,
+            Title = request.Title,
+            Description = request.Description,
+            PriortyId = request.PriortyId,
+            CreatedByUserId = request.CreatedByUserId,
+            CreatedDate = request.CreatedDate,
+            Comments = request.Comments,
+            StatusId = request.Status
+            //CreatedByUser = request.CreatedByUser,
+            //Status = request.Status
         };
 
 
-    entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+        entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
-        _context.Bugs.Add(entity);
+            _context.Bugs.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return entity.BugID;
+            return entity.BugID;
+        }
     }
 }

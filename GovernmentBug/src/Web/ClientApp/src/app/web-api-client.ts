@@ -1027,6 +1027,53 @@ export class WeatherForecastsClient implements IWeatherForecastsClient {
     }
 }
 
+<<<<<<< HEAD
+=======
+export class BugSummariesDto implements IBugSummariesDto {
+    bugID?: number;
+    title?: string | undefined;
+    priortyId?: string | undefined;
+
+    constructor(data?: IBugSummariesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.priortyId = _data["priortyId"];
+        }
+    }
+
+    static fromJS(data: any): BugSummariesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BugSummariesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["priortyId"] = this.priortyId;
+        return data;
+    }
+}
+
+export interface IBugSummariesDto {
+    bugID?: number;
+    title?: string | undefined;
+    priortyId?: string | undefined;
+}
+
+>>>>>>> main
 export class CreateBugCommand implements ICreateBugCommand {
     bugID?: number;
     title?: string;
@@ -1252,7 +1299,7 @@ export class Bug extends BaseAuditableEntity implements IBug {
     title?: string;
     description?: string;
     priortyId?: string;
-    status?: StatusBug;
+    statusId?: StatusBug;
     createdByUserId?: number;
     createdByUser?: Users;
     createdDate?: Date;
@@ -1269,7 +1316,7 @@ export class Bug extends BaseAuditableEntity implements IBug {
             this.title = _data["title"];
             this.description = _data["description"];
             this.priortyId = _data["priortyId"];
-            this.status = _data["status"];
+            this.statusId = _data["statusId"];
             this.createdByUserId = _data["createdByUserId"];
             this.createdByUser = _data["createdByUser"] ? Users.fromJS(_data["createdByUser"]) : <any>undefined;
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
@@ -1294,7 +1341,7 @@ export class Bug extends BaseAuditableEntity implements IBug {
         data["title"] = this.title;
         data["description"] = this.description;
         data["priortyId"] = this.priortyId;
-        data["status"] = this.status;
+        data["statusId"] = this.statusId;
         data["createdByUserId"] = this.createdByUserId;
         data["createdByUser"] = this.createdByUser ? this.createdByUser.toJSON() : <any>undefined;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
@@ -1313,7 +1360,7 @@ export interface IBug extends IBaseAuditableEntity {
     title?: string;
     description?: string;
     priortyId?: string;
-    status?: StatusBug;
+    statusId?: StatusBug;
     createdByUserId?: number;
     createdByUser?: Users;
     createdDate?: Date;
