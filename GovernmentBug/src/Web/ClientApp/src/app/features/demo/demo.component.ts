@@ -15,7 +15,7 @@ export class DemoComponent implements OnInit {
   constructor(public bugS: BugService) {
   }
   ngOnInit() {
-    this.selectedBug = this.bugS.selectedBug;
+    // this.selectedBug = this.bugS.selectedBug;
   }
   
 }

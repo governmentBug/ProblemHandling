@@ -1,0 +1,58 @@
+.year-picker-container {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 12px;
+  background: #f7fbff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px 0 #3692eb22;
+  padding: 18px 24px 18px 24px;
+  margin: 24px auto 32px auto;
+  max-width: 340px;
+  justify-content: flex-end;
+  direction: rtl;
+}
+
+label {
+  font-weight: bold;
+  color: #2466a2;
+  font-size: 1.1em;
+  min-width: 90px;
+  text-align: right;
+}
+
+select {
+  border-radius: 6px;
+  border: 1px solid #b3d1f7;
+  padding: 6px 12px;
+  font-size: 1em;
+  background: #fff;
+  color: #2466a2;
+  transition: border 0.2s;
+  direction: rtl;
+  min-width: 80px;
+  text-align: right;
+}
+
+select:focus {
+  border: 1.5px solid #3692eb;
+  outline: none;
+}
+
+button {
+  background: linear-gradient(90deg, #3692eb 60%, #2466a2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 1px 4px 0 #3692eb33;
+  min-width: 70px;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #2466a2 60%, #3692eb 100%);
+}
