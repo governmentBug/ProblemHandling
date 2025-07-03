@@ -301,6 +301,7 @@ export class BugsClient implements IBugsClient {
 export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     getBugsByMonths(year: number): Observable<ByMonthsDto>;
+    getOpenBugsStatus(): Observable<OpenBugsByStatusDto>;
 }
 
 @Injectable({
@@ -412,6 +413,54 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ByMonthsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getOpenBugsStatus(): Observable<OpenBugsByStatusDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/openbugsstatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOpenBugsStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOpenBugsStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<OpenBugsByStatusDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<OpenBugsByStatusDto>;
+        }));
+    }
+
+    protected processGetOpenBugsStatus(response: HttpResponseBase): Observable<OpenBugsByStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OpenBugsByStatusDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1146,7 +1195,7 @@ export interface ICreateBugCommand {
 export enum StatusBug {
     Closed = 0,
     Open = 1,
-    In_progress = 2,
+    Active = 2,
 }
 
 export class BugDetalsDto implements IBugDetalsDto {
@@ -1363,6 +1412,54 @@ export class ByMonthsDto implements IByMonthsDto {
 export interface IByMonthsDto {
     totalBugs?: number;
     byMonth?: number[];
+}
+
+export class OpenBugsByStatusDto implements IOpenBugsByStatusDto {
+    totalBugs?: number;
+    openBugs?: number;
+    closedBugs?: number;
+    activeBugs?: number;
+
+    constructor(data?: IOpenBugsByStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalBugs = _data["totalBugs"];
+            this.openBugs = _data["openBugs"];
+            this.closedBugs = _data["closedBugs"];
+            this.activeBugs = _data["activeBugs"];
+        }
+    }
+
+    static fromJS(data: any): OpenBugsByStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OpenBugsByStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalBugs"] = this.totalBugs;
+        data["openBugs"] = this.openBugs;
+        data["closedBugs"] = this.closedBugs;
+        data["activeBugs"] = this.activeBugs;
+        return data;
+    }
+}
+
+export interface IOpenBugsByStatusDto {
+    totalBugs?: number;
+    openBugs?: number;
+    closedBugs?: number;
+    activeBugs?: number;
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {

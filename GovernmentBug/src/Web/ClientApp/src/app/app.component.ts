@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { DemoComponent } from "./features/demo/demo.component";
-import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
-import { BugStatisticsComponent } from "./features/bug-statistics/bug-statistics.component";
+import { RouterModule } from '@angular/router';
+import { routes } from './app.routes';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone:true,
-  imports: [DemoComponent, AllBugsComponent, BugStatisticsComponent],
+  imports: [RouterModule],
   
 })
 export class AppComponent {

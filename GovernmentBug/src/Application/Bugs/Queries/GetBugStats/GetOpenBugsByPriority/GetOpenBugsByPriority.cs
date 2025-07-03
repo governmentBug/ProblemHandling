@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GovernmentBug.Domain.Enums
+namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority
 {
-    public enum StatusBug
+    class GetOpenBugsByPriority
     {
-        Closed = 0,
-        Open = 1,
-        Active = 2
     }
 }

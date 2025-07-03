@@ -20,12 +20,9 @@ export class ChoosingYearComponent {
     }
   }
 
-    onSelectChange(event: Event) {
+  onSelectChange(event: Event) {
     const value = +(event.target as HTMLSelectElement).value;
     this.selectedYear = value;
-  }
-
-  onYearChange() {
-    this.yearChange.emit(Number(this.selectedYear));
+    this.yearChange.emit(this.selectedYear); // שלח את השנה מיד בבחירה
   }
 }

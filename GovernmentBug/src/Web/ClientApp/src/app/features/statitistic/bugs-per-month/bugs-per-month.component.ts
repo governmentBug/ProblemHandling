@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import Chart from 'chart.js/auto';
-import { BugStatisticsClient, ByMonthsDto } from '../../web-api-client';
+import { BugStatisticsClient, ByMonthsDto } from '../../../web-api-client';
 
 @Component({
   selector: 'app-bugs-per-month',
