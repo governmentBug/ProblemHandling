@@ -7,27 +7,6 @@
   },
   "paths": {
     "/api/Bugs": {
-      "get": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "GetBugs",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BugSummariesDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Bugs"
@@ -53,38 +32,6 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Bugs/bymonth/{year}": {
-      "get": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "GetBugsByMonths",
-        "parameters": [
-          {
-            "name": "year",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ByMonthsDto"
                 }
               }
             }
@@ -181,6 +128,61 @@
         "responses": {
           "204": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/api/BugStatistics": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetBugs",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugSummariesDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BugStatistics/bymonth/{year}": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetBugsByMonths",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByMonthsDto"
+                }
+              }
+            }
           }
         }
       }
@@ -544,42 +546,6 @@
   },
   "components": {
     "schemas": {
-      "BugSummariesDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "bugID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "priortyId": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "ByMonthsDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "totalBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "byMonth": {
-            "type": "object",
-            "nullable": true,
-            "additionalProperties": {
-              "type": "number",
-              "format": "double"
-            }
-          }
-        }
-      },
       "CreateBugCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -871,6 +837,41 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          }
+        }
+      },
+      "BugSummariesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "priortyId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ByMonthsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },

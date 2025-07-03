@@ -12,7 +12,7 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats
         public int TotalBugs { get; set; }
         public int OpenBugs { get; set; }
         public int ClosedBugs { get; set; }
-        public double AverageResolutionTime { get; set; }
+        public int ActiveBugs { get; set; }     
     }
 
     }

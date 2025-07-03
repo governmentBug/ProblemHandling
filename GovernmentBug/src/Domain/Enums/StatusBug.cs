@@ -10,6 +10,6 @@ namespace GovernmentBug.Domain.Enums
     {
         Closed = 0,
         Open = 1,
-        In_progress = 2
+        Active = 2
     }
 }

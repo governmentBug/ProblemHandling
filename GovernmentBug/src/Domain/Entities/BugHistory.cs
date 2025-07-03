@@ -16,8 +16,7 @@ namespace GovernmentBug.Domain.Entities
 
 
         [StringLength(100)]
-        public string ChangedField { get; set; }=string.Empty;
-
+        public string ChangedField { get; set; } = string.Empty;
         [StringLength(255)]
         public string OldValue { get; set; }= string.Empty;
 

@@ -1,0 +1,19 @@
+/* ...existing code from bug-statistics.component.css... */
+
+:root, .chart-container {
+  --bug-bar-bg: #3692ebcc;
+  --bug-bar-border: #3692eb;
+}
+
+.chart-container {
+  max-width: 700px;
+  margin: 40px auto 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(54,162,235,0.10);
+  padding: 24px 16px 32px 16px;
+}
+
+canvas {
+  direction: ltr;
+}
