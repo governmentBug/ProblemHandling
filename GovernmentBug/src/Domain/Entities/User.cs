@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Entities;
-public class User : BaseAuditableEntity
+public class Users : BaseAuditableEntity
 {
     [Key]
     public int UserId { get; set; }
@@ -16,5 +16,5 @@ public class User : BaseAuditableEntity
     public string Email { get; set; } = string.Empty;
     [StringLength(50)]
     public string Role { get; set; } = string.Empty;
-    public ICollection<Bug> CreatedBugs { get; set; } = new List<Bug>();
+    public virtual ICollection<Bug> CreatedBugs { get; set; } = new List<Bug>();
 }
