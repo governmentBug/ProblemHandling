@@ -1,1 +1,30 @@
-<p>all-bugs works!</p>
+<h2>רשימת כל הבאגים</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>כותרת</th>
+      <th>תיאור</th>
+      <th>עדיפות</th>
+      <th>סטטוס</th>
+      <th>יוצר</th>
+      <th>תאריך</th>
+      <th>פעולה</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bug of bugs">
+      <td>{{ bug.bugID }}</td>
+      <td>{{ bug.title }}</td>
+      <td>{{ bug.description }}</td>
+      <td>{{ bug.priortyId }}</td>
+      <td>{{ bug.statusId }}</td>
+      <td>{{ bug.createdByUserFullName }}</td>
+      <td>{{ bug.createdDate }}</td>
+      <td>
+        <button (click)="openDetails(bug)">פרטים</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

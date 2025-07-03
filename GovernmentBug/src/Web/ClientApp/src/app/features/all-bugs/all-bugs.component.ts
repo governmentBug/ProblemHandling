@@ -1,12 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Bug } from 'src/app/models/bug.model';
+import { BugService } from 'src/app/services/bug.service';
 
 @Component({
   selector: 'app-all-bugs',
-  standalone: true,
-  imports: [],
   templateUrl: './all-bugs.component.html',
-  styleUrl: './all-bugs.component.css'
+  styleUrls: ['./all-bugs.component.css']
 })
-export class AllBugsComponent {
+export class AllBugsComponent implements OnInit {
+  bugs: Bug[] = [];
 
+  constructor(private bugService: BugService) {}
+
+  ngOnInit(): void {
+    this.bugService.getAllBugs().subscribe({
+      next: bugs => this.bugs = bugs,
+      error: err => console.error('שגיאה בקבלת הבאגים:', err)
+    });
+  }
+
+  openDetails(bug: Bug) {
+    console.log('פרטי באג:', bug);
+  } 
 }
