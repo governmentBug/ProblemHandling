@@ -44,3 +44,18 @@
     </div>
   </div>
 </div>
+
+<!-- פופאפ -->
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-content">
+    <h3>סגירת הבאג</h3>
+    <label for="reason">אנא פרט מדוע אתה סוגר את הבאג:</label>
+    <textarea id="reason" [(ngModel)]="closeReason" rows="4"></textarea>
+    
+    <div class="popup-actions">
+      <button (click)="submitClose()">שלח</button>
+      <button class="cancel-btn" (click)="closePopup()">ביטול</button>
+    </div>
+  </div>
+</div>
+
