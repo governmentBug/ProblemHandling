@@ -1,30 +1,49 @@
-<h2>רשימת כל הבאגים</h2>
+<div class="bug-table-container">
+    <h2 class="table-title">רשימת כל הבאגים</h2>
+    <div class="table-wrapper">
+        <table class="bug-table">
+            <thead>
+                <tr>
+                    <th>מזהה הבאג</th>
+                    <th>קטגוריה</th>
+                    <th>שם הבאג</th>
+                    <th>עדיפות</th>
+                    <th>סטטוס</th>
+                    <th>נפתח ע"י</th>
+                    <th>תאריך</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let bug of bugs">
+                    <td>{{ bug.bugId }}</td>
+                    <td>{{ bug.categoryName }}</td>
+                    <td>{{ bug.title }}</td>
+                    <td>
+                        <span [ngClass]="{
+  'priority-low': bug.priorityName === 'Low',
+  'priority-medium': bug.priorityName === 'Medium',
+  'priority-high': bug.priorityName === 'High',
+  'priority-critical': bug.priorityName === 'Critical'
+}">
+                            {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
+                            bug.priorityName === 'High' ? '★★★' : '★★★★' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span [ngClass]="{
+  'status-open': bug.statusName === 'Open',
+  'status-close': bug.statusName === 'Closed',
+  'status-active': bug.statusName === 'Active',
+  'status-cancelled': bug.statusName === 'Cancelled'
+}">
+                            {{ bug.statusName }}
+                        </span>
 
-<table>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>כותרת</th>
-      <th>תיאור</th>
-      <th>עדיפות</th>
-      <th>סטטוס</th>
-      <th>יוצר</th>
-      <th>תאריך</th>
-      <th>פעולה</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let bug of bugs">
-      <td>{{ bug.bugID }}</td>
-      <td>{{ bug.title }}</td>
-      <td>{{ bug.description }}</td>
-      <td>{{ bug.priortyId }}</td>
-      <td>{{ bug.statusId }}</td>
-      <td>{{ bug.createdByUserFullName }}</td>
-      <td>{{ bug.createdDate }}</td>
-      <td>
-        <button (click)="openDetails(bug)">פרטים</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+                    </td>
+                    <td>{{ bug.createdByUserFullName }}</td>
+                    <td>{{ bug.createdDate | date:'dd/MM/yyyy' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

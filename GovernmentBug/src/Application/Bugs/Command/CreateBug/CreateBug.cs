@@ -78,10 +78,11 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             Comments = request.Comments,
             StatusId = request.Status
             //CreatedByUser = request.CreatedByUser,
-            StatusId = request.Status
+            //Status = request.Status
         };
 
-            entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+
+        entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
             _context.Bugs.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
