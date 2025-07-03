@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core';
 import Chart from 'chart.js/auto';
-import { OpenBugsByStatusDto } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-open-bugs-stat',

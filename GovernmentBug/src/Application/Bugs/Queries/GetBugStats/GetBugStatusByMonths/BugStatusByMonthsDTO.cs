@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Domain.Entities;
 
-namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByStatus
-    {
-        public class OpenBugsByStatusDto
+namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths
+{
+        public class BugStatusByMonthsDTO
         {
         public int TotalBugs { get; set; }
         public int OpenBugs { get; set; }
