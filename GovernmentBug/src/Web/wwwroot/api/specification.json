@@ -210,6 +210,26 @@
         }
       }
     },
+    "/api/BugStatistics/openbugsstatus": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetOpenBugsStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenBugsByStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -605,7 +625,7 @@
         "x-enumNames": [
           "Closed",
           "Open",
-          "In_progress"
+          "Active"
         ],
         "enum": [
           0,
@@ -714,6 +734,28 @@
               "type": "integer",
               "format": "int32"
             }
+          }
+        }
+      },
+      "OpenBugsByStatusDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "closedBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeBugs": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
