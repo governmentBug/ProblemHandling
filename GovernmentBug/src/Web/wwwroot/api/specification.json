@@ -1430,18 +1430,12 @@
             "type": "integer",
             "format": "int32"
           },
-          "createdDate": {
+          "created": {
             "type": "string",
             "format": "date-time"
           },
           "status": {
             "$ref": "#/components/schemas/StatusBug"
-          },
-          "comments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Comment"
-            }
           }
         }
       },
