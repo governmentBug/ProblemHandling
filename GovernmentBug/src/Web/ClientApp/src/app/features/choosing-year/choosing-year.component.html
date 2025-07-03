@@ -1,0 +1,7 @@
+<div class="year-picker-container">
+  <button (click)="onYearChange()">בחר</button>
+  <select id="year-select" (change)="onSelectChange($event)">
+    <option *ngFor="let y of years" [value]="y" [selected]="y === selectedYear">{{ y }}</option>
+  </select>
+  <label for="year-select">בחר שנה:</label>
+</div>

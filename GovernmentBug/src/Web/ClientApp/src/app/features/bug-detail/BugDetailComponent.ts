@@ -1,3 +1,4 @@
+
 import { Component,Input } from '@angular/core';
 import { Bug } from '../../models/bug.model';
 import { CommonModule } from '@angular/common';
