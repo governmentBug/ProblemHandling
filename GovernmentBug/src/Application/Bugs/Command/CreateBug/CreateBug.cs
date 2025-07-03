@@ -30,31 +30,31 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
 
-    public string Title { get; set; } = string.Empty;
+    //public string Title { get; set; } = string.Empty;
 
-    public string Description { get; set; } = string.Empty;
+    //public string Description { get; set; } = string.Empty;
 
-    public string PriortyId { get; set; } = string.Empty;
-    public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
+    //public string PriortyId { get; set; } = string.Empty;
+
+    //public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
+    //{
+    //    var entity = new Bug
+    //    {
+    //        BugID = request.BugID,
+    //        Title = request.Title,
+    //        Description = request.Description,
+    //        PriortyId = request.PriortyId,
+    //        CreatedByUserId = request.CreatedByUserId,
+    //        //CreatedDate = request.CreatedDate,
+    //        //Comments = request.Comments,
+    //        ////CreatedByUser = request.CreatedByUser,
+    //        //StatusId = request.Status
+    //    };
+
+    public CreateBugCommandHandler(IApplicationDbContext context)
     {
-        var entity = new Bug
-        {
-            BugID = request.BugID,
-            Title = request.Title,
-            Description = request.Description,
-            PriortyId = request.PriortyId,
-            CreatedByUserId = request.CreatedByUserId,
-            CreatedDate = request.CreatedDate,
-            Comments = request.Comments,
-            //CreatedByUser = request.CreatedByUser,
-            StatusId = request.Status
-        };
-    private readonly IApplicationDbContext _context;
-
-        public CreateBugCommandHandler(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+        _context = context;
+    }
 
     public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
     {
@@ -78,4 +78,4 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             return entity.BugID;
         }
     }
-}
+
