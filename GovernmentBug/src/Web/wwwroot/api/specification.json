@@ -210,19 +210,41 @@
         }
       }
     },
-    "/api/BugStatistics/openbugsstatus": {
+    "/api/BugStatistics/openbugsstatus/{month}/{year}": {
       "get": {
         "tags": [
           "BugStatistics"
         ],
-        "operationId": "GetOpenBugsStatus",
+        "operationId": "GetBugStatusByMonths",
+        "parameters": [
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OpenBugsByStatusDto"
+                  "$ref": "#/components/schemas/BugStatusByMonthsDTO"
                 }
               }
             }
@@ -737,7 +759,7 @@
           }
         }
       },
-      "OpenBugsByStatusDto": {
+      "BugStatusByMonthsDTO": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

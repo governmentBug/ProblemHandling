@@ -301,7 +301,7 @@ export class BugsClient implements IBugsClient {
 export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     getBugsByMonths(year: number): Observable<ByMonthsDto>;
-    getOpenBugsStatus(): Observable<OpenBugsByStatusDto>;
+    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
 }
 
 @Injectable({
@@ -423,8 +423,14 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getOpenBugsStatus(): Observable<OpenBugsByStatusDto> {
-        let url_ = this.baseUrl + "/api/BugStatistics/openbugsstatus";
+    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO> {
+        let url_ = this.baseUrl + "/api/BugStatistics/openbugsstatus/{month}/{year}";
+        if (month === undefined || month === null)
+            throw new Error("The parameter 'month' must be defined.");
+        url_ = url_.replace("{month}", encodeURIComponent("" + month));
+        if (year === undefined || year === null)
+            throw new Error("The parameter 'year' must be defined.");
+        url_ = url_.replace("{year}", encodeURIComponent("" + year));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -436,20 +442,20 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetOpenBugsStatus(response_);
+            return this.processGetBugStatusByMonths(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetOpenBugsStatus(response_ as any);
+                    return this.processGetBugStatusByMonths(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<OpenBugsByStatusDto>;
+                    return _observableThrow(e) as any as Observable<BugStatusByMonthsDTO>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<OpenBugsByStatusDto>;
+                return _observableThrow(response_) as any as Observable<BugStatusByMonthsDTO>;
         }));
     }
 
-    protected processGetOpenBugsStatus(response: HttpResponseBase): Observable<OpenBugsByStatusDto> {
+    protected processGetBugStatusByMonths(response: HttpResponseBase): Observable<BugStatusByMonthsDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -460,7 +466,7 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OpenBugsByStatusDto.fromJS(resultData200);
+            result200 = BugStatusByMonthsDTO.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1414,13 +1420,13 @@ export interface IByMonthsDto {
     byMonth?: number[];
 }
 
-export class OpenBugsByStatusDto implements IOpenBugsByStatusDto {
+export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
     totalBugs?: number;
     openBugs?: number;
     closedBugs?: number;
     activeBugs?: number;
 
-    constructor(data?: IOpenBugsByStatusDto) {
+    constructor(data?: IBugStatusByMonthsDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1438,9 +1444,9 @@ export class OpenBugsByStatusDto implements IOpenBugsByStatusDto {
         }
     }
 
-    static fromJS(data: any): OpenBugsByStatusDto {
+    static fromJS(data: any): BugStatusByMonthsDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new OpenBugsByStatusDto();
+        let result = new BugStatusByMonthsDTO();
         result.init(data);
         return result;
     }
@@ -1455,7 +1461,7 @@ export class OpenBugsByStatusDto implements IOpenBugsByStatusDto {
     }
 }
 
-export interface IOpenBugsByStatusDto {
+export interface IBugStatusByMonthsDTO {
     totalBugs?: number;
     openBugs?: number;
     closedBugs?: number;
