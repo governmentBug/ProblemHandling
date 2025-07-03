@@ -1,4 +1,5 @@
-﻿using GovernmentBug.Application.Bugs.Command.DeleteBug;
+﻿using GovernmentBug.Application.Bugs.Command.CreateBug;
+using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;
 using GovernmentBug.Application.Bugs.Queries.GetBugsList;
@@ -19,6 +20,7 @@ public class Bugs :EndpointGroupBase
         app.MapGroup(this)
             //.RequireAuthorization()
             .MapGet(GetBugs)
+            .MapPost(CreateBug)
             .MapGet(GetBugDetialsByID,"{id}")
             .MapPut(UpdateBug, "{id}")
             .MapDelete(DeleteBug, "{id}");

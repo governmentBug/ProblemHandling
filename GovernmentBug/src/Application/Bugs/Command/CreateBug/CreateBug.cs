@@ -6,7 +6,58 @@ using System.Threading.Tasks;
 
 namespace GovernmentBug.Application.Bugs.Command.CreateBug
 {
-    class CreateBug
+    public int BugID { get; set; }
+
+    public string Title { get; set; } = string.Empty;
+
+    public string Description { get; set; } = string.Empty;
+
+    public string PriortyId { get; set; } = string.Empty;
+
+    public int CreatedByUserId { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
+    public StatusBug Status { get; set; }
+
+    //public virtual User CreatedByUser { get; set; } = null!;
+
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+}
+
+public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
+{
+    private readonly IApplicationDbContext _context;
+
+    public CreateBugCommandHandler(IApplicationDbContext context)
     {
+        _context = context;
+    }
+
+    public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
+    {
+        var entity = new Bug
+        {
+            BugID = request.BugID,
+            Title = request.Title,
+            Description = request.Description,
+            PriortyId = request.PriortyId,
+            CreatedByUserId = request.CreatedByUserId,
+            CreatedDate = request.CreatedDate,
+            Comments = request.Comments,
+            StatusId = request.Status
+            //CreatedByUser = request.CreatedByUser,
+
+        };
+
+
+    entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+
+        _context.Bugs.Add(entity);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity.BugID;
     }
 }
