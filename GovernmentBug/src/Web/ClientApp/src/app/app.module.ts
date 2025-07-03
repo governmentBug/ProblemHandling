@@ -11,7 +11,7 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-    bootstrap: [AppComponent],
+    bootstrap: [],
     imports: [
         BrowserModule,
         FormsModule,
