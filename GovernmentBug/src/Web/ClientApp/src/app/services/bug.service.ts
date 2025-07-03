@@ -7,8 +7,19 @@ import { Bug } from '../models/bug.model';
   providedIn: 'root'
 })
 export class BugService {
-  constructor(public bugServer: HttpClient) {}
-
+  constructor(public bugServer: HttpClient) { }
+  selectedBug :Bug = {
+    bugID: 1,
+    title: 'שגיאה בטעינת דף הבית',
+    description: 'בעת כניסה לדף הבית מתקבלת שגיאת 500',
+    priortyId: '1',
+    statusId: '1',
+    createdByUserId:5,
+    createdByUserFullName: 'רונית כהן',
+    createdDate: new Date('2025-06-25T09:15:00'),
+    comments: [
+    ]
+  }
   allBugs: Array<Bug> = new Array<Bug>();
 
   basicUrl: string = "https://localhost:5001/api/Bugs/all";
