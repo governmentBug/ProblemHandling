@@ -11,7 +11,7 @@ import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
   styleUrl: './demo.component.css'
 })
 export class DemoComponent implements OnInit {
-  selectedBug: Bug
+public selectedBug: Bug | null = null;
   constructor(public bugS: BugService) {
   }
   ngOnInit() {

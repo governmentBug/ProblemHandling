@@ -7,10 +7,10 @@ import { Bug } from '../models/bug.model';
   providedIn: 'root'
 })
 export class BugService {
-  constructor(public bugServer: HttpClient) {}
-
+  constructor(public bugServer: HttpClient) { }
+  public selectedBug: Bug | null = null;
   allBugs: Array<Bug> = new Array<Bug>();
-
+  
   basicUrl: string = "https://localhost:5001/api/Bugs/all";
 
   getAllBugs(): Observable<Array<Bug>> {

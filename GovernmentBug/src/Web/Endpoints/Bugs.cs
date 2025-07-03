@@ -20,7 +20,7 @@ public class Bugs :EndpointGroupBase
     {
         app.MapGroup(this)
             //.RequireAuthorization()
-            .MapGet(GetBugs)
+            //.MapGet(GetBugs)
             .MapPost(CreateBug)
             .MapGet(GetBugDetialsByID, "{id}")
             .MapPut(UpdateBug, "{id}")
