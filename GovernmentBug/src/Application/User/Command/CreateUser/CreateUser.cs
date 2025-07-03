@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GovernmentBug.Application.Common.Interfaces;
 using GovernmentBug.Domain.Entities;
-using GovernmentBug.Domain.Enums;
 using GovernmentBug.Domain.Events;
 
 namespace GovernmentBug.Application.User.Command.CreateUser;
@@ -16,6 +10,7 @@ public class CreateUserCommand : IRequest<int>
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+
 }
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>

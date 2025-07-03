@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
-import { AllBugsModule } from './features/all-bugs/all-bugs.module';
+import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
 
 @NgModule({
     bootstrap: [],
