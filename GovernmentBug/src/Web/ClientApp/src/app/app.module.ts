@@ -8,18 +8,18 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
-import { AllBugsModule } from './features/all-bugs/all-bugs.module';
+import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot([]), 
+    RouterModule.forRoot([]),
     BrowserAnimationsModule,
     ModalModule.forRoot(),
-    AllBugsModule  
-  ],
+    AllBugsComponent
+],
   providers: [
     { provide: APP_ID, useValue: 'ng-cli-universal' },
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },

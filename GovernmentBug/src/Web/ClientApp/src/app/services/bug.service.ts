@@ -11,7 +11,7 @@ export class BugService {
 
   allBugs: Array<Bug> = new Array<Bug>();
 
-  basicUrl: string = "https://localhost:5001/api/Bugs/";
+  basicUrl: string = "https://localhost:5001/api/Bugs/all";
 
   getAllBugs(): Observable<Array<Bug>> {
     return this.bugServer.get<Array<Bug>>(this.basicUrl);

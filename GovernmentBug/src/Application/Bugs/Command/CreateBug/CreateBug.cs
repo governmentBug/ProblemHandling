@@ -56,11 +56,11 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             CreatedDate = request.CreatedDate,
             Comments = request.Comments,
             //CreatedByUser = request.CreatedByUser,
-            Status = request.Status
+            //Status = request.Status
         };
 
 
-    entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+        entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
         _context.Bugs.Add(entity);
 

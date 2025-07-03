@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
 import { Bug } from 'src/app/models/bug.model';
 import { BugService } from 'src/app/services/bug.service';
 
 @Component({
   selector: 'app-all-bugs',
+  standalone: true,
+  imports: [CommonModule], 
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })

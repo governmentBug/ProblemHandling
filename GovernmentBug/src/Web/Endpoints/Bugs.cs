@@ -1,3 +1,4 @@
+using GovernmentBug.Application.Bugs.Command.CreateBug;
 using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;
@@ -19,10 +20,12 @@ public class Bugs :EndpointGroupBase
         app.MapGroup(this)
             //.RequireAuthorization()
             .MapGet(GetBugs)
-            .MapPost(CreateBug);
-            .MapGet(GetBugDetialsByID,"{id}")
+            .MapPost(CreateBug)
+            .MapGet(GetBugDetialsByID, "{id}")
             .MapPut(UpdateBug, "{id}")
-            .MapDelete(DeleteBug, "{id}");
+            .MapDelete(DeleteBug, "{id}")
+            .MapGet(GetAllBugDetials, "all");
+
     }
 
 
@@ -61,5 +64,12 @@ public class Bugs :EndpointGroupBase
 
         return TypedResults.NoContent();
     }
+
+    public async Task<Ok<List<BugDetalsDto>>> GetAllBugDetials(ISender sender)
+    {
+        var result = await sender.Send(new GetBugDetails());
+        return TypedResults.Ok(result);
+    }
+
 }
 
