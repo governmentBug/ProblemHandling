@@ -22,11 +22,12 @@ namespace GovernmentBug.Domain.Entities
         [StringLength(50)]
         public string PriortyId { get; set; } = string.Empty;
 
-        public StatusBug Status { get; set; }
+       //כדי לא להפעיל מידי הרבה מיגרציות לפני תשובה ברורה...
+        public StatusBug StatusId { get; set; }
 
         public int CreatedByUserId { get; set; }
 
-        public virtual User CreatedByUser { get; set; } = null!;
+        public virtual Users CreatedByUser { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }
 

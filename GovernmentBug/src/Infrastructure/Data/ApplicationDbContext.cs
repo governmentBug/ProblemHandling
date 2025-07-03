@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<BugHistory> BugHistories => Set<BugHistory>();
     public DbSet<Bug> Bugs => Set<Bug>();
     public DbSet<Comment> Comments => Set<Comment>();
-    public DbSet<User> AppUsers=> Set<User>();
+    public DbSet<Users> AppUsers=> Set<Users>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
