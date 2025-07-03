@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Application.Bugs.Command.CreateBug;
@@ -16,34 +17,25 @@ namespace GovernmentBug.Application.Bugs.Command.CreateBug;
 public record CreateBugCommand : IRequest<int>
 {
     public int BugID { get; set; }
-
     public string Title { get; set; } = string.Empty;
-
     public string Description { get; set; } = string.Empty;
-
     public string PriortyId { get; set; } = string.Empty;
-
     public int CreatedByUserId { get; set; }
-
-    public DateTime CreatedDate { get; set; }
-
+    public DateTime Created { get; set; }
     public StatusBug Status { get; set; }
 
-    //public virtual User CreatedByUser { get; set; } = null!;
-
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
 }
+
 
 public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
 
-    public string Title { get; set; } = string.Empty;
+    public CreateBugCommandHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
 
-    public string Description { get; set; } = string.Empty;
-
-    public string PriortyId { get; set; } = string.Empty;
     public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
     {
         var entity = new Bug
@@ -53,39 +45,21 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             Description = request.Description,
             PriortyId = request.PriortyId,
             CreatedByUserId = request.CreatedByUserId,
-            CreatedDate = request.CreatedDate,
-            Comments = request.Comments,
-            //CreatedByUser = request.CreatedByUser,
+            Created = request.Created,
             StatusId = request.Status
         };
-    private readonly IApplicationDbContext _context;
 
-        public CreateBugCommandHandler(IApplicationDbContext context)
-        {
-            _context = context;
-        }
 
-    public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
-    {
-        var entity = new Bug
-        {
-            BugID = request.BugID,
-            Title = request.Title,
-            Description = request.Description,
-            PriortyId = request.PriortyId,
-            CreatedByUserId = request.CreatedByUserId,
-            CreatedDate = request.CreatedDate,
-            Comments = request.Comments,
-            StatusId = request.Status,
-            //CreatedByUser = request.CreatedByUser,
-        };
+        entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
-            entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+        _context.Bugs.Add(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.Bugs.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity.BugID;
-        }
+        return entity.BugID;
     }
 }
+
+
+
+
+

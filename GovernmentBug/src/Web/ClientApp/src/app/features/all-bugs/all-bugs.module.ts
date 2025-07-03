@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AllBugsRoutingModule } from './all-bugs-routing.module';
+//import { AllBugsRoutingModule } from './all-bugs-routing.module';
 import { AllBugsComponent } from './all-bugs.component';
 
 @NgModule({
-  declarations: [AllBugsComponent], 
+  declarations: [], 
   imports: [
     CommonModule,
-    AllBugsRoutingModule
+    //AllBugsRoutingModule
   ],
-  exports: [AllBugsComponent]
+  exports: []
 })
 export class AllBugsModule { }

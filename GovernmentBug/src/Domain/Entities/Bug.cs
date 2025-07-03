@@ -22,8 +22,8 @@ namespace GovernmentBug.Domain.Entities
         [StringLength(50)]
         public string PriortyId { get; set; } = string.Empty;
 
-       //כדי לא להפעיל מידי הרבה מיגרציות לפני תשובה ברורה...
-        public StatusBug Status { get; set; }
+        //כדי לא להפעיל מידי הרבה מיגרציות לפני תשובה ברורה...
+        public StatusBug StatusId{ get; set; }
 
         public int CreatedByUserId { get; set; }
 

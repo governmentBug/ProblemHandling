@@ -12,17 +12,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
-
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
     public DbSet<Attachment> Attachments => Set<Attachment>();
     public DbSet<BugHistory> BugHistories => Set<BugHistory>();
     public DbSet<Bug> Bugs => Set<Bug>();
     public DbSet<Comment> Comments => Set<Comment>();
-    public DbSet<Users> AppUsers=> Set<Users>();
+    public DbSet<Users> AppUsers => Set<Users>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+
 }

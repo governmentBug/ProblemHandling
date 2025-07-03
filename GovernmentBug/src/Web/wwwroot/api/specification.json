@@ -7,21 +7,31 @@
   },
   "paths": {
     "/api/Bugs": {
-      "get": {
+      "post": {
         "tags": [
           "Bugs"
         ],
-        "operationId": "GetBugs",
+        "operationId": "CreateBug",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBugCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
-          "200": {
+          "201": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BugSummariesDto"
-                  }
+                  "type": "integer",
+                  "format": "int32"
                 }
               }
             }
@@ -118,6 +128,84 @@
         "responses": {
           "204": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/api/Bugs/all": {
+      "get": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "GetAllBugDetials",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugDetalsDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BugStatistics": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetBugs",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugSummariesDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BugStatistics/bymonth/{year}": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetBugsByMonths",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByMonthsDto"
+                }
+              }
+            }
           }
         }
       }
@@ -481,7 +569,7 @@
   },
   "components": {
     "schemas": {
-      "BugSummariesDto": {
+      "CreateBugCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -490,14 +578,40 @@
             "format": "int32"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
           },
           "priortyId": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created": {
             "type": "string",
-            "nullable": true
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusBug"
           }
         }
+      },
+      "StatusBug": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Closed",
+          "Open",
+          "In_progress"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
       },
       "BugDetalsDto": {
         "type": "object",
@@ -568,19 +682,40 @@
           }
         }
       },
-      "StatusBug": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Closed",
-          "Open",
-          "In_progress"
-        ],
-        "enum": [
-          0,
-          1,
-          2
-        ]
+      "BugSummariesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "priortyId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ByMonthsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byMonth": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
       },
       "PaginatedListOfTodoItemBriefDto": {
         "type": "object",
