@@ -4,6 +4,7 @@ import { BugService } from 'src/app/services/bug.service';
 
 @Component({
   selector: 'app-all-bugs',
+  standalone:true,
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })

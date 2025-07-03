@@ -5,11 +5,11 @@ import { AllBugsRoutingModule } from './all-bugs-routing.module';
 import { AllBugsComponent } from './all-bugs.component';
 
 @NgModule({
-  declarations: [AllBugsComponent], 
+  declarations: [], 
   imports: [
     CommonModule,
     AllBugsRoutingModule
   ],
-  exports: [AllBugsComponent]
+  exports: []
 })
 export class AllBugsModule { }
