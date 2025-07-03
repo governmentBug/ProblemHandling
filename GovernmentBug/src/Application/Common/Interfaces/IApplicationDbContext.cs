@@ -12,6 +12,6 @@ public interface IApplicationDbContext
     DbSet<BugHistory> BugHistories { get; }
     DbSet<Bug> Bugs { get; }
     DbSet<Comment> Comments { get; }
-    DbSet<User> AppUsers { get; }
+    DbSet<Users> AppUsers { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

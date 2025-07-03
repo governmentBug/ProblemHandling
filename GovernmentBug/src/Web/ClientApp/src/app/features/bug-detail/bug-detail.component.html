@@ -1,0 +1,19 @@
+<div *ngIf="bug" class="bug-container">
+  <h2>בעיה: {{ bug.title }}</h2>
+
+  <div class="bug-grid">
+    <div><strong>מזהה באג:</strong> {{ bug.bugID }}</div>
+    <div><strong>קטגוריה:</strong> {{ bug.title }}</div>
+    <div><strong>עדיפות:</strong> {{ bug.priortyId }}</div>
+    <div><strong>סטטוס:</strong> {{ bug.statusId }}</div>
+    <div><strong>מטופל ע"י:</strong> {{ bug.createdByUserFullName }}</div>
+    <div><strong>נפתח ע"י:</strong> ktv</div>
+    <div><strong>נפתח בתאריך:</strong> {{ bug.createdDate| date: 'dd/MM/yyyy' }}</div>
+  </div>
+
+  <div class="bug-description">
+    <strong>תיאור:</strong>
+    <p>{{ bug.description }}</p>
+  </div>
+</div>
+<p>bug-detail works!</p>
