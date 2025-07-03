@@ -9,12 +9,12 @@ import { Bug } from '../models/bug.model';
 export class BugService {
   constructor(public bugServer: HttpClient) { }
   selectedBug :Bug = {
-    bugID: 1,
+    bugId: 1,
     title: 'שגיאה בטעינת דף הבית',
     description: 'בעת כניסה לדף הבית מתקבלת שגיאת 500',
-    priortyId: '1',
-    statusId: '1',
-    createdByUserId:5,
+    priorityName: '1',
+    statusName: '1',
+    assignedToUserFullName: 5,
     createdByUserFullName: 'רונית כהן',
     createdDate: new Date('2025-06-25T09:15:00'),
     comments: [
