@@ -6,7 +6,7 @@ import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone:true,
-  imports: [DemoComponent, AllBugsComponent]
+  imports: [DemoComponent]
 })
 export class AppComponent {
   title = 'app';

@@ -76,9 +76,8 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             CreatedByUserId = request.CreatedByUserId,
             CreatedDate = request.CreatedDate,
             Comments = request.Comments,
-            StatusId = request.Status
+            StatusId = request.Status,
             //CreatedByUser = request.CreatedByUser,
-            StatusId = request.Status
         };
 
             entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
