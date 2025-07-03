@@ -11,20 +11,18 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    RouterModule.forRoot([]),
-    BrowserAnimationsModule,
-    ModalModule.forRoot(),
-    AllBugsComponent
-],
-  providers: [
-    { provide: APP_ID, useValue: 'ng-cli-universal' },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-    provideHttpClient(withInterceptorsFromDi())
-  ],
-  bootstrap: [AppComponent]
+    bootstrap: [],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        RouterModule.forRoot([
+        ]),
+        BrowserAnimationsModule,
+        ModalModule.forRoot()],
+    providers: [
+        { provide: APP_ID, useValue: 'ng-cli-universal' },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
 })
 export class AppModule { }
