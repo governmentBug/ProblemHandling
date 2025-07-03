@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Application.Bugs.Command.CreateBug;
@@ -16,22 +17,12 @@ namespace GovernmentBug.Application.Bugs.Command.CreateBug;
 public record CreateBugCommand : IRequest<int>
 {
     public int BugID { get; set; }
-
     public string Title { get; set; } = string.Empty;
-
     public string Description { get; set; } = string.Empty;
-
     public string PriortyId { get; set; } = string.Empty;
-
     public int CreatedByUserId { get; set; }
-
-    public DateTime CreatedDate { get; set; }
-
-    public StatusBug Status { get; set; }
-
-    //public virtual User CreatedByUser { get; set; } = null!;
-
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public DateTime Created { get; set; }
+    public StatusBug Status { get; set; } 
 
 }
 
@@ -53,14 +44,12 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             Description = request.Description,
             PriortyId = request.PriortyId,
             CreatedByUserId = request.CreatedByUserId,
-            CreatedDate = request.CreatedDate,
-            Comments = request.Comments,
-            //CreatedByUser = request.CreatedByUser,
+            Created = request.Created,
             Status = request.Status
         };
 
 
-    entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+        entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
         _context.Bugs.Add(entity);
 
