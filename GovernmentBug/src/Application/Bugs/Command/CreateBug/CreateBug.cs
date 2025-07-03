@@ -39,11 +39,11 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
 
-    public CreateBugCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
+    public string Title { get; set; } = string.Empty;
 
+    public string Description { get; set; } = string.Empty;
+
+    public string PriortyId { get; set; } = string.Empty;
     public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
     {
         var entity = new Bug
@@ -58,14 +58,35 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             //CreatedByUser = request.CreatedByUser,
             StatusId = request.Status
         };
+    private readonly IApplicationDbContext _context;
 
+        public CreateBugCommandHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
+    public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
+    {
+        var entity = new Bug
+        {
+            BugID = request.BugID,
+            Title = request.Title,
+            Description = request.Description,
+            PriortyId = request.PriortyId,
+            CreatedByUserId = request.CreatedByUserId,
+            CreatedDate = request.CreatedDate,
+            Comments = request.Comments,
+            StatusId = request.Status
+            //CreatedByUser = request.CreatedByUser,
+            StatusId = request.Status
+        };
 
-        _context.Bugs.Add(entity);
+            entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
-        await _context.SaveChangesAsync(cancellationToken);
+            _context.Bugs.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.BugID;
+            return entity.BugID;
+        }
     }
 }
