@@ -1,12 +1,23 @@
-using GovernmentBug.Application.Common.Mappings;
+ï»¿using GovernmentBug.Application.Common.Mappings;
 using GovernmentBug.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// äåñôú ùéøåúéí - ÷åãí ëì ëàï
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+// ðŸŸ¡ ×©×œ×‘ 1: ×”×’×“×¨×ª ×ž×“×™× ×™×•×ª CORS
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-// äåñôú ùéøåúéí ðåñôéí
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:44447") // ×›×ª×•×‘×ª Angular
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+// ×”×•×¡×¤×ª ×©×™×¨×•×ª×™×
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
@@ -21,13 +32,15 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// ðŸŸ¢ ×©×œ×‘ 2: ×”×¤×¢×œ×ª ×”×ž×“×™× ×™×•×ª
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseSwaggerUi(settings =>
 {
@@ -36,7 +49,6 @@ app.UseSwaggerUi(settings =>
 });
 
 app.MapRazorPages();
-
 app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });

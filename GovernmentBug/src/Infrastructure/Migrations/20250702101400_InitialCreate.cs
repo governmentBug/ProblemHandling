@@ -97,7 +97,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(225)", maxLength: 225, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PriortyId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),

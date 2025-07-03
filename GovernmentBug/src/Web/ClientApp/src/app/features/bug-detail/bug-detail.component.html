@@ -1,0 +1,61 @@
+<div *ngIf="bug" class="bug-container">
+  <!-- תאריך דיווח -->
+  <div class="report-date">דווח ע"י {{bug.createdByUserFullName}} {{ bug.createdDate | date: 'dd/MM/yyyy' }}</div>
+
+  <!-- גריד 3 עמודות -->
+  <div class="bug-grid">
+    <!-- ימין: תיאור + כותרת -->
+    <div class="description-section">
+      <div class="bug-title-box">{{bug.title}}</div>
+      <div class="description">{{ bug.description }}</div>
+    </div>
+
+    <!-- אמצע: PRIORITY + CATEGORY למעלה, מתחת סטטוס ומטפל -->
+    <div class="middle-section">
+      <div class="priority-category-row">
+        <div class="field">
+          <div class="label">PRAYORITY</div>
+          <div class="value">{{ bug.priortyId }}</div>
+        </div>
+        <div class="field">
+          <div class="label">CATEGORY</div>
+          <div class="value">{{ bug.title }}</div>
+        </div>
+      </div>
+      <div class="status-section">
+        <div>סטטוס: {{ bug.statusId }}</div>
+        <div>מטופל ע"י: {{ bug.createdByUserFullName }}</div>
+      </div>
+    </div>
+
+    <!-- שמאל: ריק או תוספות בעתיד -->
+    <div></div>
+  </div>
+
+  <!-- כפתורים וקבצים -->
+  <div class="footer-row">
+    <div class="bug-files">
+      <span>video.mp4 📹</span>
+      <span>image.jpeg 📎</span>
+    </div>
+    <div class="bug-actions">
+      <button class="edit-btn">edit</button>
+      <button class="delete-btn" (click)="openPopup()">delete 🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- פופאפ -->
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-content">
+    <h3>סגירת הבאג</h3>
+    <label for="reason">אנא פרט מדוע אתה סוגר את הבאג:</label>
+    <textarea id="reason" [(ngModel)]="closeReason" rows="4"></textarea>
+    
+    <div class="popup-actions">
+      <button (click)="submitClose()">שלח</button>
+      <button class="cancel-btn" (click)="closePopup()">ביטול</button>
+    </div>
+  </div>
+</div>
+

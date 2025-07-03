@@ -1,0 +1,176 @@
+.bug-container {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  font-family: sans-serif;
+  direction: rtl;
+}
+
+.report-date {
+  direction: ltr;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.bug-grid {
+  display: grid;
+  grid-template-columns: 50% 50% 0%;
+  gap: 16px;
+  align-items: start;
+}
+
+/* תיאור וכותרת */
+.bug-title-box {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.description {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 100px;
+}
+
+/* אמצע: פריוריטי + קטגוריה ואז סטטוס ומטפל */
+.middle-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.priority-category-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field {
+  flex: 1;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.value {
+  background: #eee;
+  padding: 6px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.status-section {
+  font-size: 14px;
+  line-height: 1.8;
+  padding-top: 6px;
+}
+
+/* כפתורים וקבצים */
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.bug-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.edit-btn {
+  background-color: #005eff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ff3b3b;
+  color: white;
+}
+
+.bug-files {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #333;
+}
+/* popap for delete bug */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  text-align: right;
+}
+
+.popup-content h3 {
+  margin-top: 0;
+}
+
+.popup-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.popup-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.popup-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-actions button:first-child {
+  background: #004cff;
+  color: white;
+}
+
+.cancel-btn {
+  background: #ccc;
+}
