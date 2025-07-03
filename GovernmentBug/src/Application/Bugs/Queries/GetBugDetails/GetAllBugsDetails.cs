@@ -30,8 +30,8 @@ public class GetBugDetailsHandler : IRequestHandler<GetBugDetails, List<BugDetal
                 Title = b.Title,
                 Description = b.Description,
                 PriorityName = b.PriortyId,
-                StatusName = b.StatusId.ToString(),
-                AssignedToUserFullName = b.StatusId == StatusBug.In_progress ? b.CreatedByUser.FullName : null,
+                StatusName = b.Status.ToString(),
+                AssignedToUserFullName = b.Status == StatusBug.In_progress ? b.CreatedByUser.FullName : null,
                 CreatedByUserFullName = b.CreatedByUser.FullName,
                 CreatedDate = b.CreatedDate
             })
