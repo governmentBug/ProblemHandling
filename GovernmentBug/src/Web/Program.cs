@@ -1,12 +1,12 @@
-using GovernmentBug.Application.Common.Mappings;
+ο»Ώusing GovernmentBug.Application.Common.Mappings;
 using GovernmentBug.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// δερτϊ ωιψεϊιν - χεγν λμ λΰο
+// Χ”Χ•Χ΅Χ¤Χª Χ©Χ™Χ¨Χ•ΧªΧ™Χ - Χ§Χ•Χ“Χ Χ›Χ Χ›ΧΧ
 //builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// δερτϊ ωιψεϊιν περτιν
+// Χ”Χ•Χ΅Χ¤Χª Χ©Χ™Χ¨Χ•ΧªΧ™Χ Χ Χ•Χ΅Χ¤Χ™Χ
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();

@@ -23,7 +23,7 @@ namespace GovernmentBug.Domain.Entities
         public string PriortyId { get; set; } = string.Empty;
 
        //כדי לא להפעיל מידי הרבה מיגרציות לפני תשובה ברורה...
-        public StatusBug StatusId { get; set; }
+        public StatusBug Status { get; set; }
 
         public int CreatedByUserId { get; set; }
 
