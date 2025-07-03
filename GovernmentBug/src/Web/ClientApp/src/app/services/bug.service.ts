@@ -14,7 +14,7 @@ export class BugService {
     description: 'בעת כניסה לדף הבית מתקבלת שגיאת 500',
     priorityName: '1',
     statusName: '1',
-    assignedToUserFullName: 5,
+    assignedToUserFullName: "---",
     createdByUserFullName: 'רונית כהן',
     createdDate: new Date('2025-06-25T09:15:00'),
     comments: [
