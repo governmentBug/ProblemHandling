@@ -4,50 +4,67 @@ using GovernmentBug.Domain.Enums;
 using Ardalis.GuardClauses;
 using MediatR;
 using AutoMapper;
+using GovernmentBug.Application.Common.Services;
 
-namespace GovernmentBug.Application.Bugs.Commands.UpdateBug { 
-public record UpdateBugCommand : IRequest
+namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
 {
-    public int BugId { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
-    public string PriortyId { get; init; } = string.Empty;
-    public StatusBug Status { get; init; }
-    public int? AssignedToUserId { get; init; }
-}
-
-public class UpdateBugCommandHandler : IRequestHandler<UpdateBugCommand>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public UpdateBugCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public record UpdateBugCommand : IRequest
     {
-        _context = context;
-        _mapper = mapper;
+        public int BugId { get; init; }
+        public string Title { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
+        public string PriortyId { get; init; } = string.Empty;
+        public StatusBug Status { get; init; }
+        public int? AssignedToUserId { get; init; }
     }
 
-    public async Task Handle(UpdateBugCommand request, CancellationToken cancellationToken)
+    public class UpdateBugCommandHandler : IRequestHandler<UpdateBugCommand>
     {
-        var entity = await _context.Bugs
-            .FindAsync(new object[] { request.BugId }, cancellationToken);
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        public readonly IBugHistoryService _bugHistoryService;
 
-        Guard.Against.NotFound(request.BugId, entity);
+        public UpdateBugCommandHandler(IApplicationDbContext context, IMapper mapper,IBugHistoryService bugHistoryService)
+        {
+            _context = context;
+            _mapper = mapper;
+            _bugHistoryService = bugHistoryService;
+        }
 
-        _mapper.Map(request, entity);
+        public async Task Handle(UpdateBugCommand request, CancellationToken cancellationToken)
+        {
+            var originalBug = await _context.Bugs
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.BugID == request.BugId, cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            Guard.Against.NotFound(request.BugId, originalBug);
+
+            var bugToUpdate = await _context.Bugs
+                .FindAsync(new object[] { request.BugId }, cancellationToken);
+
+            Guard.Against.NotFound(request.BugId, bugToUpdate);
+
+            _mapper.Map(request, bugToUpdate);
+
+            var histories = _bugHistoryService.CreateHistory(originalBug, bugToUpdate, bugToUpdate.CreatedByUserId);
+
+            if (histories.Any())
+            {
+                _context.BugHistories.AddRange(histories);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
-}
 
-public class BugMappingProfile : Profile
-{
-    public BugMappingProfile()
+    public class BugMappingProfile : Profile
     {
-        CreateMap<UpdateBugCommand, Bug>()
-            .ForMember(dest => dest.BugID, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore());
+        public BugMappingProfile()
+        {
+            CreateMap<UpdateBugCommand, Bug>()
+                .ForMember(dest => dest.BugID, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore());
+        }
     }
-}
 
 }
