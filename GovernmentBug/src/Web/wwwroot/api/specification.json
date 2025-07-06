@@ -210,6 +210,39 @@
         }
       }
     },
+    "/api/Comments": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "CreateComment",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -714,6 +747,27 @@
               "type": "integer",
               "format": "int32"
             }
+          }
+        }
+      },
+      "CreateCommentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
