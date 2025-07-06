@@ -77,6 +77,9 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BugID"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
@@ -91,7 +94,8 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -102,12 +106,15 @@ namespace GovernmentBug.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PriortyId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("PriorityId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("ReasonForClosure")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -117,7 +124,13 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.HasKey("BugID");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("PriorityId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Bug");
                 });
@@ -176,6 +189,24 @@ namespace GovernmentBug.Infrastructure.Migrations
                     b.ToTable("BugHistories");
                 });
 
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Category");
+                });
+
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Comment", b =>
                 {
                     b.Property<int>("CommentID")
@@ -217,6 +248,42 @@ namespace GovernmentBug.Infrastructure.Migrations
                     b.HasIndex("BugID");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Priority", b =>
+                {
+                    b.Property<int>("PriorityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriorityId"));
+
+                    b.Property<string>("PriorityName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("PriorityId");
+
+                    b.ToTable("Priority");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Status", b =>
+                {
+                    b.Property<int>("StatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatusId"));
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("StatusId");
+
+                    b.ToTable("Status");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.TodoItem", b =>
@@ -554,13 +621,37 @@ namespace GovernmentBug.Infrastructure.Migrations
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Bug", b =>
                 {
+                    b.HasOne("GovernmentBug.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GovernmentBug.Domain.Entities.Users", "CreatedByUser")
                         .WithMany("CreatedBugs")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GovernmentBug.Domain.Entities.Priority", "Priority")
+                        .WithMany()
+                        .HasForeignKey("PriorityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GovernmentBug.Domain.Entities.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("Priority");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.BugHistory", b =>

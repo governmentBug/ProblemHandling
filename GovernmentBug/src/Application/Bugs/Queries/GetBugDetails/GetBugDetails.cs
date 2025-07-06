@@ -32,15 +32,20 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugDetails
                     .Include(b => b.CreatedByUser)
                     .Select(b => new BugDetalsDto
                     {
+
                         BugId = b.BugID,
-                        //CategoryName = b.Category.Name,
                         Title = b.Title,
                         Description = b.Description,
-                        PriorityName = b.PriortyId,
-                        StatusName = b.Status.ToString(),
-                        AssignedToUserFullName = b.Status == StatusBug.Active ? b.CreatedByUser.FullName : null,
+                        CategoryId = b.CategoryId,
+                        CategoryName = b.Category.CategoryName,
+                        PriorityId = b.PriorityId,
+                        PriorityName = b.Priority.PriorityName,
+                        StatusId = b.StatusId,
+                        StatusName = b.Status.StatusName,
+                        AssignedToUserFullName = b.CreatedByUser.FullName,
                         CreatedByUserFullName = b.CreatedByUser.FullName,
-                        CreatedDate = b.CreatedDate
+                        CreatedDate = b.CreatedDate,
+                        ReasonForClosure = b.ReasonForClosure,
                     })
                    .FirstOrDefaultAsync(cancellationToken);
                 if (bug == null)

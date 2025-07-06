@@ -10,12 +10,16 @@ namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
 {
     public record UpdateBugCommand : IRequest
     {
-        public int BugId { get; init; }
-        public string Title { get; init; } = string.Empty;
-        public string Description { get; init; } = string.Empty;
-        public string PriortyId { get; init; } = string.Empty;
-        public StatusBug Status { get; init; }
-        public int? AssignedToUserId { get; init; }
+        public int BugId { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int PriorityId { get; set; }
+        public int CategoryId { get; set; }
+        public int CreatedByUserId { get; set; }
+        public DateTime Created { get; set; }
+        public int StatusId { get; set; }
+        public string ReasonForClosure {  get; set; }= string.Empty;
+
     }
 
     public class UpdateBugCommandHandler : IRequestHandler<UpdateBugCommand>

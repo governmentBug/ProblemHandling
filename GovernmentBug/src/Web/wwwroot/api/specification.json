@@ -252,6 +252,39 @@
         }
       }
     },
+    "/api/Comments": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "CreateComment",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -625,8 +658,13 @@
           "description": {
             "type": "string"
           },
-          "priortyId": {
-            "type": "string"
+          "priorityId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
           },
           "createdByUserId": {
             "type": "integer",
@@ -636,30 +674,21 @@
             "type": "string",
             "format": "date-time"
           },
-          "status": {
-            "$ref": "#/components/schemas/StatusBug"
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
-      },
-      "StatusBug": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Closed",
-          "Open",
-          "Active"
-        ],
-        "enum": [
-          0,
-          1,
-          2
-        ]
       },
       "BugDetalsDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
@@ -671,6 +700,10 @@
             "type": "string",
             "nullable": true
           },
+          "priorityId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "priorityName": {
             "type": "string",
             "nullable": true
@@ -678,6 +711,10 @@
           "description": {
             "type": "string",
             "nullable": true
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
           },
           "statusName": {
             "type": "string",
@@ -694,6 +731,10 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "reasonForClosure": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -711,16 +752,28 @@
           "description": {
             "type": "string"
           },
-          "priortyId": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/StatusBug"
-          },
-          "assignedToUserId": {
+          "priorityId": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByUserId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reasonForClosure": {
+            "type": "string"
           }
         }
       },
@@ -756,6 +809,49 @@
               "type": "integer",
               "format": "int32"
             }
+          }
+        }
+      },
+      "BugStatusByMonthsDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "closedBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeBugs": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateCommentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

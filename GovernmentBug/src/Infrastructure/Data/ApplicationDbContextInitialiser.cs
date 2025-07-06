@@ -13,12 +13,12 @@ public static class InitialiserExtensions
 {
     public static void AddAsyncSeeding(this DbContextOptionsBuilder builder, IServiceProvider serviceProvider)
     {
-        builder.UseAsyncSeeding(async (context, _, ct) =>
-        {
-            var initialiser = serviceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+        //builder.UseAsyncSeeding(async (context, _, ct) =>
+        //{
+        //    var initialiser = serviceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
 
-            await initialiser.SeedAsync();
-        });
+        //    await initialiser.SeedAsync();
+        //});
     }
 
     public static async Task InitialiseDatabaseAsync(this WebApplication app)

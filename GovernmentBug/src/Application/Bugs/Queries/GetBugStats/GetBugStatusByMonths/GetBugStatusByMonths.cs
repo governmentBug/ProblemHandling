@@ -20,16 +20,17 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonth
         var query = _context.Bugs.AsQueryable();
         query = query.Where(b => b.Created.Month == request.Month && b.Created.Year == request.Year);
         int total = await query.CountAsync(cancellationToken);
-        int open = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Open, cancellationToken);
-        int closed = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Closed, cancellationToken);
-        int active = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Active, cancellationToken);
+        //דבורי תשני למשהו שהוא לא אינום...
+        int open = await query.CountAsync(b => b.Status.StatusName.Equals("Open"), cancellationToken);
+        //int closed = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Closed, cancellationToken);
+        //int active = await query.CountAsync(b => b.Status == Domain.Enums.StatusBug.Active, cancellationToken);
 
         return new BugStatusByMonthsDTO
         {
             TotalBugs = total,
             OpenBugs = open,
-            ClosedBugs = closed,
-            ActiveBugs = active
+            //ClosedBugs = closed,
+            //ActiveBugs = active
         };
     }
 
