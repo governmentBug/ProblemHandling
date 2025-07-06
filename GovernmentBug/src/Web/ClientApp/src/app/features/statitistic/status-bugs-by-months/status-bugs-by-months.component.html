@@ -1,0 +1,10 @@
+<div class="status-bugs-wrapper">
+  <div class="status-bugs-filters">
+    <app-choosing-date [title]="' שנה'" [arr]="yearService.getYears()" (dateChange)="onYearForStatusChange($event)"></app-choosing-date>
+    <app-choosing-date [title]="' חודש'" [arr]="monthService.getMonths()" (dateChange)="onMonthForStatusChange($event)"></app-choosing-date>
+  </div>
+  <div class="pie-chart-container">
+    <canvas #pieCanvas></canvas>
+  </div>
+</div>
+
