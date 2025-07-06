@@ -45,7 +45,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             PriortyId = request.PriortyId,
             CreatedByUserId = request.CreatedByUserId,
             Created = request.Created,
-            StatusId = request.Status
+            Status = request.Status
         };
 
 

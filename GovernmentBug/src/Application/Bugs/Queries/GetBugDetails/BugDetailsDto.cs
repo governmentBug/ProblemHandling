@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace GovernmentBug.Application.Bugs.Queries.GetBugDetails;
 public class BugDetalsDto
 {
-
     public int BugId { get; set; }
     public string? CategoryName { get; set; }
     public string? Title { get; set; }

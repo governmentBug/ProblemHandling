@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Application.Comments.Queires.GetCommentsBug;
-public class GetCommentsBugDto
+internal class GetCommentsBug
 {
-
 }

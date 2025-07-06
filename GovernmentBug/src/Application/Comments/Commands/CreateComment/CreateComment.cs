@@ -29,23 +29,8 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 
     public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
     {
-        var bug = await _context.Bugs
-                  .AsNoTracking()
-                   .Where(b => b.BugID == request.BugID)
-                    .Include(b => b.CreatedByUser)
-                    .Select(b => new BugDetalsDto
-                    {
-                        BugId = b.BugID,
-                        //CategoryName = b.Category.Name,
-                        Title = b.Title,
-                        Description = b.Description,
-                        PriorityName = b.PriortyId,
-                        //StatusName = b.StatusId.ToString(),
-                        //AssignedToUserFullName = b.StatusId == StatusBug.In_progress ? b.CreatedByUser.FullName : null,
-                        CreatedByUserFullName = b.CreatedByUser.FullName,
-                        CreatedDate = b.CreatedDate
-                    })
-                   .FirstOrDefaultAsync(cancellationToken);
+        var bug = await _context.Bugs.FindAsync(new object[] { request.BugID }, cancellationToken);
+        Guard.Against.NotFound(request.BugID, bug);
         if (bug == null)
             throw new NotFoundException(nameof(Bug), request.BugID.ToString());
 
