@@ -14,11 +14,12 @@ export class ChoosingDateComponent {
   selected: number = 0;
   @Output() dateChange = new EventEmitter<number>();
 
-  constructor() {
-    // const current = new Date().getFullYear();
-    // for (let y = current; y >= current - 10; y--) {
-    //   this.years.push(y);
-    // }
+  ngOnInit() {
+    if (this.title.includes('חודש')) {
+      this.selected = new Date().getMonth() + 1;
+    } else if (this.title.includes('שנה')) {
+      this.selected = new Date().getFullYear();
+    }
   }
 
   onSelectChange(event: Event) {
