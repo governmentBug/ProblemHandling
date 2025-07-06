@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import Chart from 'chart.js/auto';
-import { BugStatisticsClient, ByMonthsDto } from '../../web-api-client';
+import { BugStatisticsClient, ByMonthsDto } from '../../../web-api-client';
+import { MonthService } from '../dates.service';
 
 @Component({
   selector: 'app-bugs-per-month',
@@ -14,7 +15,7 @@ export class BugsPerMonthComponent implements OnInit {
   @ViewChild('bugChart', { static: true }) bugChartRef!: ElementRef<HTMLCanvasElement>;
   chart: Chart | undefined;
 
-  constructor(private bugsStatisticsClient: BugStatisticsClient) {}
+  constructor(private bugsStatisticsClient: BugStatisticsClient, private monthService: MonthService) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -34,14 +35,10 @@ export class BugsPerMonthComponent implements OnInit {
 
   createChart(data: ByMonthsDto) {
     if (this.chart) {
-      this.chart.destroy(); // הורס גרף קודם אם קיים
+      this.chart.destroy(); 
     }
-    const months = [
-      'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
-      'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'
-    ];
+    const months = this.monthService.getMonthNames();
     const bugsPerMonth = months.map((m, i) => data.byMonth?.[`${i + 1}`] || 0);
-
     this.chart = new Chart(this.bugChartRef.nativeElement, {
       type: 'bar',
       data: {

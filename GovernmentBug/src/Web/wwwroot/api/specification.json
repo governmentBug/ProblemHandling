@@ -210,32 +210,41 @@
         }
       }
     },
-    "/api/Comments": {
-      "post": {
+    "/api/BugStatistics/openbugsstatus/{month}/{year}": {
+      "get": {
         "tags": [
-          "Comments"
+          "BugStatistics"
         ],
-        "operationId": "CreateComment",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCommentCommand"
-              }
-            }
+        "operationId": "GetBugStatusByMonths",
+        "parameters": [
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
           },
-          "required": true,
-          "x-position": 1
-        },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/BugStatusByMonthsDTO"
                 }
               }
             }
@@ -638,7 +647,7 @@
         "x-enumNames": [
           "Closed",
           "Open",
-          "In_progress"
+          "Active"
         ],
         "enum": [
           0,
@@ -747,27 +756,6 @@
               "type": "integer",
               "format": "int32"
             }
-          }
-        }
-      },
-      "CreateCommentCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "bugID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "commentText": {
-            "type": "string"
-          },
-          "commentedBy": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "commentDate": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },

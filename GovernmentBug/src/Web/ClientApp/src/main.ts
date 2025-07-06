@@ -1,8 +1,10 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { routes } from './app/app.routes';
 
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
@@ -10,7 +12,8 @@ export function getBaseUrl() {
 
 const providers = [
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
-  provideHttpClient(withInterceptorsFromDi())
+  provideHttpClient(withInterceptorsFromDi()),
+  importProvidersFrom(RouterModule.forRoot(routes))
 ];
 
 if (environment.production) {

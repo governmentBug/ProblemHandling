@@ -301,6 +301,7 @@ export class BugsClient implements IBugsClient {
 export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     getBugsByMonths(year: number): Observable<ByMonthsDto>;
+    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
 }
 
 @Injectable({
@@ -421,69 +422,52 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         }
         return _observableOf(null as any);
     }
-}
 
-export interface ICommentsClient {
-    createComment(command: CreateCommentCommand): Observable<number>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class CommentsClient implements ICommentsClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ?? "";
-    }
-
-    createComment(command: CreateCommentCommand): Observable<number> {
-        let url_ = this.baseUrl + "/api/Comments";
+    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO> {
+        let url_ = this.baseUrl + "/api/BugStatistics/openbugsstatus/{month}/{year}";
+        if (month === undefined || month === null)
+            throw new Error("The parameter 'month' must be defined.");
+        url_ = url_.replace("{month}", encodeURIComponent("" + month));
+        if (year === undefined || year === null)
+            throw new Error("The parameter 'year' must be defined.");
+        url_ = url_.replace("{year}", encodeURIComponent("" + year));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(command);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateComment(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBugStatusByMonths(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateComment(response_ as any);
+                    return this.processGetBugStatusByMonths(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<number>;
+                    return _observableThrow(e) as any as Observable<BugStatusByMonthsDTO>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<number>;
+                return _observableThrow(response_) as any as Observable<BugStatusByMonthsDTO>;
         }));
     }
 
-    protected processCreateComment(response: HttpResponseBase): Observable<number> {
+    protected processGetBugStatusByMonths(response: HttpResponseBase): Observable<BugStatusByMonthsDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 201) {
+        if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result201: any = null;
-            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result201 = resultData201 !== undefined ? resultData201 : <any>null;
-    
-            return _observableOf(result201);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BugStatusByMonthsDTO.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1217,7 +1201,7 @@ export interface ICreateBugCommand {
 export enum StatusBug {
     Closed = 0,
     Open = 1,
-    In_progress = 2,
+    Active = 2,
 }
 
 export class BugDetalsDto implements IBugDetalsDto {
@@ -1436,13 +1420,13 @@ export interface IByMonthsDto {
     byMonth?: number[];
 }
 
-export class CreateCommentCommand implements ICreateCommentCommand {
-    bugID?: number;
-    commentText?: string;
-    commentedBy?: number;
-    commentDate?: Date;
+export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
+    totalBugs?: number;
+    openBugs?: number;
+    closedBugs?: number;
+    activeBugs?: number;
 
-    constructor(data?: ICreateCommentCommand) {
+    constructor(data?: IBugStatusByMonthsDTO) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1453,35 +1437,35 @@ export class CreateCommentCommand implements ICreateCommentCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.bugID = _data["bugID"];
-            this.commentText = _data["commentText"];
-            this.commentedBy = _data["commentedBy"];
-            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
+            this.totalBugs = _data["totalBugs"];
+            this.openBugs = _data["openBugs"];
+            this.closedBugs = _data["closedBugs"];
+            this.activeBugs = _data["activeBugs"];
         }
     }
 
-    static fromJS(data: any): CreateCommentCommand {
+    static fromJS(data: any): BugStatusByMonthsDTO {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateCommentCommand();
+        let result = new BugStatusByMonthsDTO();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["bugID"] = this.bugID;
-        data["commentText"] = this.commentText;
-        data["commentedBy"] = this.commentedBy;
-        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
+        data["totalBugs"] = this.totalBugs;
+        data["openBugs"] = this.openBugs;
+        data["closedBugs"] = this.closedBugs;
+        data["activeBugs"] = this.activeBugs;
         return data;
     }
 }
 
-export interface ICreateCommentCommand {
-    bugID?: number;
-    commentText?: string;
-    commentedBy?: number;
-    commentDate?: Date;
+export interface IBugStatusByMonthsDTO {
+    totalBugs?: number;
+    openBugs?: number;
+    closedBugs?: number;
+    activeBugs?: number;
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {

@@ -1,0 +1,8 @@
+<div class="statistics-wrapper">
+  <app-choosing-date [title]="'בחר שנה'" [arr]="yearService.getYears()" (dateChange)="onYearChange($event)"></app-choosing-date>
+  <app-bugs-per-month [year]="selectedYear"></app-bugs-per-month>
+</div>
+<!-- <<app-open-bugs-stat [bugStatusData]="statusCountMap"></app-open-bugs-stat> -->
+ <div class="open-bugs-stat-wrapper">
+   <app-status-bugs-by-months></app-status-bugs-by-months>
+ </div>

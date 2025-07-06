@@ -5,20 +5,17 @@ import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
-import { AppComponent } from './app.component';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
-import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
+import { routes } from './app.routes';
 
 @NgModule({
-    bootstrap: [],
     imports: [
         BrowserModule,
         FormsModule,
-        RouterModule.forRoot([
-        ]),
+        RouterModule.forRoot(routes),
         BrowserAnimationsModule,
-        ModalModule.forRoot()],
+        ModalModule.forRoot()
+    ],
     providers: [
         { provide: APP_ID, useValue: 'ng-cli-universal' },
         { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
