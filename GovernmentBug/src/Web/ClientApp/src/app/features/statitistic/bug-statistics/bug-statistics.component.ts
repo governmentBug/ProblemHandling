@@ -4,11 +4,15 @@ import { BugsPerMonthComponent } from '../bugs-per-month/bugs-per-month.componen
 import { BugStatusByMonthsDTO } from 'src/app/web-api-client';
 import { YearService } from '../dates.service';
 import { StatusBugsByMonthsComponent } from '../status-bugs-by-months/status-bugs-by-months.component';
+import { TotalOpenBugsComponent } from '../total-open-bugs/total-open-bugs.component';
 
 @Component({
   selector: 'app-bug-statistics',
   standalone: true,
-  imports: [ChoosingDateComponent, BugsPerMonthComponent, StatusBugsByMonthsComponent],
+  imports: [ChoosingDateComponent,
+    BugsPerMonthComponent,
+    StatusBugsByMonthsComponent,
+    TotalOpenBugsComponent],
   templateUrl: './bug-statistics.component.html',
   styleUrl: './bug-statistics.component.css'
 })
