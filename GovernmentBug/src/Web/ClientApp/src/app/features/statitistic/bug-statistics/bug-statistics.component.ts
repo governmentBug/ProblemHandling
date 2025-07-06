@@ -1,35 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { ChoosingYearComponent } from '../choosing-year/choosing-year.component';
+import { ChoosingDateComponent } from '../choosing-date/choosing-date.component';
 import { BugsPerMonthComponent } from '../bugs-per-month/bugs-per-month.component';
-import { OpenBugsStatComponent } from '../open-bugs-stat/open-bugs-stat.component';
-import { BugStatisticsClient,BugStatusByMonthsDTO, StatusBug } from 'src/app/web-api-client';
+import { BugStatusByMonthsDTO } from 'src/app/web-api-client';
+import { YearService } from '../dates.service';
+import { StatusBugsByMonthsComponent } from '../status-bugs-by-months/status-bugs-by-months.component';
 
 @Component({
   selector: 'app-bug-statistics',
   standalone: true,
-  imports: [ChoosingYearComponent, BugsPerMonthComponent, OpenBugsStatComponent],
+  imports: [ChoosingDateComponent, BugsPerMonthComponent, StatusBugsByMonthsComponent],
   templateUrl: './bug-statistics.component.html',
   styleUrl: './bug-statistics.component.css'
 })
 export class BugStatisticsComponent implements OnInit {
-  constructor(private bugStatisticsClient: BugStatisticsClient) { }
+  constructor(
+     public yearService: YearService) { }
   ngOnInit(): void {
-    this.bugStatisticsClient.getBugStatusByMonths(this.yearForStatus, this.monthForStatus).subscribe((data: BugStatusByMonthsDTO) => {
-      this.byStatus = data;
-      this.statusCountMap.labels = Object.keys(StatusBug).filter(k => isNaN(Number(k)));
-      this.statusCountMap['Active'] = this.byStatus.activeBugs;
-      this.statusCountMap['Open'] = this.byStatus.openBugs;
-      this.statusCountMap['Closed'] = this.byStatus.closedBugs;
-    });
+
   }
   selectedYear: number = new Date().getFullYear();
   byPriority: BugStatusByMonthsDTO;
-  byStatus: BugStatusByMonthsDTO;
-  statusCountMap: { labels: string[]; data: number[] } = { labels: [], data: [] };
-  yearForStatus: number = new Date().getFullYear();
-  monthForStatus: number = new Date().getMonth() + 1; 
-
-
   onYearChange(year: number) {
     this.selectedYear = year;
   }
