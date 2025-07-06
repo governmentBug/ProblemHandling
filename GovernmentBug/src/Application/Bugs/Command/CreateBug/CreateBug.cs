@@ -21,7 +21,7 @@ public record CreateBugCommand : IRequest<int>
     public string Description { get; set; } = string.Empty;
     public string PriortyId { get; set; } = string.Empty;
     public int CreatedByUserId { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime Created { get; set; } = DateTime.Now;
     public StatusBug Status { get; set; }
 
 }
@@ -45,7 +45,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             Description = request.Description,
             PriortyId = request.PriortyId,
             CreatedByUserId = request.CreatedByUserId,
-            Created = request.Created,
+            //Created = request.Created,
             Status = request.Status
         };
 

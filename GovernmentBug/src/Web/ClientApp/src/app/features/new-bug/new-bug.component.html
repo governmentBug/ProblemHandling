@@ -1,0 +1,17 @@
+<p>{{formattedDate}}</p>
+
+<form (ngSubmit)="addBug()" #bugForm="ngForm">
+  <label for="title">Title:</label>
+  <input type="text" id="title" [(ngModel)]="newBug.title" name="title" required>
+
+  <label for="description">Description:</label>
+  <textarea id="description" [(ngModel)]="newBug.description" name="description" required></textarea>
+
+  <label for="userId">User ID:</label>
+  <input type="number" id="createdByUserId" [(ngModel)]="newBug.createdByUserId" name="createdByUserId" required>
+
+  <label for="priority">Priority:</label>
+  <input type="text" id="priortyId" [(ngModel)]="newBug.priortyId" name="priortyId" required>
+
+  <button type="submit">Add Bug</button>
+</form>
