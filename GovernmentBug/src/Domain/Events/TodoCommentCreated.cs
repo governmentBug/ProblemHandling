@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Events;
-public class TodoCommentCreated
+public class TodoCommentCreated:BaseEvent
 {
     public TodoCommentCreated(Comment comment)
     {
@@ -15,4 +15,3 @@ public class TodoCommentCreated
     public Comment Comment { get; }
 }
 
-}

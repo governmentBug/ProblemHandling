@@ -26,7 +26,6 @@ public record CreateBugCommand : IRequest<int>
 
 }
 
-
 public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
@@ -58,7 +57,6 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
         return entity.BugID;
     }
 }
-
 
 
 

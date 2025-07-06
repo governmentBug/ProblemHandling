@@ -18,9 +18,5 @@ namespace GovernmentBug.Domain.Entities
         public int CommentedBy { get; set; }
         public DateTime CommentDate { get; set; }
 
-        public void AddDomainEvent(TodoCommentCreated todoCommentCreated)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
