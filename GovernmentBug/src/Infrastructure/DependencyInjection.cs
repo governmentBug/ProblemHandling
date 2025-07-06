@@ -1,4 +1,5 @@
 ﻿using GovernmentBug.Application.Common.Interfaces;
+using GovernmentBug.Application.Common.Services;
 using GovernmentBug.Domain.Constants;
 using GovernmentBug.Infrastructure.Data;
 using GovernmentBug.Infrastructure.Data.Interceptors;
@@ -27,7 +28,7 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString).AddAsyncSeeding(sp);
         });
 
-
+        builder.Services.AddScoped<IBugHistoryService, BugHistoryService>();
         builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
