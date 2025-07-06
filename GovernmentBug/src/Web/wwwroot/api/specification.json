@@ -155,6 +155,27 @@
         }
       }
     },
+    "/api/BugStatistics/totalopenbugs": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "TotalOpenBugs",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics": {
       "get": {
         "tags": [
