@@ -1,3 +1,21 @@
+<div style="margin-bottom: 15px; text-align: center;">
+    <select (change)="onSelectChange($event)" [value]="selectedFilterValue || selectedFilterType">
+        <option *ngIf="!selectedFilterType" value="">-- בחר סינון --</option>
+        <option *ngIf="!selectedFilterType" value="statusName">סטטוס</option>
+        <option *ngIf="!selectedFilterType" value="priorityName">עדיפות</option>
+        <option *ngIf="!selectedFilterType" value="categoryName">קטגוריה</option>
+
+        <ng-container *ngIf="selectedFilterType">
+            <option value="">-- בחר ערך --</option>
+            <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val">{{ val }}</option>
+        </ng-container>
+    </select>
+
+    <button *ngIf="selectedFilterType" (click)="resetFilter()" style="margin-left: 10px;">
+        אפס / שנה סינון
+    </button>
+</div>
+
 <div class="bug-table-container">
     <h2 class="table-title">רשימת כל הבאגים</h2>
     <div class="table-wrapper">
@@ -20,30 +38,35 @@
                     <td>{{ bug.title }}</td>
                     <td>
                         <span [ngClass]="{
-  'priority-low': bug.priorityName === 'Low',
-  'priority-medium': bug.priorityName === 'Medium',
-  'priority-high': bug.priorityName === 'High',
-  'priority-critical': bug.priorityName === 'Critical'
-}">
+              'priority-low': bug.priorityName === 'Low',
+              'priority-medium': bug.priorityName === 'Medium',
+              'priority-high': bug.priorityName === 'High',
+              'priority-critical': bug.priorityName === 'Critical'
+            }">
                             {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
                             bug.priorityName === 'High' ? '★★★' : '★★★★' }}
                         </span>
                     </td>
                     <td>
                         <span [ngClass]="{
-  'status-open': bug.statusName === 'Open',
-  'status-close': bug.statusName === 'Closed',
-  'status-active': bug.statusName === 'Active',
-  'status-cancelled': bug.statusName === 'Cancelled'
-}">
+              'status-open': bug.statusName === 'Open',
+              'status-close': bug.statusName === 'Closed',
+              'status-active': bug.statusName === 'Active',
+              'status-cancelled': bug.statusName === 'Cancelled'
+            }">
                             {{ bug.statusName }}
                         </span>
-
                     </td>
                     <td>{{ bug.createdByUserFullName }}</td>
                     <td>{{ bug.createdDate | date:'dd/MM/yyyy' }}</td>
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="pagination-controls" style="margin-top: 15px; text-align: center;">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">הקודם</button>
+        <span style="margin: 0 10px;">עמוד {{ currentPage }}</span>
+        <button (click)="nextPage()">הבא</button>
     </div>
 </div>
