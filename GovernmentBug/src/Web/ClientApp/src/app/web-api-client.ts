@@ -761,6 +761,7 @@ export class CategoryClient implements ICategoryClient {
 
 export interface ICommentsClient {
     createComment(command: CreateCommentCommand): Observable<number>;
+    getCommentsByBugID(id: number): Observable<CommentsBugDto[]>;
 }
 
 @Injectable({
@@ -1280,6 +1281,65 @@ export class StatusClient implements IStatusClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = StatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getCommentsByBugID(id: number): Observable<CommentsBugDto[]> {
+        let url_ = this.baseUrl + "/api/Comments?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCommentsByBugID(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCommentsByBugID(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CommentsBugDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CommentsBugDto[]>;
+        }));
+    }
+
+    protected processGetCommentsByBugID(response: HttpResponseBase): Observable<CommentsBugDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CommentsBugDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2425,6 +2485,58 @@ export class CreateCommentCommand implements ICreateCommentCommand {
 }
 
 export interface ICreateCommentCommand {
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+}
+
+export class CommentsBugDto implements ICommentsBugDto {
+    commentID?: number;
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+
+    constructor(data?: ICommentsBugDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.commentID = _data["commentID"];
+            this.bugID = _data["bugID"];
+            this.commentText = _data["commentText"];
+            this.commentedBy = _data["commentedBy"];
+            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CommentsBugDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentsBugDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["commentID"] = this.commentID;
+        data["bugID"] = this.bugID;
+        data["commentText"] = this.commentText;
+        data["commentedBy"] = this.commentedBy;
+        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICommentsBugDto {
+    commentID?: number;
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
