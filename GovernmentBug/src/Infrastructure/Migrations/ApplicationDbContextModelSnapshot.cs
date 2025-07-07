@@ -636,12 +636,6 @@ namespace GovernmentBug.Infrastructure.Migrations
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Bug", b =>
                 {
-                    b.HasOne("GovernmentBug.Domain.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GovernmentBug.Domain.Entities.Users", "CreatedByUser")
                         .WithMany("CreatedBugs")
                         .HasForeignKey("CreatedByUserId")
