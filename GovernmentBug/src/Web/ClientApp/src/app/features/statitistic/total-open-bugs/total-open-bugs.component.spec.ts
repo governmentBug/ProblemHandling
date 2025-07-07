@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChoosingYearComponent } from './choosing-year.component';
+import { TotalOpenBugsComponent } from './total-open-bugs.component';
 
-describe('ChoosingYearComponent', () => {
-  let component: ChoosingYearComponent;
-  let fixture: ComponentFixture<ChoosingYearComponent>;
+describe('TotalOpenBugsComponent', () => {
+  let component: TotalOpenBugsComponent;
+  let fixture: ComponentFixture<TotalOpenBugsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChoosingYearComponent]
+      imports: [TotalOpenBugsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChoosingYearComponent);
+    fixture = TestBed.createComponent(TotalOpenBugsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

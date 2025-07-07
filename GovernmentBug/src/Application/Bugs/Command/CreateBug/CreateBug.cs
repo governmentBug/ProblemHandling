@@ -19,13 +19,13 @@ public record CreateBugCommand : IRequest<int>
     public int BugID { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string PriortyId { get; set; } = string.Empty;
+    public int PriorityId { get; set; } 
+    public int CategoryId {  get; set; }
     public int CreatedByUserId { get; set; }
-    public DateTime Created { get; set; } = DateTime.Now;
-    public StatusBug Status { get; set; }
+    public DateTime Created { get; set; }
+    public int StatusId { get; set; }
 
 }
-
 
 public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
@@ -43,10 +43,11 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             BugID = request.BugID,
             Title = request.Title,
             Description = request.Description,
-            PriortyId = request.PriortyId,
+            CategoryId=request.CategoryId,
+            PriorityId = request.PriorityId,
             CreatedByUserId = request.CreatedByUserId,
-            //Created = request.Created,
-            Status = request.Status
+            Created = request.Created,
+            StatusId = request.StatusId
         };
 
 
@@ -58,7 +59,6 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
         return entity.BugID;
     }
 }
-
 
 
 

@@ -155,6 +155,27 @@
         }
       }
     },
+    "/api/BugStatistics/totalopenbugs": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "TotalOpenBugs",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics": {
       "get": {
         "tags": [
@@ -203,6 +224,431 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ByMonthsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BugStatistics/openbugsstatus/{month}/{year}": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetBugStatusByMonths",
+        "parameters": [
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BugStatusByMonthsDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category/name/{name}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "GetCategoryByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category/id/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "GetCategoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Category": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "GetAllCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "operationId": "CreateCategory",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Comments": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "CreateComment",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Priority": {
+      "get": {
+        "tags": [
+          "Priority"
+        ],
+        "operationId": "GetAllPriorities",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PriorityDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Priority"
+        ],
+        "operationId": "CreatePriority",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePriorityCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Priority/id/{id}": {
+      "get": {
+        "tags": [
+          "Priority"
+        ],
+        "operationId": "GetPriorityById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriorityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Priority/name/{name}": {
+      "get": {
+        "tags": [
+          "Priority"
+        ],
+        "operationId": "GetPriorityByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriorityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Status": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "operationId": "GetAllStatuses",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StatusDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Status"
+        ],
+        "operationId": "CreateStatus",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStatusCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Status/name/{name}": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "operationId": "GetStatusByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Status/id/{id}": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "operationId": "GetStatusById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDto"
                 }
               }
             }
@@ -583,8 +1029,13 @@
           "description": {
             "type": "string"
           },
-          "priortyId": {
-            "type": "string"
+          "priorityId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
           },
           "createdByUserId": {
             "type": "integer",
@@ -594,30 +1045,21 @@
             "type": "string",
             "format": "date-time"
           },
-          "status": {
-            "$ref": "#/components/schemas/StatusBug"
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
-      },
-      "StatusBug": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Closed",
-          "Open",
-          "In_progress"
-        ],
-        "enum": [
-          0,
-          1,
-          2
-        ]
       },
       "BugDetalsDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
@@ -629,6 +1071,10 @@
             "type": "string",
             "nullable": true
           },
+          "priorityId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "priorityName": {
             "type": "string",
             "nullable": true
@@ -636,6 +1082,10 @@
           "description": {
             "type": "string",
             "nullable": true
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
           },
           "statusName": {
             "type": "string",
@@ -652,6 +1102,10 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "reasonForClosure": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -669,16 +1123,28 @@
           "description": {
             "type": "string"
           },
-          "priortyId": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/StatusBug"
-          },
-          "assignedToUserId": {
+          "priorityId": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdByUserId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reasonForClosure": {
+            "type": "string"
           }
         }
       },
@@ -714,6 +1180,115 @@
               "type": "integer",
               "format": "int32"
             }
+          }
+        }
+      },
+      "BugStatusByMonthsDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "closedBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeBugs": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CategoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateCategoryCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categoryName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateCommentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PriorityDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "priorityName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePriorityCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "priorityName": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateStatusCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
           }
         }
       },

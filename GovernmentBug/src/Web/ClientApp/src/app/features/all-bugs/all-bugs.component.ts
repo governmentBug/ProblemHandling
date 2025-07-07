@@ -12,9 +12,7 @@ import { BugService } from 'src/app/services/bug.service';
 })
 export class AllBugsComponent implements OnInit {
   bugs: Bug[] = [];
-
-  constructor(private bugService: BugService) {}
-
+ constructor(private bugService: BugService) {}
   ngOnInit(): void {
     this.bugService.getAllBugs().subscribe({
       next: bugs => this.bugs = bugs,

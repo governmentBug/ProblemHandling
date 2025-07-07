@@ -1,5 +1,4 @@
-﻿using GovernmentBug.Domain.Common;
-using GovernmentBug.Domain.Entities;
+﻿using GovernmentBug.Domain.Entities;
 
 namespace GovernmentBug.Application.Common.Interfaces;
 
@@ -13,5 +12,8 @@ public interface IApplicationDbContext
     DbSet<Bug> Bugs { get; }
     DbSet<Comment> Comments { get; }
     DbSet<Users> AppUsers { get; }
+    DbSet<Domain.Entities.Priority> Priorities { get; }
+    DbSet<Domain.Entities.Status> Statuses { get; }
+    DbSet<Domain.Entities.Category> Categories { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -29,11 +29,17 @@ public class GetBugDetailsHandler : IRequestHandler<GetBugDetails, List<BugDetal
                 BugId = b.BugID,
                 Title = b.Title,
                 Description = b.Description,
-                PriorityName = b.PriortyId,
-                StatusName = b.Status.ToString(),
-                AssignedToUserFullName = b.Status == StatusBug.In_progress ? b.CreatedByUser.FullName : null,
+                CategoryId=b.CategoryId,
+                CategoryName=b.Category.CategoryName,
+                PriorityId=b.PriorityId,
+                PriorityName = b.Priority.PriorityName,
+                StatusId=b.StatusId,
+                StatusName = b.Status.StatusName,
+                AssignedToUserFullName = b.CreatedByUser.FullName,
                 CreatedByUserFullName = b.CreatedByUser.FullName,
-                CreatedDate = b.CreatedDate
+                CreatedDate = b.CreatedDate,
+                ReasonForClosure=b.ReasonForClosure,
+
             })
             .ToListAsync(cancellationToken);
 
