@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GovernmentBug.Domain.Entities;
-public class Priority
+public class Priority : BaseAuditableEntity
 {
     [Key]
     public int PriorityId { get; set; }

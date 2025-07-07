@@ -18,6 +18,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Bug> Bugs => Set<Bug>();
     public DbSet<Comment> Comments => Set<Comment>();
     public DbSet<Users> AppUsers => Set<Users>();
+    public DbSet<Domain.Entities.Priority> Priorities => Set<Domain.Entities.Priority>();
+    public DbSet<Status> Statuses => Set<Status>();
+    public DbSet<Category> Categories => Set<Category>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
