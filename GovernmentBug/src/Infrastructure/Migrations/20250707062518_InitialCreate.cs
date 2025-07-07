@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GovernmentBug.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangestatusIdtostatusinbugtable : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,7 +71,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false)
@@ -80,24 +80,29 @@ namespace GovernmentBug.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Priority",
+                name: "Priorities",
                 columns: table => new
                 {
                     PriorityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PriorityName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    PriorityName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Priority", x => x.PriorityId);
+                    table.PrimaryKey("PK_Priorities", x => x.PriorityId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Status",
+                name: "Statuses",
                 columns: table => new
                 {
                     StatusId = table.Column<int>(type: "int", nullable: false)
@@ -106,7 +111,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Status", x => x.StatusId);
+                    table.PrimaryKey("PK_Statuses", x => x.StatusId);
                 });
 
             migrationBuilder.CreateTable(
@@ -263,21 +268,21 @@ namespace GovernmentBug.Infrastructure.Migrations
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bug_Category_CategoryId",
+                        name: "FK_Bug_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bug_Priority_PriorityId",
+                        name: "FK_Bug_Priorities_PriorityId",
                         column: x => x.PriorityId,
-                        principalTable: "Priority",
+                        principalTable: "Priorities",
                         principalColumn: "PriorityId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bug_Status_StatusId",
+                        name: "FK_Bug_Statuses_StatusId",
                         column: x => x.StatusId,
-                        principalTable: "Status",
+                        principalTable: "Statuses",
                         principalColumn: "StatusId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -519,13 +524,13 @@ namespace GovernmentBug.Infrastructure.Migrations
                 name: "AppUsers");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Priority");
+                name: "Priorities");
 
             migrationBuilder.DropTable(
-                name: "Status");
+                name: "Statuses");
         }
     }
 }

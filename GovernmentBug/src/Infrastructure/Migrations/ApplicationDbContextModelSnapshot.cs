@@ -204,7 +204,7 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Comment", b =>
@@ -258,6 +258,21 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriorityId"));
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PriorityName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -265,7 +280,7 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.HasKey("PriorityId");
 
-                    b.ToTable("Priority");
+                    b.ToTable("Priorities");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Status", b =>
@@ -283,7 +298,7 @@ namespace GovernmentBug.Infrastructure.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Status");
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.TodoItem", b =>

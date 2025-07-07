@@ -17,12 +17,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BugHistory\NewFolder\" />
-    <Folder Include="BugHistory\Queries\" />
-    <Folder Include="Category\Commands\" />
-    <Folder Include="Priority\Commands\" />
-    <Folder Include="Status\Commands\" />
-  </ItemGroup>
-
 </Project>
