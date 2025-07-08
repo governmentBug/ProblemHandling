@@ -15,26 +15,33 @@ import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
 })
 export class DemoComponent implements OnInit {
   selectedBug: BugDetalsDto
-  constructor(public bugService:BugService,public CommentService:CommentService,public route:ActivatedRoute) {
+  constructor(public bugService: BugService, public CommentService: CommentService, public route: ActivatedRoute) {
   }
   comments: CommentsBugDto[] = [];
   isCommentsPanelOpen = true;
   isAuthorizedToComment = true;
   ngOnInit() {
-    this.getBugById(1)
+    this.getBugById(2)
   }
 
-getBugById(id:number){
-  this.bugService.getBugById(id).subscribe({
-    next: bug => {
-    console.log('הבאג שהתקבל:', bug);
-    this.selectedBug =bug
-  },
-  error: err => {
-    console.error('שגיאה בשליפת באג:', err);
-  } 
-})}
-   loadComments(): void {
+  getBugById(id: number) {
+    this.bugService.getBugById(id).subscribe({
+      next: bug => {
+        console.log('הבאג שהתקבל:', bug);
+        this.selectedBug = bug
+        this.loadComments()
+      },
+      error: err => {
+        console.error('שגיאה בשליפת באג:', err);
+      }
+    })
+  }
+  onBugChanged() {
+    if (this.selectedBug) {
+      this.getBugById(2);
+    }
+  }
+  loadComments(): void {
     this.CommentService.getCommentsByBugId(this.selectedBug.bugId).subscribe({
       next: (res) => this.comments = res,
       error: (err) => console.error('שגיאה בשליפת תגובות', err)
@@ -59,7 +66,7 @@ getBugById(id:number){
   }
 
   onCommentAdded(content: string): void {
-    this.bugService.addComment()
+    this.addComment(content)
   }
 
   onCommentDeleted(commentId: number): void {

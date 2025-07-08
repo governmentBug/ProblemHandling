@@ -1,4 +1,4 @@
-import { Comment } from './comment.model';
+
 
 export class Bug {
   constructor(
@@ -11,6 +11,5 @@ export class Bug {
     public assignedToUserFullName: string,
     public createdByUserFullName: string,
     public createdDate: Date,
-    public comments: Comment[] = []
   ) {}
 }

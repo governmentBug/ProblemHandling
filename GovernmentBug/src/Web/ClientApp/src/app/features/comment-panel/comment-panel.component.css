@@ -1,17 +1,19 @@
 .panel {
-  position: fixed;
+  position: relative;
   top: 0;
-  right: 0;
+  left: 0; /* <-- במקום right */
   width: 300px;
   height: 100%;
   background: #f4f4f4;
-  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc; /* כי זה בשמאל */
   display: flex;
   flex-direction: column;
   padding: 10px;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  overflow-y: auto;
 }
+
 
 .close-btn {
   background: none;
@@ -26,6 +28,12 @@
   overflow-y: auto;
   margin-top: 10px;
 }
+
+.comments-list::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari, Edge */
+}
+
+
 
 .comment {
   display: flex;

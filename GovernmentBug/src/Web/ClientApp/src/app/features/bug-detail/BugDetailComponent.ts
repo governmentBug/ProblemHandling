@@ -1,11 +1,12 @@
 
-import { Component,Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component,EventEmitter,Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommentPanelComponent } from "../comment-panel/comment-panel.component";
 import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
+
 
 
 @Component({
@@ -17,6 +18,8 @@ import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
 })
 export class BugDetailComponent implements OnInit {
   @Input() bug!: BugDetalsDto;
+  @Input() AuthorizedUser!:boolean;
+   @Output() bugChanged = new EventEmitter<any>();  // אירוע ליידע על שינוי
   showPopup = false;
   closeReason = '';
   comments: CommentsBugDto[] = [];
@@ -45,8 +48,15 @@ export class BugDetailComponent implements OnInit {
       alert('אנא מלא סיבה לסגירה');
       return;
     }
-
-    // שליחת הסיבה לשרת או הדפסתה
+    this.bugService.updateBugAndClosed(this.bug.bugId,this.closeReason).subscribe({
+      next: () => {
+        this.bugChanged.emit(null);  
+        this.closePopup();
+      },
+      error: err => console.error(err)
+    }
+      
+    )
     console.log('סיבה לסגירת הבאג:', this.closeReason);
 
     // סגירת הפופאפ
@@ -81,6 +91,10 @@ export class BugDetailComponent implements OnInit {
   onClosePanel(): void {
     this.isCommentsPanelOpen = false;
   }
+  onOverlayClick(event: MouseEvent): void {
+  this.closePopup();
+}
+
 }
 
 
