@@ -2524,10 +2524,7 @@ export interface IByMonthsDto {
 }
 
 export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 
     constructor(data?: IBugStatusByMonthsDTO) {
         if (data) {
@@ -2540,10 +2537,13 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.totalBugs = _data["totalBugs"];
-            this.openBugs = _data["openBugs"];
-            this.closedBugs = _data["closedBugs"];
-            this.activeBugs = _data["activeBugs"];
+            if (_data["countByStatuses"]) {
+                this.countByStatuses = {} as any;
+                for (let key in _data["countByStatuses"]) {
+                    if (_data["countByStatuses"].hasOwnProperty(key))
+                        (<any>this.countByStatuses)![key] = _data["countByStatuses"][key];
+                }
+            }
         }
     }
 
@@ -2556,19 +2556,19 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalBugs"] = this.totalBugs;
-        data["openBugs"] = this.openBugs;
-        data["closedBugs"] = this.closedBugs;
-        data["activeBugs"] = this.activeBugs;
+        if (this.countByStatuses) {
+            data["countByStatuses"] = {};
+            for (let key in this.countByStatuses) {
+                if (this.countByStatuses.hasOwnProperty(key))
+                    (<any>data["countByStatuses"])[key] = (<any>this.countByStatuses)[key];
+            }
+        }
         return data;
     }
 }
 
 export interface IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 }
 
 export class CategoryDto implements ICategoryDto {

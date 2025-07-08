@@ -421,6 +421,39 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "GetCommentsByBugID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentsBugDto"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Priority": {
@@ -1187,21 +1220,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "totalBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "openBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "closedBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "activeBugs": {
-            "type": "integer",
-            "format": "int32"
+          "countByStatuses": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1209,7 +1233,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1248,11 +1272,36 @@
           }
         }
       },
+      "CommentsBugDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commentID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PriorityDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "priorityId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1274,7 +1323,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "statusId": {
             "type": "integer",
             "format": "int32"
           },
