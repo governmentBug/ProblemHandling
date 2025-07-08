@@ -2325,10 +2325,7 @@ export class UpdateBugCommand implements IUpdateBugCommand {
     description?: string;
     priorityId?: number;
     categoryId?: number;
-    createdByUserId?: number;
-    created?: Date;
     statusId?: number;
-    reasonForClosure?: string;
 
     constructor(data?: IUpdateBugCommand) {
         if (data) {
@@ -2346,10 +2343,7 @@ export class UpdateBugCommand implements IUpdateBugCommand {
             this.description = _data["description"];
             this.priorityId = _data["priorityId"];
             this.categoryId = _data["categoryId"];
-            this.createdByUserId = _data["createdByUserId"];
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
             this.statusId = _data["statusId"];
-            this.reasonForClosure = _data["reasonForClosure"];
         }
     }
 
@@ -2367,10 +2361,7 @@ export class UpdateBugCommand implements IUpdateBugCommand {
         data["description"] = this.description;
         data["priorityId"] = this.priorityId;
         data["categoryId"] = this.categoryId;
-        data["createdByUserId"] = this.createdByUserId;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
         data["statusId"] = this.statusId;
-        data["reasonForClosure"] = this.reasonForClosure;
         return data;
     }
 }
@@ -2381,10 +2372,7 @@ export interface IUpdateBugCommand {
     description?: string;
     priorityId?: number;
     categoryId?: number;
-    createdByUserId?: number;
-    created?: Date;
     statusId?: number;
-    reasonForClosure?: string;
 }
 
 export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
