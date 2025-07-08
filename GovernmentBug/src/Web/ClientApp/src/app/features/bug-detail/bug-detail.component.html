@@ -1,46 +1,90 @@
 <div *ngIf="bug" class="bug-container">
-  <!-- תאריך דיווח -->
-  <div class="report-date">דווח ע"י {{bug.createdByUserFullName}} {{ bug.createdDate | date: 'dd/MM/yyyy' }}</div>
 
-  <!-- גריד 3 עמודות -->
+  <div class="report-date">
+    דווח ע"י {{bug.createdByUserFullName}} {{ bug.createdDate | date: 'dd/MM/yyyy' }}
+  </div>
+
   <div class="bug-grid">
-    <!-- ימין: תיאור + כותרת -->
+    <!-- ימין: תיאור וכותרת -->
     <div class="description-section">
-      <div class="bug-title-box">{{bug.title}}</div>
-      <div class="description">{{ bug.description }}</div>
+      <div class="bug-title-box">
+        <ng-container *ngIf="!isEditMode">{{ bug.title }}</ng-container>
+        <input *ngIf="isEditMode" [(ngModel)]="editedBug.title" class="edit-inline" />
+      </div>
+
+      <div class="description">
+        <ng-container *ngIf="!isEditMode">{{ bug.description }}</ng-container>
+        <textarea *ngIf="isEditMode" [(ngModel)]="editedBug.description" class="edit-inline"></textarea>
+      </div>
     </div>
 
-    <!-- אמצע: PRIORITY + CATEGORY למעלה, מתחת סטטוס ומטפל -->
+    <!-- אמצע -->
     <div class="middle-section">
       <div class="priority-category-row">
         <div class="field">
-          <div class="label">PRIORITY </div>
-          <div class="value">{{ bug.priorityId ? bug.priorityName : 'לא צויין' }}</div>
+          <div class="label">PRIORITY</div>
+          <div class="value">
+            <ng-container *ngIf="!isEditMode">{{ bug.priorityName || 'לא צויין' }}</ng-container>
+            <select *ngIf="isEditMode" [(ngModel)]="editedBug.priorityId" class="edit-inline select-box">
+              <option *ngFor="let p of priorities" [value]="p.id">{{ p.priorityName }}</option>
+            </select>
+          </div>
         </div>
         <div class="field">
           <div class="label">CATEGORY</div>
-          <div class="value">{{ bug.categoryId ? bug.categoryName : 'לא צויין' }}</div>
+          <div class="value">
+            <ng-container *ngIf="!isEditMode">{{ bug.categoryName || 'לא צויין' }}</ng-container>
+            <select *ngIf="isEditMode" [(ngModel)]="editedBug.categoryId" class="edit-inline select-box">
+              <option *ngFor="let c of categories" [value]="c.id">{{ c.categoryName }}</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="status-section">
-        <div>סטטוס: {{ bug.statusName }}</div>
+        <div>סטטוס:
+          <span *ngIf="!isEditMode" [ngClass]="{
+              'status-open': bug.statusName === 'Open',
+              'status-close': bug.statusName === 'Close',
+              'status-active': bug.statusName === 'Active',
+              'status-cancelled': bug.statusName === 'Cancelled'
+            }">
+            {{ bug.statusName }}
+          </span>
+          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" >
+            <option *ngFor="let s of statuses" [value]="s.id">
+              <span [ngClass]="{
+                'status-open': s.statusName === 'Open',
+                'status-close': s.statusName === 'Close',
+                'status-active': s.statusName === 'Active',
+                'status-cancelled': s.statusName === 'Cancelled'
+              }">
+                {{ s.statusName }}
+              </span>
+            </option>
+          </select>
+        </div>
         <div>מטופל ע"י: {{ bug.createdByUserFullName }}</div>
       </div>
     </div>
 
-    <!-- שמאל: ריק או תוספות בעתיד -->
+
+    <!-- שמאל ריק -->
     <div></div>
   </div>
 
-  <!-- כפתורים וקבצים -->
+  <!-- כפתורים -->
   <div class="footer-row">
     <div class="bug-files">
       <span>video.mp4 📹</span>
-      <span>image.jpeg 📎</span>
+      <span>image.jpeg 📌</span>
     </div>
     <div class="bug-actions">
-    <button class="edit-btn" *ngIf="AuthorizedUser">edit</button>
-      <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">delete 🗑️</button>
+      <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>
+      <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">💾 שמור</button>
+      <button class="cancel-btn" *ngIf="isEditMode" (click)="cancelEdit()">❌ בטל</button>
+      <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
+        Delete <i class="fa fa-trash"></i>
+      </button>
     </div>
   </div>
 </div>
@@ -50,11 +94,7 @@
   <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
     <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>
 
-    <textarea
-      [(ngModel)]="closeReason"
-      rows="4"
-      placeholder="נימוק/הערה לסגירת הבאג"
-    ></textarea>
+    <textarea [(ngModel)]="closeReason" rows="4" placeholder="נימוק/הערה לסגירת הבאג"></textarea>
 
     <div class="popup-actions">
       <button class="delete-btn" (click)="submitClose()">
@@ -63,6 +103,3 @@
     </div>
   </div>
 </div>
-
-  
-
