@@ -829,6 +829,65 @@ export class CommentsClient implements ICommentsClient {
         }
         return _observableOf(null as any);
     }
+
+    getCommentsByBugID(id: number): Observable<CommentsBugDto[]> {
+        let url_ = this.baseUrl + "/api/Comments?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCommentsByBugID(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCommentsByBugID(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CommentsBugDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CommentsBugDto[]>;
+        }));
+    }
+
+    protected processGetCommentsByBugID(response: HttpResponseBase): Observable<CommentsBugDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CommentsBugDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface IPriorityClient {
@@ -1281,65 +1340,6 @@ export class StatusClient implements IStatusClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = StatusDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    getCommentsByBugID(id: number): Observable<CommentsBugDto[]> {
-        let url_ = this.baseUrl + "/api/Comments?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined and cannot be null.");
-        else
-            url_ += "id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetCommentsByBugID(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetCommentsByBugID(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<CommentsBugDto[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<CommentsBugDto[]>;
-        }));
-    }
-
-    protected processGetCommentsByBugID(response: HttpResponseBase): Observable<CommentsBugDto[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CommentsBugDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2368,7 +2368,7 @@ export interface IBugStatusByMonthsDTO {
 }
 
 export class CategoryDto implements ICategoryDto {
-    id?: number;
+    categoryId?: number;
     categoryName?: string;
 
     constructor(data?: ICategoryDto) {
@@ -2382,7 +2382,7 @@ export class CategoryDto implements ICategoryDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.categoryId = _data["categoryId"];
             this.categoryName = _data["categoryName"];
         }
     }
@@ -2396,14 +2396,14 @@ export class CategoryDto implements ICategoryDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["categoryId"] = this.categoryId;
         data["categoryName"] = this.categoryName;
         return data;
     }
 }
 
 export interface ICategoryDto {
-    id?: number;
+    categoryId?: number;
     categoryName?: string;
 }
 
@@ -2544,7 +2544,7 @@ export interface ICommentsBugDto {
 }
 
 export class PriorityDto implements IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 
     constructor(data?: IPriorityDto) {
@@ -2558,7 +2558,7 @@ export class PriorityDto implements IPriorityDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.priorityId = _data["priorityId"];
             this.priorityName = _data["priorityName"];
         }
     }
@@ -2572,14 +2572,14 @@ export class PriorityDto implements IPriorityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["priorityId"] = this.priorityId;
         data["priorityName"] = this.priorityName;
         return data;
     }
 }
 
 export interface IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 }
 
@@ -2620,7 +2620,7 @@ export interface ICreatePriorityCommand {
 }
 
 export class StatusDto implements IStatusDto {
-    id?: number;
+    statusId?: number;
     statusName?: string;
 
     constructor(data?: IStatusDto) {
@@ -2634,7 +2634,7 @@ export class StatusDto implements IStatusDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.statusId = _data["statusId"];
             this.statusName = _data["statusName"];
         }
     }
@@ -2648,14 +2648,14 @@ export class StatusDto implements IStatusDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["statusId"] = this.statusId;
         data["statusName"] = this.statusName;
         return data;
     }
 }
 
 export interface IStatusDto {
-    id?: number;
+    statusId?: number;
     statusName?: string;
 }
 

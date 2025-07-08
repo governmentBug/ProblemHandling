@@ -25,7 +25,8 @@ public static class DependencyInjection
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(connectionString).AddAsyncSeeding(sp);
+            options.UseSqlServer(connectionString);
+            //.AddAsyncSeeding(sp);
         });
 
         builder.Services.AddScoped<IBugHistoryService, BugHistoryService>();
