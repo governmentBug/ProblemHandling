@@ -1,27 +1,32 @@
+/* מכולת הטבלה */
 .bug-table-container {
   padding: 1rem;
   direction: rtl;
   font-family: "Arial", sans-serif;
 }
 
+/* כותרת */
 .table-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
+/* גלילה במובייל */
 .table-wrapper {
   overflow-x: auto;
   border: 1px solid #ddd;
   border-radius: 10px;
 }
 
+/* טבלה */
 .bug-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
 }
 
-.bug-table th, .bug-table td {
+.bug-table th,
+.bug-table td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #eee;
@@ -32,10 +37,17 @@
   font-weight: bold;
 }
 
-/* סטטוס */
+/* ======== סטטוסים ======== */
 .status-open {
-  background-color: #ffcccc;
-  color: #a00;
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.status-active {
+  background-color: #cce5ff;
+  color: #004085;
   padding: 4px 10px;
   border-radius: 8px;
 }
@@ -47,13 +59,6 @@
   border-radius: 8px;
 }
 
-.status-active {
-  background-color: #e7f3fe;
-  color: #31708f;
-  padding: 4px 10px;
-  border-radius: 8px;
-}
-
 .status-cancelled {
   background-color: #f8d7da;
   color: #721c24;
@@ -61,25 +66,28 @@
   border-radius: 8px;
 }
 
-/* עדיפות */
-.priority-1::after {
-  content: " *";
+.status-close-without-opening {
+  background-color: #ffe5b4;
+  color: #8a6d3b;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* ======== עדיפויות ======== */
+.priority-low {
+  color: #ffcc00;
+}
+.priority-medium {
   color: #ff9900;
 }
-.priority-2::after {
-  content: " **";
-  color: #ff6600;
-}
-.priority-3::after {
-  content: " ***";
+.priority-high {
   color: #ff3300;
 }
-.priority-4::after {
-  content: " ****";
+.priority-critical {
   color: #cc0000;
 }
 
-/* כפתור פרטים */
+/* כפתור "פרטים" אם תשתמשי */
 .details-btn {
   background-color: #007bff;
   color: white;
@@ -92,17 +100,7 @@
   background-color: #0056b3;
 }
 
-/* רספונסיביות */
-@media (max-width: 768px) {
-  .bug-table th, .bug-table td {
-    padding: 8px;
-    font-size: 0.85rem;
-  }
-  .table-title {
-    font-size: 1.2rem;
-  }
-}
-/* עיצוב עבור פקד הדפדוף */
+/* ======== דפדוף עמודים ======== */
 .pagination-controls {
   margin-top: 15px;
   text-align: center;
@@ -136,3 +134,55 @@
   vertical-align: middle;
 }
 
+/* ======== חיפוש וסינון ======== */
+.search-filter-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+}
+
+.search-filter-bar input[type="text"] {
+  padding: 8px 12px 8px 32px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+  background: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16a6.471 6.471 0 004.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 14a4 4 0 110-8 4 4 0 010 8z"/></svg>') no-repeat 8px center;
+  background-color: white;
+  background-size: 20px 20px;
+  font-size: 14px;
+}
+
+.search-filter-bar select,
+.search-filter-bar button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 14px;
+}
+
+/* ======== רספונסיביות ======== */
+@media (max-width: 768px) {
+  .bug-table th,
+  .bug-table td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .table-title {
+    font-size: 1.2rem;
+  }
+
+  .search-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filter-bar input[type="text"] {
+    width: 100%;
+  }
+}

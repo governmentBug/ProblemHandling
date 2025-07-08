@@ -9,10 +9,22 @@ import { Bug } from '../models/bug.model';
 export class BugService {
   constructor(public bugServer: HttpClient) { }
   public selectedBug: Bug | null = null;
-  
-  basicUrl: string = "https://localhost:5001/api/Bugs/all";
+
+  basicUrl: string = "https://localhost:5001/api/Bugs/";
 
   getAllBugs(): Observable<Array<Bug>> {
-    return this.bugServer.get<Array<Bug>>(this.basicUrl);
+    return this.bugServer.get<Array<Bug>>(`${this.basicUrl}all`);
   }
+  getCategories(): Observable<string[]> {
+    return this.bugServer.get<string[]>("https://localhost:5001/api/Category");
+  }
+
+  getStatuses(): Observable<string[]> {
+    return this.bugServer.get<string[]>("https://localhost:5001/api/Status");
+  }
+
+  getPriorities(): Observable<string[]> {
+    return this.bugServer.get<string[]>("https://localhost:5001/api/Priority");
+  }
+
 }

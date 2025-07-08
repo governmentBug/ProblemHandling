@@ -2432,7 +2432,7 @@ export interface ICreateCommentCommand {
 }
 
 export class PriorityDto implements IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 
     constructor(data?: IPriorityDto) {
@@ -2446,7 +2446,7 @@ export class PriorityDto implements IPriorityDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.priorityId = _data["priorityId"];
             this.priorityName = _data["priorityName"];
         }
     }
@@ -2460,14 +2460,14 @@ export class PriorityDto implements IPriorityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["priorityId"] = this.priorityId;
         data["priorityName"] = this.priorityName;
         return data;
     }
 }
 
 export interface IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 }
 

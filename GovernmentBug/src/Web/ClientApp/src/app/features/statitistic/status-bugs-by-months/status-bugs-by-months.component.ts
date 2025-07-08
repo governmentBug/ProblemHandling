@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ElementRef, ViewChild, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { MonthService, YearService } from '../dates.service';
-import { BugStatisticsClient, BugStatusByMonthsDTO, StatusBug } from 'src/app/web-api-client';
+import { BugStatisticsClient, BugStatusByMonthsDTO } from 'src/app/web-api-client';
 import { ChoosingDateComponent } from '../choosing-date/choosing-date.component';
 
 @Component({
@@ -32,7 +32,7 @@ export class StatusBugsByMonthsComponent implements AfterViewInit,OnInit {
   {
     this.bugStatisticsClient.getBugStatusByMonths(this.yearForStatus, this.monthForStatus).subscribe((data: BugStatusByMonthsDTO) => {
       this.byStatus = data;
-      this.statusCountMap.labels = Object.keys(StatusBug).filter(k => isNaN(Number(k)));
+      // this.statusCountMap.labels = Object.keys(StatusBug).filter(k => isNaN(Number(k)));
       this.statusCountMap['Active'] = this.byStatus.activeBugs;
       this.statusCountMap['Open'] = this.byStatus.openBugs;
       this.statusCountMap['Closed'] = this.byStatus.closedBugs;

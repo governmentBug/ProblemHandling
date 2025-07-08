@@ -24,7 +24,7 @@ namespace GovernmentBug.Application.Priority.Queries.GetPriorityById
                 .Where(p => p.Id == request.Id)
                 .Select(p => new PriorityDto
                 {
-                    Id = p.Id,
+                    PriorityId = p.Id,
                     PriorityName = p.PriorityName
                 })
                 .FirstOrDefaultAsync(cancellationToken);

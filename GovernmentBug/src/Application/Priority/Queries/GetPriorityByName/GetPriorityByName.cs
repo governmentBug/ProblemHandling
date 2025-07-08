@@ -26,7 +26,7 @@ public class GetPriorityByNameQueryHandler : IRequestHandler<GetPriorityByNameQu
                 .Where(p => p.PriorityName == request.Name)
                 .Select(p => new PriorityDto
                 {
-                    Id = p.Id,
+                    PriorityId = p.Id,
                     PriorityName = p.PriorityName
                 })
                 .FirstOrDefaultAsync(cancellationToken);

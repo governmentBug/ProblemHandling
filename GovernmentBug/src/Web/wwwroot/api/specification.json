@@ -1252,7 +1252,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "priorityId": {
             "type": "integer",
             "format": "int32"
           },
