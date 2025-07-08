@@ -8,13 +8,15 @@ namespace GovernmentBug.Application.Common.Models
 {
     public class CategoryDto
     {
-        public int CategoryId { get; set; }
+        public int Id { get; set; }
         public string CategoryName { get; set; } = string.Empty;
-        public class Mapping : Profile
+        private class Mapping : Profile
         {
             public Mapping()
             {
-                CreateMap<Domain.Entities.Category, CategoryDto>().ReverseMap();
+                CreateMap<Domain.Entities.Category, CategoryDto>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.CategoryId))
+                    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName));
             }
         }
     }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CommentsBugDto } from 'src/app/web-api-client';
@@ -17,9 +17,22 @@ export class CommentPanelComponent {
   @Output() commentAdded = new EventEmitter<string>();
   @Output() commentDeleted = new EventEmitter<number>();
   @Output() closePanel = new EventEmitter<void>();
+@ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
+  // ...
+
 
   adding = false;
   newComment: string = '';
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
 
   openAdd() {
     this.adding = true;
@@ -46,4 +59,11 @@ export class CommentPanelComponent {
   close() {
     this.closePanel.emit();
   }
+  handleEnter(event) {
+  if (!event.shiftKey) {
+    event.preventDefault(); 
+    this.saveComment();
+  }
+}
+
 }

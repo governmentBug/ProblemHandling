@@ -20,6 +20,7 @@ export interface IBugsClient {
     getBugDetialsByID(id: number): Observable<BugDetalsDto>;
     updateBug(id: number, command: UpdateBugCommand): Observable<void>;
     deleteBug(id: number): Observable<void>;
+    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void>;
     getAllBugDetials(): Observable<BugDetalsDto[]>;
 }
 
@@ -233,6 +234,61 @@ export class BugsClient implements IBugsClient {
         if (status === 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Bugs/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateBugAndClosed(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateBugAndClosed(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateBugAndClosed(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -762,6 +818,8 @@ export class CategoryClient implements ICategoryClient {
 export interface ICommentsClient {
     createComment(command: CreateCommentCommand): Observable<number>;
     getCommentsByBugID(id: number): Observable<CommentsBugDto[]>;
+    updateComment(id: number, command: UpdateCommentCommand): Observable<void>;
+    deleteComment(id: number): Observable<void>;
 }
 
 @Injectable({
@@ -880,6 +938,108 @@ export class CommentsClient implements ICommentsClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateComment(id: number, command: UpdateCommentCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Comments/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateComment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateComment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateComment(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteComment(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Comments/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteComment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteComment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDeleteComment(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2227,6 +2387,50 @@ export interface IUpdateBugCommand {
     reasonForClosure?: string;
 }
 
+export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
+    bugId?: number;
+    statusId?: number;
+    reasonForClosure?: string;
+
+    constructor(data?: IUpdateBugAndClosedCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugId = _data["bugId"];
+            this.statusId = _data["statusId"];
+            this.reasonForClosure = _data["reasonForClosure"];
+        }
+    }
+
+    static fromJS(data: any): UpdateBugAndClosedCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateBugAndClosedCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugId"] = this.bugId;
+        data["statusId"] = this.statusId;
+        data["reasonForClosure"] = this.reasonForClosure;
+        return data;
+    }
+}
+
+export interface IUpdateBugAndClosedCommand {
+    bugId?: number;
+    statusId?: number;
+    reasonForClosure?: string;
+}
+
 export class BugSummariesDto implements IBugSummariesDto {
     bugID?: number;
     title?: string | undefined;
@@ -2368,7 +2572,7 @@ export interface IBugStatusByMonthsDTO {
 }
 
 export class CategoryDto implements ICategoryDto {
-    categoryId?: number;
+    id?: number;
     categoryName?: string;
 
     constructor(data?: ICategoryDto) {
@@ -2382,7 +2586,7 @@ export class CategoryDto implements ICategoryDto {
 
     init(_data?: any) {
         if (_data) {
-            this.categoryId = _data["categoryId"];
+            this.id = _data["id"];
             this.categoryName = _data["categoryName"];
         }
     }
@@ -2396,14 +2600,14 @@ export class CategoryDto implements ICategoryDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["categoryId"] = this.categoryId;
+        data["id"] = this.id;
         data["categoryName"] = this.categoryName;
         return data;
     }
 }
 
 export interface ICategoryDto {
-    categoryId?: number;
+    id?: number;
     categoryName?: string;
 }
 
@@ -2447,7 +2651,6 @@ export class CreateCommentCommand implements ICreateCommentCommand {
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
-    commentDate?: Date;
 
     constructor(data?: ICreateCommentCommand) {
         if (data) {
@@ -2463,7 +2666,6 @@ export class CreateCommentCommand implements ICreateCommentCommand {
             this.bugID = _data["bugID"];
             this.commentText = _data["commentText"];
             this.commentedBy = _data["commentedBy"];
-            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
         }
     }
 
@@ -2479,7 +2681,6 @@ export class CreateCommentCommand implements ICreateCommentCommand {
         data["bugID"] = this.bugID;
         data["commentText"] = this.commentText;
         data["commentedBy"] = this.commentedBy;
-        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -2488,7 +2689,6 @@ export interface ICreateCommentCommand {
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
-    commentDate?: Date;
 }
 
 export class CommentsBugDto implements ICommentsBugDto {
@@ -2543,8 +2743,52 @@ export interface ICommentsBugDto {
     commentDate?: Date;
 }
 
+export class UpdateCommentCommand implements IUpdateCommentCommand {
+    commentId?: number;
+    commentText?: string;
+    commentedBy?: number;
+
+    constructor(data?: IUpdateCommentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.commentId = _data["commentId"];
+            this.commentText = _data["commentText"];
+            this.commentedBy = _data["commentedBy"];
+        }
+    }
+
+    static fromJS(data: any): UpdateCommentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCommentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["commentId"] = this.commentId;
+        data["commentText"] = this.commentText;
+        data["commentedBy"] = this.commentedBy;
+        return data;
+    }
+}
+
+export interface IUpdateCommentCommand {
+    commentId?: number;
+    commentText?: string;
+    commentedBy?: number;
+}
+
 export class PriorityDto implements IPriorityDto {
-    priorityId?: number;
+    id?: number;
     priorityName?: string;
 
     constructor(data?: IPriorityDto) {
@@ -2558,7 +2802,7 @@ export class PriorityDto implements IPriorityDto {
 
     init(_data?: any) {
         if (_data) {
-            this.priorityId = _data["priorityId"];
+            this.id = _data["id"];
             this.priorityName = _data["priorityName"];
         }
     }
@@ -2572,14 +2816,14 @@ export class PriorityDto implements IPriorityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["priorityId"] = this.priorityId;
+        data["id"] = this.id;
         data["priorityName"] = this.priorityName;
         return data;
     }
 }
 
 export interface IPriorityDto {
-    priorityId?: number;
+    id?: number;
     priorityName?: string;
 }
 
@@ -2620,7 +2864,7 @@ export interface ICreatePriorityCommand {
 }
 
 export class StatusDto implements IStatusDto {
-    statusId?: number;
+    id?: number;
     statusName?: string;
 
     constructor(data?: IStatusDto) {
@@ -2634,7 +2878,7 @@ export class StatusDto implements IStatusDto {
 
     init(_data?: any) {
         if (_data) {
-            this.statusId = _data["statusId"];
+            this.id = _data["id"];
             this.statusName = _data["statusName"];
         }
     }
@@ -2648,14 +2892,14 @@ export class StatusDto implements IStatusDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusId"] = this.statusId;
+        data["id"] = this.id;
         data["statusName"] = this.statusName;
         return data;
     }
 }
 
 export interface IStatusDto {
-    statusId?: number;
+    id?: number;
     statusName?: string;
 }
 

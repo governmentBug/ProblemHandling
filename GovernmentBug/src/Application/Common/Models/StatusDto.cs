@@ -8,13 +8,15 @@ namespace GovernmentBug.Application.Common.Models
 {
     public class StatusDto
     {
-        public int StatusId { get; set; }
+        public int Id { get; set; }
         public string StatusName { get; set; } = string.Empty;
-        public class Mapping : Profile
+        private class Mapping : AutoMapper.Profile
         {
             public Mapping()
             {
-                CreateMap<Domain.Entities.Status, StatusDto>().ReverseMap();
+                CreateMap<Domain.Entities.Status, StatusDto>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StatusId))
+                    .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.StatusName));
             }
         }
     }

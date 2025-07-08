@@ -1,5 +1,8 @@
 <div class="panel">
   <button class="close-btn" (click)="close()">❮</button>
+<div class="comments-list" #scrollContainer>
+  <div class="comment" *ngFor="let c of comments">
+    <!-- תוכן ההערה -->
 
   <div class="comments-list">
     <div class="comment" *ngFor="let c of comments">
@@ -8,16 +11,19 @@
       </div>
       <div class="text">
         <p>{{ c.commentText }}</p>
-        <small>נכתב ע"י {{ c }} בתאריך {{ c.commentDate | date:'dd/MM/yyyy HH:mm' }}</small>
+        <small>נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date:'dd/MM/yyyy HH:mm' }}</small>
       </div>
       <button *ngIf="isAuthorizedToComment" class="delete-btn" (click)="deleteComment(c.commentID)">🗑️</button>
     </div>
   </div>
-
+  </div>
+</div>
   <div class="add-section">
     <ng-container *ngIf="isAuthorizedToComment">
       <div *ngIf="adding" class="add-form">
-        <textarea [(ngModel)]="newComment" placeholder="כתוב כאן הערה..."></textarea>
+        <textarea [(ngModel)]="newComment" (keydown.enter)="handleEnter($event)" placeholder="כתוב כאן הערה...">
+</textarea>
+
         <div class="actions">
           <button (click)="saveComment()">שמור</button>
           <button (click)="cancelAdd()">ביטול</button>

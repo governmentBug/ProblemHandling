@@ -24,7 +24,8 @@ public class Bugs :EndpointGroupBase
             .MapGet(GetBugDetialsByID, "{id}")
             .MapPut(UpdateBug, "{id}")
             .MapDelete(DeleteBug, "{id}")
-            .MapGet(GetAllBugDetials, "all");
+            .MapGet(GetAllBugDetials, "all")
+            .MapPost(UpdateBugAndClosed, "{id}");
 
     }
 
@@ -44,6 +45,15 @@ public class Bugs :EndpointGroupBase
         return TypedResults.Ok(result);
     }
     public async Task<Results<NoContent, BadRequest>> UpdateBug(ISender sender, int id, UpdateBugCommand command)
+    {
+        if (id != command.BugId) return TypedResults.BadRequest();
+
+        await sender.Send(command);
+
+        return TypedResults.NoContent();
+    }
+
+    public async Task<Results<NoContent, BadRequest>> UpdateBugAndClosed(ISender sender, int id, UpdateBugAndClosedCommand command)
     {
         if (id != command.BugId) return TypedResults.BadRequest();
 
