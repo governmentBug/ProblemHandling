@@ -22,13 +22,12 @@
     <div *ngIf="adding" class="add-form">
       <textarea [(ngModel)]="newComment" (keydown.enter)="handleEnter($event)"
         placeholder="כתוב כאן הערה..."></textarea>
-
       <div class="actions">
         <button (click)="saveComment()">שמור</button>
         <button (click)="cancelAdd()">ביטול</button>
       </div>
     </div>
-
     <button *ngIf="!adding" class="add-btn" (click)="openAdd()">➕</button>
   </ng-container>
 </div>
+

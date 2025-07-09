@@ -117,7 +117,8 @@
   display: flex;
   gap: 10px;
 }
-
+.save-btn,
+.cancelEdit,
 .edit-btn,
 .delete-btn {
   padding: 8px 14px;
@@ -126,12 +127,19 @@
   cursor: pointer;
   font-weight: bold;
 }
+.save-btn{
+    background-color: #00ff08;
+  color: white;
+}
 
 .edit-btn {
   background-color: #005eff;
   color: white;
 }
-
+.cancelEdit{
+    background-color: #ffb73b;
+  color: white;
+}
 .delete-btn {
   background-color: #ff3b3b;
   color: white;

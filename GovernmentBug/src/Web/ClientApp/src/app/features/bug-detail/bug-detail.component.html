@@ -80,8 +80,8 @@
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>
-      <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">💾 שמור</button>
-      <button class="cancel-btn" *ngIf="isEditMode" (click)="cancelEdit()">❌ בטל</button>
+            <button class="save-btn" *ngIf="isEditMode " (click)="saveChanges()">Save</button>
+      <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">cancelEdit</button>
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
         Delete <i class="fa fa-trash"></i>
       </button>
