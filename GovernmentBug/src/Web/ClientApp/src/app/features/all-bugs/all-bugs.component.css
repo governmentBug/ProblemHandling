@@ -1,28 +1,85 @@
-/* מכולת הטבלה */
-.bug-table-container {
-  padding: 1rem;
-  direction: rtl;
-  font-family: "Arial", sans-serif;
+.bug-and-comments-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 98%;
+  margin: 0 auto;
 }
 
-/* כותרת */
+.comment-panel {
+  width: 25%;
+  height: 100vh;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.bug-table-container {
+  flex: 1;
+  transition: width 0.3s ease;
+
+  display: flex;
+  flex-direction: column; /* סידור אנכי */
+  align-items: flex-start; /* מיושר לשמאל */
+  direction: rtl; /* שומר על RTL לטבלה ותוכן */
+}
+
+.bug-table-container.narrow {
+  width: 70%;
+}
+
+.search-filter-bar {
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  direction: ltr; /* כדי שהחיפוש יהיה מימין לשמאל רגיל */
+  padding: 0 1rem;
+}
+
+.search-filter-bar input[type="text"] {
+  padding: 8px 12px 8px 32px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+  background: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16a6.471 6.471 0 004.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 14a4 4 0 110-8 4 4 0 010 8z"/></svg>') no-repeat 8px center;
+  background-color: white;
+  background-size: 20px 20px;
+  font-size: 14px;
+}
+
+.search-filter-bar select,
+.search-filter-bar button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 14px;
+}
+
 .table-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  align-self: flex-start; /* מיושר לשמאל */
 }
 
-/* גלילה במובייל */
 .table-wrapper {
   overflow-x: auto;
   border: 1px solid #ddd;
   border-radius: 10px;
+  width: 100%;
 }
 
-/* טבלה */
 .bug-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
+  direction: rtl; /* טקסט בטבלה ב-RTL */
 }
 
 .bug-table th,
@@ -37,57 +94,57 @@
   font-weight: bold;
 }
 
-/* ======== סטטוסים ======== */
 .status-open {
-  background-color: #d1ecf1;
-  color: #0c5460;
-  padding: 4px 10px;
-  border-radius: 8px;
-}
-
-.status-active {
-  background-color: #cce5ff;
-  color: #004085;
+  background-color: #FDEDED;
+  color: #D32F2F;
   padding: 4px 10px;
   border-radius: 8px;
 }
 
 .status-close {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #E8F5E9;
+  color: #388E3C;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.status-active {
+  background-color: #E3F2FD;
+  color: #1565C0;
   padding: 4px 10px;
   border-radius: 8px;
 }
 
 .status-cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #F3E5F5;
+  color: #7B1FA2;
   padding: 4px 10px;
   border-radius: 8px;
 }
 
 .status-close-without-opening {
-  background-color: #ffe5b4;
-  color: #8a6d3b;
+  background-color: #FFF3E0;
+  color: #F57C00;
   padding: 4px 10px;
   border-radius: 8px;
 }
 
-/* ======== עדיפויות ======== */
 .priority-low {
   color: #ffcc00;
 }
+
 .priority-medium {
   color: #ff9900;
 }
+
 .priority-high {
   color: #ff3300;
 }
+
 .priority-critical {
   color: #cc0000;
 }
 
-/* כפתור "פרטים" אם תשתמשי */
 .details-btn {
   background-color: #007bff;
   color: white;
@@ -96,15 +153,16 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
 .details-btn:hover {
   background-color: #0056b3;
 }
 
-/* ======== דפדוף עמודים ======== */
 .pagination-controls {
   margin-top: 15px;
   text-align: center;
   user-select: none;
+  width: 100%;
 }
 
 .pagination-controls button {
@@ -134,38 +192,6 @@
   vertical-align: middle;
 }
 
-/* ======== חיפוש וסינון ======== */
-.search-filter-bar {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding: 0 1rem;
-}
-
-.search-filter-bar input[type="text"] {
-  padding: 8px 12px 8px 32px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  width: 300px;
-  background: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16a6.471 6.471 0 004.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 14a4 4 0 110-8 4 4 0 010 8z"/></svg>') no-repeat 8px center;
-  background-color: white;
-  background-size: 20px 20px;
-  font-size: 14px;
-}
-
-.search-filter-bar select,
-.search-filter-bar button {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  background-color: white;
-  font-size: 14px;
-}
-
-/* ======== רספונסיביות ======== */
 @media (max-width: 768px) {
   .bug-table th,
   .bug-table td {
@@ -185,4 +211,30 @@
   .search-filter-bar input[type="text"] {
     width: 100%;
   }
+}
+
+.bug-detail-row td {
+  background-color: #f9f9f9;
+  padding: 0;
+}
+
+.toggle-arrow {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.toggle-arrow i {
+  font-size: 20px;
+  color: #444;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  transform: rotate(0deg);
+}
+
+.toggle-arrow i.rotated {
+  transform: rotate(-90deg);
 }

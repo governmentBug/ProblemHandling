@@ -3,17 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Bug } from 'src/app/models/bug.model';
 import { BugService } from 'src/app/services/bug.service';
+import { CommentService } from 'src/app/services/Comment.service';
+import { ActivatedRoute } from '@angular/router';
+import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
+import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
+import { StateService } from 'src/app/services/state.service';
+import { CommentPanelComponent } from '../comment-panel/comment-panel.component';
 
 @Component({
   selector: 'app-all-bugs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent],
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })
 export class AllBugsComponent implements OnInit {
-  allBugs: Bug[] = [];
-  bugs: Bug[] = [];
+  allBugs: BugDetalsDto[] = [];
+  bugs: BugDetalsDto[] = [];
 
   currentPage = 1;
   pageSize = 15;
@@ -22,11 +28,13 @@ export class AllBugsComponent implements OnInit {
   selectedFilterValue: string = '';
 
   searchText: string = '';
-
+  selectedBug: BugDetalsDto
+  comments: CommentsBugDto[] = [];
+  isCommentsPanelOpen = true;
+  isAuthorizedToComment = true;
   filterOptions: { [key: string]: string[] } = {};
 
-  constructor(private bugService: BugService) { }
-
+  constructor(private bugService: BugService, private stateService: StateService, public CommentService: CommentService, public route: ActivatedRoute) { }
   ngOnInit(): void {
     this.loadAllBugs();
     this.loadFilterOptions();
@@ -43,18 +51,20 @@ export class AllBugsComponent implements OnInit {
   }
 
   loadFilterOptions() {
-    this.bugService.getStatuses().subscribe({
-      next: statuses => this.filterOptions['statusName'] = statuses,
+    this.stateService.StatusClient.getAllStatuses().subscribe({
+      next: statuses => {
+        this.filterOptions['statusName'] = statuses.map(s => s.statusName);
+      },
       error: err => console.error('שגיאה בסטטוסים:', err)
     });
 
-    this.bugService.getPriorities().subscribe({
-      next: priorities => this.filterOptions['priorityName'] = priorities,
+    this.stateService.PriorityClient.getAllPriorities().subscribe({
+      next: priorities => this.filterOptions['priorityName'] = priorities.map(p => p.priorityName),
       error: err => console.error('שגיאה בעדיפויות:', err)
     });
 
-    this.bugService.getCategories().subscribe({
-      next: categories => this.filterOptions['categoryName'] = categories,
+    this.stateService.CategoryClient.getAllCategories().subscribe({
+      next: categories => this.filterOptions['categoryName'] = categories.map(c => c.categoryName),
       error: err => console.error('שגיאה בקטגוריות:', err)
     });
   }
@@ -147,4 +157,89 @@ export class AllBugsComponent implements OnInit {
       this.applyFilterAndPage();
     }
   }
+
+  getBugById(id: number) {
+    this.bugService.getBugById(id).subscribe({
+      next: updatedBug => {
+        this.selectedBug = updatedBug;
+
+        // עדכון הבאג ברשימה allBugs
+        const indexAll = this.allBugs.findIndex(b => b.bugId === updatedBug.bugId);
+        if (indexAll !== -1) {
+          this.allBugs[indexAll] = updatedBug;
+        }
+
+        // עדכון הבאג ברשימת הבאגים המוצגת (bugs)
+        const indexFiltered = this.bugs.findIndex(b => b.bugId === updatedBug.bugId);
+        if (indexFiltered !== -1) {
+          this.bugs[indexFiltered] = updatedBug;
+        }
+
+        this.loadComments();
+      },
+      error: err => {
+        console.error('שגיאה בשליפת באג:', err);
+      }
+    });
+  }
+  onBugChanged() {
+    if (this.selectedBug) {
+      this.getBugById(this.selectedBug.bugId);
+    }
+  }
+
+  loadComments(): void {
+    this.CommentService.getCommentsByBugId(this.selectedBug.bugId).subscribe({
+      next: (res) => {
+        this.comments = res
+        console.log(res);
+
+      },
+      error: (err) => console.error('שגיאה בשליפת תגובות', err)
+    });
+  }
+
+  addComment(commentText: string): void {
+    this.CommentService.addComment(this.selectedBug.bugId, commentText).subscribe({
+      next: () => this.loadComments(),
+      error: (err) => console.error('שגיאה בהוספת תגובה', err)
+    });
+  }
+
+  checkPermissions(): void {
+    // this.bugService.getCurrentUserPermissions(this.bug.bugId).subscribe(res => {
+    //   this.isAuthorizedToComment = res.canComment;
+    // });
+  }
+
+  openCommentsPanel(): void {
+    this.isCommentsPanelOpen = true;
+  }
+
+  onCommentAdded(content: string): void {
+    this.addComment(content)
+  }
+
+  onCommentDeleted(commentId: number): void {
+    this.CommentService.deleteComment(commentId).subscribe(() => {
+      this.loadComments();
+    });
+  }
+
+  onClosePanel(): void {
+    this.isCommentsPanelOpen = false;
+  }
+  toggleBug(bug: BugDetalsDto, event: MouseEvent): void {
+    event.stopPropagation();
+
+    if (this.selectedBug?.bugId === bug.bugId) {
+      this.selectedBug = null;
+      this.isCommentsPanelOpen = false;
+    } else {
+      this.selectedBug = bug;
+      this.getBugById(bug.bugId); 
+      this.isCommentsPanelOpen = true;
+    }
+  }
 }
+
