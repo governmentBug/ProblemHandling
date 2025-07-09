@@ -1,4 +1,6 @@
-<div style="margin-bottom: 15px; text-align: center;">
+<div class="search-filter-bar">
+    <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
+        placeholder="חיפוש לפי כותרת, תקציר, שם יוצר או תאריך" />
     <select (change)="onSelectChange($event)" [value]="selectedFilterValue || selectedFilterType">
         <option *ngIf="!selectedFilterType" value="">-- בחר סינון --</option>
         <option *ngIf="!selectedFilterType" value="statusName">סטטוס</option>
@@ -7,11 +9,12 @@
 
         <ng-container *ngIf="selectedFilterType">
             <option value="">-- בחר ערך --</option>
-            <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val">{{ val }}</option>
+            <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val[selectedFilterType]">
+                {{ val[selectedFilterType] }}
+            </option>
         </ng-container>
     </select>
-
-    <button *ngIf="selectedFilterType" (click)="resetFilter()" style="margin-left: 10px;">
+    <button *ngIf="selectedFilterType" (click)="resetFilter()">
         אפס / שנה סינון
     </button>
 </div>
@@ -49,11 +52,12 @@
                     </td>
                     <td>
                         <span [ngClass]="{
-              'status-open': bug.statusName === 'Open',
-              'status-close': bug.statusName === 'Closed',
-              'status-active': bug.statusName === 'Active',
-              'status-cancelled': bug.statusName === 'Cancelled'
-            }">
+  'status-open': bug.statusName === 'Open',
+  'status-active': bug.statusName === 'Active',
+  'status-close': bug.statusName === 'Close',
+  'status-cancelled': bug.statusName === 'Cancelled',
+  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+}">
                             {{ bug.statusName }}
                         </span>
                     </td>
@@ -64,9 +68,9 @@
         </table>
     </div>
 
-    <div class="pagination-controls" style="margin-top: 15px; text-align: center;">
+    <div class="pagination-controls">
         <button (click)="prevPage()" [disabled]="currentPage === 1">הקודם</button>
-        <span style="margin: 0 10px;">עמוד {{ currentPage }}</span>
+        <span>עמוד {{ currentPage }}</span>
         <button (click)="nextPage()">הבא</button>
     </div>
 </div>
