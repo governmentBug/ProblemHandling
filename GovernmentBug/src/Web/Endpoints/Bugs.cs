@@ -1,8 +1,10 @@
 using GovernmentBug.Application.Bugs.Command.CreateBug;
 using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
+using GovernmentBug.Application.Bugs.Queries.BugComparison;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;
 using GovernmentBug.Application.Bugs.Queries.GetBugsList;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth;
 using GovernmentBug.Application.Common.Models;
 using GovernmentBug.Application.TodoItems.Commands.CreateTodoItem;
@@ -24,7 +26,8 @@ public class Bugs :EndpointGroupBase
             .MapGet(GetBugDetialsByID, "{id}")
             .MapPut(UpdateBug, "{id}")
             .MapDelete(DeleteBug, "{id}")
-            .MapGet(GetAllBugDetials, "all");
+            .MapGet(GetAllBugDetials, "all")
+            .MapGet(IdentifyingRecurringBugs, "compare");
 
     }
 
@@ -65,6 +68,10 @@ public class Bugs :EndpointGroupBase
         var result = await sender.Send(new GetBugDetails());
         return TypedResults.Ok(result);
     }
-
+    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender, BugComprisonDto bugComprisonDto)
+    {
+        var result = await sender.Send(new BugComparisonQuery(bugComprisonDto));
+        return result;
+    }
 }
 

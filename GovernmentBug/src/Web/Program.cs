@@ -1,9 +1,9 @@
 ﻿using GovernmentBug.Application.Common.Mappings;
 using GovernmentBug.Infrastructure.Data;
+using GovernmentBug.Web.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🟡 שלב 1: הגדרת מדיניות CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
@@ -11,17 +11,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://localhost:44447") // כתובת Angular
+            policy.WithOrigins("https://localhost:44447") 
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
 });
 
-// הוספת שירותים
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
+
 
 var app = builder.Build();
 
@@ -39,7 +39,6 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// 🟢 שלב 2: הפעלת המדיניות
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseSwaggerUi(settings =>
