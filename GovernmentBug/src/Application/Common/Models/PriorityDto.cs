@@ -8,13 +8,13 @@ namespace GovernmentBug.Application.Common.Models
 {
     public class PriorityDto
     {
-        public int Id { get; set; }
+        public int PriorityId { get; set; }
         public string PriorityName { get; set; } = string.Empty;
         private class Mapping : Profile
         {
             public Mapping()
             {
-                CreateMap<Domain.Entities.Priority, PriorityDto>();
+                CreateMap<Domain.Entities.Priority, PriorityDto>().ReverseMap();
             }
         }
     }

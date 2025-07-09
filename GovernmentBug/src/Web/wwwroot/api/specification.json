@@ -193,6 +193,41 @@
         }
       }
     },
+    "/api/Bugs/compare": {
+      "get": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "IdentifyingRecurringBugs",
+        "requestBody": {
+          "x-name": "bugComprisonQuery",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BugComparisonQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugSummariesDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/totalopenbugs": {
       "get": {
         "tags": [
@@ -1291,23 +1326,6 @@
           }
         }
       },
-      "UpdateBugAndClosedCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "bugId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "statusId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "reasonForClosure": {
-            "type": "string"
-          }
-        }
-      },
       "BugSummariesDto": {
         "type": "object",
         "additionalProperties": false,
@@ -1329,6 +1347,64 @@
             "format": "int32"
           },
           "statusName": {
+            "type": "string"
+          }
+        }
+      },
+      "BugComparisonQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentDto"
+            }
+          }
+        }
+      },
+      "AttachmentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "attachmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateBugAndClosedCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reasonForClosure": {
             "type": "string"
           }
         }
@@ -1367,21 +1443,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "totalBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "openBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "closedBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "activeBugs": {
-            "type": "integer",
-            "format": "int32"
+          "countByStatuses": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1389,7 +1456,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1470,7 +1537,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "priorityId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1492,7 +1559,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "statusId": {
             "type": "integer",
             "format": "int32"
           },

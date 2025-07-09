@@ -30,12 +30,10 @@ export class StatusBugsByMonthsComponent implements AfterViewInit,OnInit {
   };
   loadData()
   {
-    this.bugStatisticsClient.getBugStatusByMonths(this.yearForStatus, this.monthForStatus).subscribe((data: BugStatusByMonthsDTO) => {
+    this.bugStatisticsClient.getBugStatusByMonths
+    (this.yearForStatus, this.monthForStatus)
+    .subscribe((data: BugStatusByMonthsDTO) => {
       this.byStatus = data;
-      // this.statusCountMap.labels = Object.keys(StatusBug).filter(k => isNaN(Number(k)));
-      // this.statusCountMap['Active'] = this.byStatus.activeBugs;
-      // this.statusCountMap['Open'] = this.byStatus.openBugs;
-      // this.statusCountMap['Closed'] = this.byStatus.closedBugs;
     });
   }
   onMonthForStatusChange(month: number) {
@@ -56,6 +54,13 @@ export class StatusBugsByMonthsComponent implements AfterViewInit,OnInit {
           backgroundColor: ['#42a5f5', '#66bb6a', '#ffa726', '#ef5350'],
         }]
       },
+      // data: {
+      //   labels: Object.keys(this.byStatus.countByStatuses || {}),
+      //   datasets: [{
+      //     data: Object.values(this.byStatus.countByStatuses || {}),
+      //     backgroundColor: ['#42a5f5', '#66bb6a', '#ffa726', '#ef5350'],
+      //   }]
+      // },
       options: {
         responsive: true,
         plugins: {

@@ -22,6 +22,7 @@ export interface IBugsClient {
     deleteBug(id: number): Observable<void>;
     updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void>;
     getAllBugDetials(): Observable<BugDetalsDto[]>;
+    identifyingRecurringBugs(bugComprisonQuery: BugComparisonQuery): Observable<BugSummariesDto[]>;
 }
 
 @Injectable({
@@ -352,6 +353,65 @@ export class BugsClient implements IBugsClient {
         }
         return _observableOf(null as any);
     }
+
+    identifyingRecurringBugs(bugComprisonQuery: BugComparisonQuery): Observable<BugSummariesDto[]> {
+        let url_ = this.baseUrl + "/api/Bugs/compare";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(bugComprisonQuery);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processIdentifyingRecurringBugs(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processIdentifyingRecurringBugs(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BugSummariesDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BugSummariesDto[]>;
+        }));
+    }
+
+    protected processIdentifyingRecurringBugs(response: HttpResponseBase): Observable<BugSummariesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(BugSummariesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface IBugStatisticsClient {
@@ -469,6 +529,54 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/openbugsbypriority";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOpenBugsByPriority(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOpenBugsByPriority(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<OpenBugsByPriorityDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<OpenBugsByPriorityDto>;
+        }));
+    }
+
+    protected processGetOpenBugsByPriority(response: HttpResponseBase): Observable<OpenBugsByPriorityDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OpenBugsByPriorityDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2424,50 +2532,6 @@ export interface IUpdateBugCommand {
     statusId?: number;
 }
 
-export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
-    bugId?: number;
-    statusId?: number;
-    reasonForClosure?: string;
-
-    constructor(data?: IUpdateBugAndClosedCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.bugId = _data["bugId"];
-            this.statusId = _data["statusId"];
-            this.reasonForClosure = _data["reasonForClosure"];
-        }
-    }
-
-    static fromJS(data: any): UpdateBugAndClosedCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateBugAndClosedCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["bugId"] = this.bugId;
-        data["statusId"] = this.statusId;
-        data["reasonForClosure"] = this.reasonForClosure;
-        return data;
-    }
-}
-
-export interface IUpdateBugAndClosedCommand {
-    bugId?: number;
-    statusId?: number;
-    reasonForClosure?: string;
-}
-
 export class BugSummariesDto implements IBugSummariesDto {
     bugID?: number;
     title?: string | undefined;
@@ -2512,6 +2576,213 @@ export class BugSummariesDto implements IBugSummariesDto {
     }
 }
 
+export interface IBugSummariesDto {
+    bugID?: number;
+    title?: string | undefined;
+    createdDate?: Date;
+    statusId?: number;
+    statusName?: string;
+}
+
+export class BugComparisonQuery implements IBugComparisonQuery {
+    title?: string;
+    description?: string;
+    attachments?: AttachmentDto[];
+
+    constructor(data?: IBugComparisonQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(AttachmentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BugComparisonQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new BugComparisonQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["description"] = this.description;
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBugComparisonQuery {
+    title?: string;
+    description?: string;
+    attachments?: AttachmentDto[];
+}
+
+export class AttachmentDto implements IAttachmentDto {
+    attachmentId?: number;
+    bugId?: number;
+    fileName?: string;
+    fileType?: string;
+    filePath?: string;
+
+    constructor(data?: IAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.attachmentId = _data["attachmentId"];
+            this.bugId = _data["bugId"];
+            this.fileName = _data["fileName"];
+            this.fileType = _data["fileType"];
+            this.filePath = _data["filePath"];
+        }
+    }
+
+    static fromJS(data: any): AttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["attachmentId"] = this.attachmentId;
+        data["bugId"] = this.bugId;
+        data["fileName"] = this.fileName;
+        data["fileType"] = this.fileType;
+        data["filePath"] = this.filePath;
+        return data;
+    }
+}
+
+export interface IAttachmentDto {
+    attachmentId?: number;
+    bugId?: number;
+    fileName?: string;
+    fileType?: string;
+    filePath?: string;
+}
+
+export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
+    bugId?: number;
+    statusId?: number;
+    reasonForClosure?: string;
+
+    constructor(data?: IUpdateBugAndClosedCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugId = _data["bugId"];
+            this.statusId = _data["statusId"];
+            this.reasonForClosure = _data["reasonForClosure"];
+        }
+    }
+
+    static fromJS(data: any): UpdateBugAndClosedCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateBugAndClosedCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugId"] = this.bugId;
+        data["statusId"] = this.statusId;
+        data["reasonForClosure"] = this.reasonForClosure;
+        return data;
+    }
+}
+
+export interface IUpdateBugAndClosedCommand {
+    bugId?: number;
+    statusId?: number;
+    reasonForClosure?: string;
+}
+
+export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {
+    properties?: { [key: string]: number; };
+
+    constructor(data?: IOpenBugsByPriorityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (_data["properties"]) {
+                this.properties = {} as any;
+                for (let key in _data["properties"]) {
+                    if (_data["properties"].hasOwnProperty(key))
+                        (<any>this.properties)![key] = _data["properties"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): OpenBugsByPriorityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OpenBugsByPriorityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.properties) {
+            data["properties"] = {};
+            for (let key in this.properties) {
+                if (this.properties.hasOwnProperty(key))
+                    (<any>data["properties"])[key] = (<any>this.properties)[key];
+            }
+        }
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["statusId"] = this.statusId;
+        data["statusName"] = this.statusName;
+        return data;
+    }
+}
+
+export interface IOpenBugsByPriorityDto {
+    properties?: { [key: string]: number; };
 export interface IBugSummariesDto {
     bugID?: number;
     title?: string | undefined;
@@ -2617,10 +2888,7 @@ export interface IByMonthsDto {
 }
 
 export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 
     constructor(data?: IBugStatusByMonthsDTO) {
         if (data) {
@@ -2633,10 +2901,13 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.totalBugs = _data["totalBugs"];
-            this.openBugs = _data["openBugs"];
-            this.closedBugs = _data["closedBugs"];
-            this.activeBugs = _data["activeBugs"];
+            if (_data["countByStatuses"]) {
+                this.countByStatuses = {} as any;
+                for (let key in _data["countByStatuses"]) {
+                    if (_data["countByStatuses"].hasOwnProperty(key))
+                        (<any>this.countByStatuses)![key] = _data["countByStatuses"][key];
+                }
+            }
         }
     }
 
@@ -2649,23 +2920,23 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalBugs"] = this.totalBugs;
-        data["openBugs"] = this.openBugs;
-        data["closedBugs"] = this.closedBugs;
-        data["activeBugs"] = this.activeBugs;
+        if (this.countByStatuses) {
+            data["countByStatuses"] = {};
+            for (let key in this.countByStatuses) {
+                if (this.countByStatuses.hasOwnProperty(key))
+                    (<any>data["countByStatuses"])[key] = (<any>this.countByStatuses)[key];
+            }
+        }
         return data;
     }
 }
 
 export interface IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 }
 
 export class CategoryDto implements ICategoryDto {
-    id?: number;
+    categoryId?: number;
     categoryName?: string;
 
     constructor(data?: ICategoryDto) {
@@ -2679,7 +2950,7 @@ export class CategoryDto implements ICategoryDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.categoryId = _data["categoryId"];
             this.categoryName = _data["categoryName"];
         }
     }
@@ -2693,14 +2964,14 @@ export class CategoryDto implements ICategoryDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["categoryId"] = this.categoryId;
         data["categoryName"] = this.categoryName;
         return data;
     }
 }
 
 export interface ICategoryDto {
-    id?: number;
+    categoryId?: number;
     categoryName?: string;
 }
 
@@ -2881,7 +3152,7 @@ export interface IUpdateCommentCommand {
 }
 
 export class PriorityDto implements IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 
     constructor(data?: IPriorityDto) {
@@ -2895,7 +3166,7 @@ export class PriorityDto implements IPriorityDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.priorityId = _data["priorityId"];
             this.priorityName = _data["priorityName"];
         }
     }
@@ -2909,14 +3180,14 @@ export class PriorityDto implements IPriorityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["priorityId"] = this.priorityId;
         data["priorityName"] = this.priorityName;
         return data;
     }
 }
 
 export interface IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 }
 
@@ -2957,7 +3228,7 @@ export interface ICreatePriorityCommand {
 }
 
 export class StatusDto implements IStatusDto {
-    id?: number;
+    statusId?: number;
     statusName?: string;
 
     constructor(data?: IStatusDto) {
@@ -2971,7 +3242,7 @@ export class StatusDto implements IStatusDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.statusId = _data["statusId"];
             this.statusName = _data["statusName"];
         }
     }
@@ -2985,14 +3256,14 @@ export class StatusDto implements IStatusDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["statusId"] = this.statusId;
         data["statusName"] = this.statusName;
         return data;
     }
 }
 
 export interface IStatusDto {
-    id?: number;
+    statusId?: number;
     statusName?: string;
 }
 

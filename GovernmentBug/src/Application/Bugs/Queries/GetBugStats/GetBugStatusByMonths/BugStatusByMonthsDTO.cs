@@ -9,11 +9,23 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonth
 {
         public class BugStatusByMonthsDTO
         {
-        public int TotalBugs { get; set; }
-        public int OpenBugs { get; set; }
-        public int ClosedBugs { get; set; }
-        public int ActiveBugs { get; set; }
-    }
+            public Dictionary<string,int> CountByStatuses { get; set; }
+            public BugStatusByMonthsDTO()
+            {
+               CountByStatuses = new Dictionary<string, int>();
+            }
+            public void Add(string name, int value)
+            {
+                if (CountByStatuses.ContainsKey(name))
+                {
+                    CountByStatuses[name] += value;
+                }
+                else
+                {
+                    CountByStatuses[name] = value;
+                }
+            }
+        }
 
-    }
+}
 
