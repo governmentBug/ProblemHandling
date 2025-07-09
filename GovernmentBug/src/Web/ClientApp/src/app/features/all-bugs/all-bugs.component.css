@@ -102,3 +102,37 @@
     font-size: 1.2rem;
   }
 }
+/* עיצוב עבור פקד הדפדוף */
+.pagination-controls {
+  margin-top: 15px;
+  text-align: center;
+  user-select: none;
+}
+
+.pagination-controls button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin: 0 5px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-controls button:disabled {
+  background-color: #cccccc;
+  cursor: default;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.pagination-controls span {
+  font-weight: bold;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+

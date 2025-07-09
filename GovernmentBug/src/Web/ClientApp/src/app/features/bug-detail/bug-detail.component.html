@@ -14,16 +14,16 @@
     <div class="middle-section">
       <div class="priority-category-row">
         <div class="field">
-          <div class="label">PRIORITY</div>
-          <!-- <div class="value">{{ bug.priorityId ? bug.priorityId : 'לא צויין' }}</div> -->
+          <div class="label">PRIORITY </div>
+          <div class="value">{{ bug.priorityId ? bug.priorityName : 'לא צויין' }}</div>
         </div>
         <div class="field">
           <div class="label">CATEGORY</div>
-          <!-- <div class="value">{{ bug.categoryId ? bug.categoryId : 'לא צויין' }}</div> -->
+          <div class="value">{{ bug.categoryId ? bug.categoryName : 'לא צויין' }}</div>
         </div>
       </div>
       <div class="status-section">
-        <!-- <div>סטטוס: {{ bug.statusId }}</div> -->
+        <div>סטטוס: {{ bug.statusName }}</div>
         <div>מטופל ע"י: {{ bug.createdByUserFullName }}</div>
       </div>
     </div>
@@ -39,23 +39,30 @@
       <span>image.jpeg 📎</span>
     </div>
     <div class="bug-actions">
-      <button class="edit-btn">edit</button>
-      <button class="delete-btn" (click)="openPopup()">delete 🗑️</button>
+    <button class="edit-btn" *ngIf="AuthorizedUser">edit</button>
+      <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">delete 🗑️</button>
     </div>
   </div>
 </div>
 
 <!-- פופאפ -->
-<div class="popup-overlay" *ngIf="showPopup">
-  <div class="popup-content">
-    <h3>סגירת הבאג</h3>
-    <label for="reason">אנא פרט מדוע אתה סוגר את הבאג:</label>
-    <textarea id="reason" [(ngModel)]="closeReason" rows="4"></textarea>
-    
+<div class="popup-overlay" *ngIf="showPopup" (click)="onOverlayClick($event)">
+  <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
+    <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>
+
+    <textarea
+      [(ngModel)]="closeReason"
+      rows="4"
+      placeholder="נימוק/הערה לסגירת הבאג"
+    ></textarea>
+
     <div class="popup-actions">
-      <button (click)="submitClose()">שלח</button>
-      <button class="cancel-btn" (click)="closePopup()">ביטול</button>
+      <button class="delete-btn" (click)="submitClose()">
+        Delete <i class="fa fa-trash"></i>
+      </button>
     </div>
   </div>
 </div>
+
+  
 

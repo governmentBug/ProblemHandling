@@ -1220,21 +1220,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "totalBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "openBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "closedBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "activeBugs": {
-            "type": "integer",
-            "format": "int32"
+          "countByStatuses": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
