@@ -29,7 +29,7 @@ public class Bugs :EndpointGroupBase
             .MapDelete(DeleteBug, "{id}")
             .MapGet(GetAllBugDetials, "all")
             .MapGet(IdentifyingRecurringBugs, "compare")
-            .MapPost(UpdateBugAndClosed, "{id}");
+            .MapPut(UpdateBugAndClosed, "updateToClose/{id}");
 
     }
 

@@ -26,8 +26,7 @@
           <div class="value">
             <ng-container *ngIf="!isEditMode">{{ bug.priorityName || 'לא צויין' }}</ng-container>
             <select *ngIf="isEditMode" [(ngModel)]="editedBug.priorityId" class="edit-inline select-box">
-              <option *ngFor="let p of priorities" [value]="p.priorityId
-              ">{{ p.priorityName }}</option>
+              <option *ngFor="let p of priorities" [value]="p.priorityId">{{ p.priorityName }}</option>
             </select>
           </div>
         </div>
@@ -51,9 +50,16 @@
             }">
             {{ bug.statusName }}
           </span>
-          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId">
-            <option *ngFor="let s of statuses" [value]="s.statusId" [ngClass]="getStatusClassById(editedBug.statusId)">
-              {{ s.statusName }}
+          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" >
+            <option *ngFor="let s of statuses" [value]="s.statusId">
+              <span [ngClass]="{
+                'status-open': s.statusName === 'Open',
+                'status-close': s.statusName === 'Close',
+                'status-active': s.statusName === 'Active',
+                'status-cancelled': s.statusName === 'Cancelled'
+              }">
+                {{ s.statusName }}
+              </span>
             </option>
           </select>
         </div>

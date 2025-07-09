@@ -1,8 +1,8 @@
 .bug-container {
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1px solid black;
   padding: 16px;
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0 auto;
   background: #fff;
   font-family: sans-serif;
@@ -62,6 +62,7 @@
   font-size: 14px;
   margin-bottom: 4px;
 }
+
 .value {
   background: #eee;
   padding: 6px;
@@ -75,6 +76,7 @@
   line-height: 1.8;
   padding-top: 6px;
 }
+
 .status-open {
   background-color: #ffcccc;
   color: #a00;
@@ -149,6 +151,7 @@
   font-size: 14px;
   color: #333;
 }
+
 /* popap for delete bug */
 .popup-overlay {
   position: fixed;
@@ -213,6 +216,7 @@
 .delete-btn i {
   font-size: 16px;
 }
+
 .edit-field {
   all: unset;
   direction: rtl;
@@ -220,6 +224,7 @@
   text-align: center;
   width: 100%;
 }
+
 .edit-inline {
   all: unset;
   direction: rtl;
@@ -236,6 +241,7 @@ textarea.edit-inline {
   text-align: right;
   padding: 0;
 }
+
 .select-box {
   background: transparent;
   border: none;
@@ -253,4 +259,3 @@ textarea.edit-inline {
   outline: none;
   box-shadow: 0 0 0 2px #005eff4d;
 }
-
