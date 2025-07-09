@@ -34,10 +34,6 @@ export class StatusBugsByMonthsComponent implements AfterViewInit,OnInit {
     (this.yearForStatus, this.monthForStatus)
     .subscribe((data: BugStatusByMonthsDTO) => {
       this.byStatus = data;
-      // this.statusCountMap.labels = Object.keys(StatusBug).filter(k => isNaN(Number(k)));
-      this.statusCountMap['Active'] = this.byStatus.activeBugs;
-      this.statusCountMap['Open'] = this.byStatus.openBugs;
-      this.statusCountMap['Closed'] = this.byStatus.closedBugs;
     });
   }
   onMonthForStatusChange(month: number) {

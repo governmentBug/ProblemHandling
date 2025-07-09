@@ -13,6 +13,7 @@ using GovernmentBug.Application.TodoItems.Commands.UpdateTodoItem;
 using GovernmentBug.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using GovernmentBug.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -78,9 +79,9 @@ public class Bugs :EndpointGroupBase
         var result = await sender.Send(new GetBugDetails());
         return TypedResults.Ok(result);
     }
-    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender, BugComprisonDto bugComprisonDto)
+    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender,[FromBody] BugComparisonQuery bugComprisonQuery)
     {
-        var result = await sender.Send(new BugComparisonQuery(bugComprisonDto));
+        var result = await sender.Send(bugComprisonQuery);
         return result;
     }
 }
