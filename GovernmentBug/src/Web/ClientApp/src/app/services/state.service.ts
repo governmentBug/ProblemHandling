@@ -13,7 +13,6 @@ export class StateService {
   constructor( public PriorityClient: PriorityClient,public StatusClient: StatusClient,public CategoryClient: CategoryClient,) { 
 
   }
-    // שליפת כל הבאגים
   getAllPriority() {
     return this.PriorityClient.getAllPriorities();
   }
