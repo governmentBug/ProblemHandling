@@ -2512,10 +2512,7 @@ export interface IByMonthsDto {
 }
 
 export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 
     constructor(data?: IBugStatusByMonthsDTO) {
         if (data) {
@@ -2528,10 +2525,13 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     init(_data?: any) {
         if (_data) {
-            this.totalBugs = _data["totalBugs"];
-            this.openBugs = _data["openBugs"];
-            this.closedBugs = _data["closedBugs"];
-            this.activeBugs = _data["activeBugs"];
+            if (_data["countByStatuses"]) {
+                this.countByStatuses = {} as any;
+                for (let key in _data["countByStatuses"]) {
+                    if (_data["countByStatuses"].hasOwnProperty(key))
+                        (<any>this.countByStatuses)![key] = _data["countByStatuses"][key];
+                }
+            }
         }
     }
 
@@ -2544,19 +2544,19 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalBugs"] = this.totalBugs;
-        data["openBugs"] = this.openBugs;
-        data["closedBugs"] = this.closedBugs;
-        data["activeBugs"] = this.activeBugs;
+        if (this.countByStatuses) {
+            data["countByStatuses"] = {};
+            for (let key in this.countByStatuses) {
+                if (this.countByStatuses.hasOwnProperty(key))
+                    (<any>data["countByStatuses"])[key] = (<any>this.countByStatuses)[key];
+            }
+        }
         return data;
     }
 }
 
 export interface IBugStatusByMonthsDTO {
-    totalBugs?: number;
-    openBugs?: number;
-    closedBugs?: number;
-    activeBugs?: number;
+    countByStatuses?: { [key: string]: number; };
 }
 
 export class CategoryDto implements ICategoryDto {
@@ -2776,7 +2776,7 @@ export interface IUpdateCommentCommand {
 }
 
 export class PriorityDto implements IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 
     constructor(data?: IPriorityDto) {
@@ -2790,7 +2790,7 @@ export class PriorityDto implements IPriorityDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
+            this.priorityId = _data["priorityId"];
             this.priorityName = _data["priorityName"];
         }
     }
@@ -2804,14 +2804,14 @@ export class PriorityDto implements IPriorityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
+        data["priorityId"] = this.priorityId;
         data["priorityName"] = this.priorityName;
         return data;
     }
 }
 
 export interface IPriorityDto {
-    id?: number;
+    priorityId?: number;
     priorityName?: string;
 }
 

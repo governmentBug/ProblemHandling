@@ -492,6 +492,7 @@
             }
           }
         }
+
       }
     },
     "/api/Comments/{id}": {
@@ -555,6 +556,7 @@
             "description": ""
           }
         }
+
       }
     },
     "/api/Priority": {
@@ -1327,21 +1329,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "totalBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "openBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "closedBugs": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "activeBugs": {
-            "type": "integer",
-            "format": "int32"
+          "countByStatuses": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1349,7 +1342,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "categoryId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1409,11 +1402,23 @@
           }
         }
       },
+
       "UpdateCommentCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "commentId": {
+
+      "CommentsBugDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commentID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugID": {
+
             "type": "integer",
             "format": "int32"
           },
@@ -1423,6 +1428,12 @@
           "commentedBy": {
             "type": "integer",
             "format": "int32"
+
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
+
           }
         }
       },
@@ -1430,7 +1441,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "priorityId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1452,7 +1463,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "statusId": {
             "type": "integer",
             "format": "int32"
           },

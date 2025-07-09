@@ -1,5 +1,4 @@
 
-
 export class Bug {
   constructor(
     public bugId: number,
@@ -10,6 +9,6 @@ export class Bug {
     public categoryName: string,
     public assignedToUserFullName: string,
     public createdByUserFullName: string,
-    public createdDate: Date,
+    public createdDate: Date
   ) {}
 }
