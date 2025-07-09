@@ -12,12 +12,16 @@ using CoenM.ImageHash;
 using CoenM.ImageHash.HashAlgorithms;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using GovernmentBug.Application.Common.Models;
 
 
 namespace GovernmentBug.Application.Bugs.Queries.BugComparison
 {
-    public record class BugComparisonQuery(BugComprisonDto NewBug):IRequest<List<BugSummariesDto>>
+    public record class BugComparisonQuery():IRequest<List<BugSummariesDto>>
     {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public List<AttachmentDto> Attachments { get; set; } = new();
     }
     public class BugComparisonQueryHandler : IRequestHandler<BugComparisonQuery, List<BugSummariesDto>>
     {
@@ -41,8 +45,8 @@ namespace GovernmentBug.Application.Bugs.Queries.BugComparison
             var similarBugs = new List<BugSummariesDto>();
             foreach (var bug in exitingBugs)
             {
-                int titleScore = Fuzz.Ratio(request.NewBug.Title, bug.Title);
-                int descriptionScore = Fuzz.Ratio(request.NewBug.Description, bug.Description);
+                int titleScore = Fuzz.Ratio(request.Title, bug.Title);
+                int descriptionScore = Fuzz.Ratio(request.Description, bug.Description);
                 if (titleScore >= _bugComparisonConfig.FuzzyMatchThreshold &&
                     descriptionScore >= _bugComparisonConfig.FuzzyMatchThreshold)
                 {

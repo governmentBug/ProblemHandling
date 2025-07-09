@@ -193,6 +193,41 @@
         }
       }
     },
+    "/api/Bugs/compare": {
+      "get": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "IdentifyingRecurringBugs",
+        "requestBody": {
+          "x-name": "bugComprisonQuery",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BugComparisonQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugSummariesDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/totalopenbugs": {
       "get": {
         "tags": [
@@ -230,6 +265,26 @@
                   "items": {
                     "$ref": "#/components/schemas/BugSummariesDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BugStatistics/openbugsbypriority": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetOpenBugsByPriority",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenBugsByPriorityDto"
                 }
               }
             }
@@ -492,7 +547,6 @@
             }
           }
         }
-
       }
     },
     "/api/Comments/{id}": {
@@ -556,7 +610,6 @@
             "description": ""
           }
         }
-
       }
     },
     "/api/Priority": {
@@ -1273,6 +1326,72 @@
           }
         }
       },
+      "BugSummariesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          }
+        }
+      },
+      "BugComparisonQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentDto"
+            }
+          }
+        }
+      },
+      "AttachmentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "attachmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateBugAndClosedCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -1290,21 +1409,16 @@
           }
         }
       },
-      "BugSummariesDto": {
+      "OpenBugsByPriorityDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "bugID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "priortyId": {
-            "type": "string",
-            "nullable": true
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1402,23 +1516,11 @@
           }
         }
       },
-
       "UpdateCommentCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "commentId": {
-
-      "CommentsBugDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "commentID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "bugID": {
-
             "type": "integer",
             "format": "int32"
           },
@@ -1428,12 +1530,6 @@
           "commentedBy": {
             "type": "integer",
             "format": "int32"
-
-          },
-          "commentDate": {
-            "type": "string",
-            "format": "date-time"
-
           }
         }
       },
