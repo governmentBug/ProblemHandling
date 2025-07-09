@@ -7,7 +7,6 @@ namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
     public record UpdateBugAndClosedCommand : IRequest
     {
         public int BugId { get; set; }
-        public int StatusId{ get; set; }
         public string ReasonForClosure { get; set; } = string.Empty;
     }
 
@@ -32,7 +31,10 @@ namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
             Guard.Against.NotFound(request.BugId, bugToUpdate);
 
             bugToUpdate.ReasonForClosure=request.ReasonForClosure;
-            bugToUpdate.StatusId=request.StatusId;
+            bugToUpdate.StatusId=await _context.Statuses.
+                Where(s=>s.StatusName=="Close")
+                .Select(s=>s.StatusId)
+                .FirstOrDefaultAsync();
 
             var histories = _bugHistoryService.CreateHistory(bugToUpdate, bugToUpdate, bugToUpdate.CreatedByUserId);
     
