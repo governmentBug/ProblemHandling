@@ -4,6 +4,7 @@ using GovernmentBug.Domain.Constants;
 using GovernmentBug.Infrastructure.Data;
 using GovernmentBug.Infrastructure.Data.Interceptors;
 using GovernmentBug.Infrastructure.Identity;
+using GovernmentBug.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -21,7 +22,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-
+        builder.Services.AddScoped<IMailService, MailService>();
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());

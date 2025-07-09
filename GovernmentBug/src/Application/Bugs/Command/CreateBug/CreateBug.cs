@@ -30,10 +30,12 @@ public record CreateBugCommand : IRequest<int>
 public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMailService _mailService;
 
-    public CreateBugCommandHandler(IApplicationDbContext context)
+    public CreateBugCommandHandler(IApplicationDbContext context,IMailService mailService)
     {
         _context = context;
+        _mailService = mailService;
     }
 
     public async Task<int> Handle(CreateBugCommand request, CancellationToken cancellationToken)
@@ -53,7 +55,10 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 
         entity.AddDomainEvent(new TodoBugCreatedEvent(entity));
 
+
         _context.Bugs.Add(entity);
+        await _mailService.SendBugCreatedEmailAsync(entity, cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return entity.BugID;
