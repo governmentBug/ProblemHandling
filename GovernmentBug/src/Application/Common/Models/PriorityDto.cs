@@ -14,7 +14,7 @@ namespace GovernmentBug.Application.Common.Models
         {
             public Mapping()
             {
-                CreateMap<Domain.Entities.Priority, PriorityDto>();
+                CreateMap<Domain.Entities.Priority, PriorityDto>().ReverseMap();
             }
         }
     }
