@@ -3,6 +3,7 @@ using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;
 using GovernmentBug.Application.Comments.Commands.CreateComment;
+using GovernmentBug.Application.Comments.Commands.DeleteComment;
 using GovernmentBug.Application.Comments.Commands.UpdateComment;
 using GovernmentBug.Application.Comments.Queires.GetCommentsBug;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -48,7 +49,7 @@ public class Comments: EndpointGroupBase
 
     public async Task<NoContent> DeleteComment(ISender sender, int id)
     {
-        await sender.Send(new DeleteBugCommand(id));
+        await sender.Send(new DeleteCommentCommand(id));
 
         return TypedResults.NoContent();
     }

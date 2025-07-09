@@ -21,7 +21,7 @@ export class DemoComponent implements OnInit {
   isCommentsPanelOpen = true;
   isAuthorizedToComment = true;
   ngOnInit() {
-    this.getBugById(2)
+    this.getBugById(3)
   }
 
   getBugById(id: number) {
@@ -38,12 +38,15 @@ export class DemoComponent implements OnInit {
   }
   onBugChanged() {
     if (this.selectedBug) {
-      this.getBugById(2);
+      this.getBugById(3);
     }
   }
   loadComments(): void {
     this.CommentService.getCommentsByBugId(this.selectedBug.bugId).subscribe({
-      next: (res) => this.comments = res,
+      next: (res) => {this.comments = res
+        console.log(res);
+        
+      },
       error: (err) => console.error('שגיאה בשליפת תגובות', err)
     });
   }
@@ -70,9 +73,9 @@ export class DemoComponent implements OnInit {
   }
 
   onCommentDeleted(commentId: number): void {
-    // this.bugService.deleteComment(commentId).subscribe(() => {
-    //   this.loadComments();
-    // });
+    this.CommentService.deleteComment(commentId).subscribe(() => {
+      this.loadComments();
+    });
   }
 
   onClosePanel(): void {

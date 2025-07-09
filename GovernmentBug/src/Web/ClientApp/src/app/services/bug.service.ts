@@ -5,6 +5,7 @@ import { Bug } from '../models/bug.model';
 import { CommentService } from './Comment.service';
 import { BugDetalsDto, BugsClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,11 +31,20 @@ export class BugService {
   getBugById(id: number): Observable<BugDetalsDto> {
     return this.BugClient.getBugDetialsByID(id);
   }
-  updateBug(id: number, command: UpdateBugCommand): Observable<void> {
+  updateBug(id: number, update: any): Observable<void> {
+    const command=new UpdateBugCommand() 
+    command.bugId=id
+    command.categoryId=update.categoryId
+    command.description=update.description
+    command.priorityId=update.priorityId
+    command.title=update.title
+    command.statusId=update.statusId
+    //בהמשך נטפל במי שמטפל בבאג
+    console.log(command);
+    
     return this.BugClient.updateBug(id, command);
   }
 
-  // עדכון באג וסגירה
   updateBugAndClosed(id: number, reasonForClosure: string): Observable<void> {
     const command = new UpdateBugAndClosedCommand();
     command.bugId = id;
@@ -42,14 +52,7 @@ export class BugService {
     command.statusId=6
     return this.BugClient.updateBugAndClosed(id, command);
   }
-
-  // מחיקת באג
   deleteBug(id: number): Observable<void> {
     return this.BugClient.deleteBug(id);
   }
-
-  deleteComment() { }
-  addComment() { }
-  getCurrentUserPermissions() { }
-  getCommentsByBugId() { }
 }

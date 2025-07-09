@@ -1,39 +1,91 @@
-
-import { Component,EventEmitter,Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
-import { CommentPanelComponent } from "../comment-panel/comment-panel.component";
-import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
-
-
+import { BugDetalsDto, CategoryDto, PriorityDto, StatusDto } from 'src/app/web-api-client';
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
-    selector: 'app-bug-detail',
-    standalone:true,
-    imports: [CommonModule, FormsModule, CommentPanelComponent],
-    templateUrl: './bug-detail.component.html',
-    styleUrl: './bug-detail.component.css'
+  selector: 'app-bug-detail',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './bug-detail.component.html',
+  styleUrl: './bug-detail.component.css'
 })
 export class BugDetailComponent implements OnInit {
   @Input() bug!: BugDetalsDto;
-  @Input() AuthorizedUser!:boolean;
-   @Output() bugChanged = new EventEmitter<any>();  // אירוע ליידע על שינוי
+  @Input() AuthorizedUser!: boolean;
+  @Output() bugChanged = new EventEmitter<any>();
+
   showPopup = false;
   closeReason = '';
-  comments: CommentsBugDto[] = [];
-  isCommentsPanelOpen = false;
-  isAuthorizedToComment = false;
+  isEditMode = false;
+  editedBug: BugDetalsDto = new BugDetalsDto();
 
-  constructor(private bugService:BugService,private route:ActivatedRoute) {    
-  }
+  // רשימות לבחירה
+  priorities: Array<PriorityDto>
+  categories: Array<CategoryDto>
+  statuses: Array<StatusDto>
+  constructor(private bugService: BugService, public stateService: StateService, private route: ActivatedRoute) { }
+
   ngOnInit(): void {
-    this.loadComments();
-    this.checkPermissions();
-    
+    this.initState()
   }
-  
+  initState() {
+    this.stateService.getAllPriority().subscribe(
+      res => {
+        this.priorities = res
+      },
+      err => console.error(err)
+    )
+    this.stateService.getAllCategories().subscribe(
+      res => {
+        this.categories = res
+      },
+      err => console.error(err)
+    )
+    this.stateService.getAllStatuses().subscribe(
+      res => {
+        this.statuses = res
+      },
+      err => console.error(err)
+    )
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['bug'] && this.bug) {
+      this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
+    }
+  }
+
+  toggleEdit() {
+    this.isEditMode = true;
+  }
+
+  cancelEdit() {
+    this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
+    this.isEditMode = false;
+  }
+
+  saveChanges() {
+    const dtoToSend = {
+      title: this.editedBug.title,
+      description: this.editedBug.description,
+      categoryId: this.editedBug.categoryId,
+      priorityId: this.editedBug.priorityId,
+      statusId: this.editedBug.statusId
+    };
+    this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
+      {
+        next: () => {
+          this.bugChanged.emit();
+          this.isEditMode = false;
+        },
+        error: err => console.error(err)
+      }
+    )
+  }
+
   openPopup() {
     this.showPopup = true;
   }
@@ -48,24 +100,13 @@ export class BugDetailComponent implements OnInit {
       alert('אנא מלא סיבה לסגירה');
       return;
     }
-    this.bugService.updateBugAndClosed(this.bug.bugId,this.closeReason).subscribe({
+    this.bugService.updateBugAndClosed(this.bug.bugId, this.closeReason).subscribe({
       next: () => {
-        this.bugChanged.emit(null);  
+        this.bugChanged.emit(null);
         this.closePopup();
       },
       error: err => console.error(err)
-    }
-      
-    )
-    console.log('סיבה לסגירת הבאג:', this.closeReason);
-
-    // סגירת הפופאפ
-    this.closePopup();
-  }
-  loadComments(): void {
-    // this.bugService.getCommentsByBugId(this.bug.bugId).subscribe((comments) => {
-    //   this.comments = comments;
-    // });
+    });
   }
 
   checkPermissions(): void {
@@ -74,27 +115,7 @@ export class BugDetailComponent implements OnInit {
     // });
   }
 
-  openCommentsPanel(): void {
-    this.isCommentsPanelOpen = true;
-  }
-
-  onCommentAdded(content: string): void {
-    this.bugService.addComment()
-  }
-
-  onCommentDeleted(commentId: number): void {
-    // this.bugService.deleteComment(commentId).subscribe(() => {
-    //   this.loadComments();
-    // });
-  }
-
-  onClosePanel(): void {
-    this.isCommentsPanelOpen = false;
-  }
   onOverlayClick(event: MouseEvent): void {
-  this.closePopup();
+    this.closePopup();
+  }
 }
-
-}
-
-

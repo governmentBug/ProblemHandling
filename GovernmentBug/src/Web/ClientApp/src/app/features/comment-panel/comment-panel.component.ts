@@ -17,11 +17,7 @@ export class CommentPanelComponent {
   @Output() commentAdded = new EventEmitter<string>();
   @Output() commentDeleted = new EventEmitter<number>();
   @Output() closePanel = new EventEmitter<void>();
-@ViewChild('scrollContainer') scrollContainer!: ElementRef;
-
-  // ...
-
-
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   adding = false;
   newComment: string = '';
   ngAfterViewChecked() {
@@ -60,10 +56,10 @@ export class CommentPanelComponent {
     this.closePanel.emit();
   }
   handleEnter(event) {
-  if (!event.shiftKey) {
-    event.preventDefault(); 
-    this.saveComment();
+    if (!event.shiftKey) {
+      event.preventDefault();
+      this.saveComment();
+    }
   }
-}
 
 }

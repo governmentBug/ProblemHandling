@@ -130,6 +130,44 @@
             "description": ""
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "UpdateBugAndClosed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBugAndClosedCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/Bugs/all": {
@@ -454,6 +492,71 @@
             }
           }
         }
+
+      }
+    },
+    "/api/Comments/{id}": {
+      "put": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "UpdateComment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "DeleteComment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+
       }
     },
     "/api/Priority": {
@@ -1164,13 +1267,19 @@
             "type": "integer",
             "format": "int32"
           },
-          "createdByUserId": {
+          "statusId": {
             "type": "integer",
             "format": "int32"
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
+          }
+        }
+      },
+      "UpdateBugAndClosedCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
           },
           "statusId": {
             "type": "integer",
@@ -1265,10 +1374,6 @@
           "commentedBy": {
             "type": "integer",
             "format": "int32"
-          },
-          "commentDate": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },
@@ -1294,6 +1399,41 @@
           "commentDate": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+
+      "UpdateCommentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commentId": {
+
+      "CommentsBugDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commentID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugID": {
+
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
+
           }
         }
       },

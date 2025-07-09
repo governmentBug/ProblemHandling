@@ -27,10 +27,7 @@ constructor(private commentServer: CommentsClient) { }
     // בינתיים סתם מוחזר true
     return true;
   }
-
-  // מחיקת תגובה – אם יש לך מתודה לכך מהשרת, תכתבי אותה כאן:
   deleteComment(commentId: number): Observable<any> {
-    throw new Error("לא ממומש עדיין – יש לך endpoint למחיקה?");
+     return this.commentServer.deleteComment(commentId);
   }
-
 }
