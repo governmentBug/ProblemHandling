@@ -1,12 +1,8 @@
 <div class="bug-and-comments-wrapper">
   <!-- פאנל התגובות בצד שמאל -->
   <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
-    <app-comment-panel 
-      [comments]="comments"
-      [isAuthorizedToComment]="isAuthorizedToComment"
-      (commentAdded)="onCommentAdded($event)"
-      (commentDeleted)="onCommentDeleted($event)"
-      (closePanel)="onClosePanel()">
+    <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
+      (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)" (closePanel)="onClosePanel()">
     </app-comment-panel>
   </div>
 
@@ -23,7 +19,7 @@
 
         <ng-container *ngIf="selectedFilterType">
           <option value="">-- בחר ערך --</option>
-          <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val[selectedFilterType]">
+          <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val">
             {{ val }}
           </option>
         </ng-container>
@@ -86,9 +82,7 @@
 
             <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
               <td colspan="8">
-                <app-bug-detail
-                  [bug]="selectedBug"
-                  [AuthorizedUser]="isAuthorizedToComment"
+                <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
                   (bugChanged)="onBugChanged()">
                 </app-bug-detail>
               </td>
