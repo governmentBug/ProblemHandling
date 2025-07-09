@@ -6,7 +6,23 @@ using System.Threading.Tasks;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority
 {
-    class OpenBugsByPriorityDto
+    public class OpenBugsByPriorityDto
     {
+        public Dictionary<string,int> Properties { get; set; }
+        public OpenBugsByPriorityDto()
+        {
+            Properties = new Dictionary<string, int>();
+        }
+        public void AddProperty(string priorityName, int count)
+        {
+            if (Properties.ContainsKey(priorityName))
+            {
+                Properties[priorityName] += count;
+            }
+            else
+            {
+                Properties[priorityName] = count;
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths;
 using Microsoft.AspNetCore.Http.HttpResults;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetTotalOpenBugs;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -14,6 +15,7 @@ public class BugStatistics : EndpointGroupBase
         app.MapGroup(this)
          .MapGet(TotalOpenBugs, "totalopenbugs")
          .MapGet(GetBugs)
+         .MapGet(GetOpenBugsByPriority, "openbugsbypriority")
          .MapGet(GetBugsByMonths, "bymonth/{year}")
          .MapGet(GetBugStatusByMonths, "openbugsstatus/{month}/{year}");
 
@@ -37,6 +39,11 @@ public class BugStatistics : EndpointGroupBase
     public async Task<BugStatusByMonthsDTO> GetBugStatusByMonths(ISender sender, int month, int year)
     {
         var result = await sender.Send(new GetBugsStatsQuery(month,year));
+        return result;
+    }
+    public async Task<OpenBugsByPriorityDto> GetOpenBugsByPriority(ISender sender)
+    {
+        var result = await sender.Send(new GetOpenBugsByPriorityQuery());
         return result;
     }
 }
