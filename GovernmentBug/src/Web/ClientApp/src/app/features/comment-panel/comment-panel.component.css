@@ -1,19 +1,15 @@
 .panel {
   position: relative;
+  left: 0;
   top: 0;
-  left: 0; /* <-- במקום right */
-  width: 300px;
-  height: 100%;
+  width: 320px;
+  height: 100vh;
   background: #f4f4f4;
-  border-right: 1px solid #ccc; /* כי זה בשמאל */
   display: flex;
   flex-direction: column;
-  padding: 10px;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  overflow-y: auto;
 }
-
 
 .close-btn {
   background: none;
@@ -21,34 +17,35 @@
   font-size: 1.4rem;
   align-self: flex-start;
   cursor: pointer;
+  margin: 10px;
 }
 
 .comments-list {
   flex-grow: 1;
   overflow-y: auto;
-  margin-top: 10px;
+  padding: 0 10px;
+  direction: rtl;
 }
 
 .comments-list::-webkit-scrollbar {
-  display: none;                 /* Chrome, Safari, Edge */
+  display: none;
 }
-
-
 
 .comment {
   display: flex;
   align-items: flex-start;
   background: white;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  gap: 8px;
 }
 
 .icon img {
   width: 32px;
   height: 32px;
-  margin-left: 8px;
+  border-radius: 50%;
 }
 
 .text {
@@ -66,11 +63,12 @@
   border: none;
   color: red;
   cursor: pointer;
+  align-self: flex-start;
 }
 
 .add-section {
   border-top: 1px solid #ccc;
-  padding-top: 8px;
+  padding: 10px;
 }
 
 .add-form textarea {
@@ -89,13 +87,16 @@
 }
 
 .add-btn {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   background: linear-gradient(to right, purple, red);
   color: white;
-  font-size: 20px;
+  font-size: 26px;
   border: none;
   cursor: pointer;
-  align-self: center;
+  margin: 10px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
