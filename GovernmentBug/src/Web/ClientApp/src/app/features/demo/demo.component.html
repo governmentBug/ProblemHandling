@@ -1,3 +1,14 @@
-<p>demo works!</p>
-<!--רק לנסות לזכור למחוק..-->
-<app-bug-detail [bug]="selectedBug"></app-bug-detail>
+<div class="demo-container">
+  <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
+    (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)"
+    (closePanel)="openCommentsPanel()"></app-comment-panel>
+  <div class="main-panel">
+    <app-bug-detail 
+   (bugChanged)="onBugChanged()"
+    [bug]="selectedBug" 
+    [AuthorizedUser]="isAuthorizedToComment"
+    ></app-bug-detail>
+  </div>
+
+
+</div>

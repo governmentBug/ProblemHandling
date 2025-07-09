@@ -16,7 +16,6 @@ public record CreateCommentCommand : IRequest<int>
     public int BugID { get; init; }             
     public string CommentText { get; init; } = string.Empty; 
     public int CommentedBy { get; init; }       
-    public DateTime CommentDate { get; init; }  
 }
 
 public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
@@ -39,7 +38,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
             BugID = request.BugID,
             CommentText = request.CommentText,
             CommentedBy = request.CommentedBy,
-            CommentDate = request.CommentDate
+            CommentDate = DateTime.Now,
         };
 
         entity.AddDomainEvent(new TodoCommentCreated(entity));

@@ -14,9 +14,11 @@ namespace GovernmentBug.Application.Priority.Queries.GetPriorityById
     public class GetPriorityByIdQueryHandler : IRequestHandler<GetPriorityByIdQuery, PriorityDto>
     {
         private readonly IApplicationDbContext _context;
-        public GetPriorityByIdQueryHandler(IApplicationDbContext dbContext)
+        private readonly IMapper _mapper;
+        public GetPriorityByIdQueryHandler(IApplicationDbContext dbContext,IMapper mapper)
         {
             _context = dbContext;
+            _mapper = mapper;
         }
         public async Task<PriorityDto> Handle(GetPriorityByIdQuery request, CancellationToken cancellationToken)
         {
@@ -27,12 +29,13 @@ namespace GovernmentBug.Application.Priority.Queries.GetPriorityById
                     PriorityId = p.Id,
                     PriorityName = p.PriorityName
                 })
+
                 .FirstOrDefaultAsync(cancellationToken);
             if (priority == null)
             {
                 throw new InvalidOperationException($"Priority with ID '{request.Id}' was not found.");
             }
-            return priority;
+            return _mapper.Map<PriorityDto>(priority);
         }
     }
 }

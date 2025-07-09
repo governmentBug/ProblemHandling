@@ -1,0 +1,101 @@
+.panel {
+  position: relative;
+  top: 0;
+  left: 0; /* <-- במקום right */
+  width: 300px;
+  height: 100%;
+  background: #f4f4f4;
+  border-right: 1px solid #ccc; /* כי זה בשמאל */
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.comments-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.comments-list::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari, Edge */
+}
+
+
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  background: white;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.icon img {
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+}
+
+.text {
+  flex: 1;
+  font-size: 14px;
+}
+
+.text small {
+  color: gray;
+  font-size: 12px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
+.add-section {
+  border-top: 1px solid #ccc;
+  padding-top: 8px;
+}
+
+.add-form textarea {
+  width: 100%;
+  min-height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px;
+  resize: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.add-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(to right, purple, red);
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+}

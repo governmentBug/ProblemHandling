@@ -11,5 +11,6 @@ public class Priority : BaseAuditableEntity
     [Key]
     public int PriorityId { get; set; }
     [StringLength(50)]
-    public string PriorityName {  get; set; }=string.Empty;  
+    public string PriorityName {  get; set; }=string.Empty;
+    public ICollection<Bug> Bugs { get; set; } = new List<Bug>();
 }
