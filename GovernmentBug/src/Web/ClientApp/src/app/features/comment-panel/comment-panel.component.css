@@ -71,6 +71,7 @@
 .add-section {
   border-top: 1px solid #ccc;
   padding-top: 8px;
+  align-items: center;
 }
 
 .add-form textarea {
