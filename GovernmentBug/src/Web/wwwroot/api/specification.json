@@ -237,6 +237,26 @@
         }
       }
     },
+    "/api/BugStatistics/openbugsbypriority": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetOpenBugsByPriority",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenBugsByPriorityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/bymonth/{year}": {
       "get": {
         "tags": [
@@ -1300,9 +1320,29 @@
             "type": "string",
             "nullable": true
           },
-          "priortyId": {
+          "createdDate": {
             "type": "string",
-            "nullable": true
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          }
+        }
+      },
+      "OpenBugsByPriorityDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },

@@ -26,7 +26,7 @@
           <div class="value">
             <ng-container *ngIf="!isEditMode">{{ bug.priorityName || 'לא צויין' }}</ng-container>
             <select *ngIf="isEditMode" [(ngModel)]="editedBug.priorityId" class="edit-inline select-box">
-              <option *ngFor="let p of priorities" [value]="p.id">{{ p.priorityName }}</option>
+              <option *ngFor="let p of priorities" [value]="p.priorityId">{{ p.priorityName }}</option>
             </select>
           </div>
         </div>

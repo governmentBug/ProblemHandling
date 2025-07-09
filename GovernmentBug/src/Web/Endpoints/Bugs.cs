@@ -25,6 +25,7 @@ public class Bugs :EndpointGroupBase
             .MapPut(UpdateBug, "{id}")
             .MapDelete(DeleteBug, "{id}")
             .MapGet(GetAllBugDetials, "all")
+         //   .MapGet(IdentifyingRecurringBugs, "compare")
             .MapPost(UpdateBugAndClosed, "{id}");
 
     }
@@ -75,6 +76,10 @@ public class Bugs :EndpointGroupBase
         var result = await sender.Send(new GetBugDetails());
         return TypedResults.Ok(result);
     }
-
+    //public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender, BugComprisonDto bugComprisonDto)
+    //{
+    //    var result = await sender.Send(new BugComparisonQuery(bugComprisonDto));
+    //    return result;
+    //}
 }
 
