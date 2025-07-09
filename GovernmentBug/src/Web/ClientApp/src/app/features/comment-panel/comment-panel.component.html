@@ -6,12 +6,14 @@
       <div class="icon">
         <img src="assets/user-icon.png" alt="user" />
       </div>
+
       <div class="text">
         <p>{{ c.commentText }}</p>
         <small>
-          נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
+          נכתב ע"י {{ c.commentedBy }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
         </small>
       </div>
+
       <button *ngIf="isAuthorizedToComment" class="delete-btn" (click)="deleteComment(c.commentID)">
         <i class="fa fa-trash"></i>
       </button>
@@ -28,12 +30,13 @@
         ></textarea>
 
         <div class="actions">
-          <button (click)="saveComment()">שמור</button>
-          <button (click)="cancelAdd()">ביטול</button>
+          <button class="btn-save" (click)="saveComment()">שמור</button>
+          <button class="btn-cancel" (click)="cancelAdd()">ביטול</button>
         </div>
       </div>
 
-      <button *ngIf="!adding" class="add-btn" (click)="openAdd()">➕</button>
+      <!-- ✅ כפתור עגול במרכז -->
+      <button *ngIf="!adding" class="add-btn" (click)="openAdd()">+</button>
     </ng-container>
   </div>
 </div>

@@ -120,7 +120,7 @@ export class BugDetailComponent implements OnInit {
   }
 
   getStatusClassById(id: number): string {
-    const status = this.statuses?.find(s => s.id === id);
+    const status = this.statuses?.find(s => s.statusId === id);
     if (!status) return '';
     switch (status.statusName) {
       case 'Open': return 'status-open';

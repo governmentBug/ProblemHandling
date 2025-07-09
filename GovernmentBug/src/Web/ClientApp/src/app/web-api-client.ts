@@ -587,54 +587,6 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto> {
-        let url_ = this.baseUrl + "/api/BugStatistics/openbugsbypriority";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetOpenBugsByPriority(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetOpenBugsByPriority(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<OpenBugsByPriorityDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<OpenBugsByPriorityDto>;
-        }));
-    }
-
-    protected processGetOpenBugsByPriority(response: HttpResponseBase): Observable<OpenBugsByPriorityDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OpenBugsByPriorityDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
     getBugsByMonths(year: number): Observable<ByMonthsDto> {
         let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}";
         if (year === undefined || year === null)
@@ -2730,65 +2682,6 @@ export interface IUpdateBugAndClosedCommand {
     bugId?: number;
     statusId?: number;
     reasonForClosure?: string;
-}
-
-export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {
-    properties?: { [key: string]: number; };
-
-    constructor(data?: IOpenBugsByPriorityDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (_data["properties"]) {
-                this.properties = {} as any;
-                for (let key in _data["properties"]) {
-                    if (_data["properties"].hasOwnProperty(key))
-                        (<any>this.properties)![key] = _data["properties"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): OpenBugsByPriorityDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new OpenBugsByPriorityDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (this.properties) {
-            data["properties"] = {};
-            for (let key in this.properties) {
-                if (this.properties.hasOwnProperty(key))
-                    (<any>data["properties"])[key] = (<any>this.properties)[key];
-            }
-        }
-        data["bugID"] = this.bugID;
-        data["title"] = this.title;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["statusId"] = this.statusId;
-        data["statusName"] = this.statusName;
-        return data;
-    }
-}
-
-export interface IOpenBugsByPriorityDto {
-    properties?: { [key: string]: number; };
-export interface IBugSummariesDto {
-    bugID?: number;
-    title?: string | undefined;
-    createdDate?: Date;
-    statusId?: number;
-    statusName?: string;
 }
 
 export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {
