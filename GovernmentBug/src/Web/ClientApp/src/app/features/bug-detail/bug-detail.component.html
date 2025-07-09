@@ -50,16 +50,9 @@
             }">
             {{ bug.statusName }}
           </span>
-          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" >
-            <option *ngFor="let s of statuses" [value]="s.id">
-              <span [ngClass]="{
-                'status-open': s.statusName === 'Open',
-                'status-close': s.statusName === 'Close',
-                'status-active': s.statusName === 'Active',
-                'status-cancelled': s.statusName === 'Cancelled'
-              }">
-                {{ s.statusName }}
-              </span>
+          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId">
+            <option *ngFor="let s of statuses" [value]="s.id" [ngClass]="getStatusClassById(editedBug.statusId)">
+              {{ s.statusName }}
             </option>
           </select>
         </div>

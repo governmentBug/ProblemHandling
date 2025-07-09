@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
-import { BugDetalsDto, CategoryDto, PriorityDto, StatusDto } from 'src/app/web-api-client';
+import { BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
 import { StateService } from 'src/app/services/state.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class BugDetailComponent implements OnInit {
   showPopup = false;
   closeReason = '';
   isEditMode = false;
-  editedBug: BugDetalsDto = new BugDetalsDto();
+  editedBug: BugDetalsDto = new UpdateBugCommand();
 
   // רשימות לבחירה
   priorities: Array<PriorityDto>
@@ -117,5 +117,17 @@ export class BugDetailComponent implements OnInit {
 
   onOverlayClick(event: MouseEvent): void {
     this.closePopup();
+  }
+
+  getStatusClassById(id: number): string {
+    const status = this.statuses?.find(s => s.id === id);
+    if (!status) return '';
+    switch (status.statusName) {
+      case 'Open': return 'status-open';
+      case 'Close': return 'status-close';
+      case 'Active': return 'status-active';
+      case 'Cancelled': return 'status-cancelled';
+      default: return '';
+    }
   }
 }
