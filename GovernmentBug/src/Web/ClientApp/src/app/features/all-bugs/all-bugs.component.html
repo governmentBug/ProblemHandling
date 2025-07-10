@@ -1,76 +1,101 @@
-<div class="search-filter-bar">
-    <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
+<div class="bug-and-comments-wrapper">
+  <!-- פאנל התגובות בצד שמאל -->
+  <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
+    <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
+      (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)" (closePanel)="onClosePanel()">
+    </app-comment-panel>
+  </div>
+
+  <!-- אזור הטבלה בימין -->
+  <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
+    <div class="search-filter-bar">
+      <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
         placeholder="חיפוש לפי כותרת, תקציר, שם יוצר או תאריך" />
-    <select (change)="onSelectChange($event)" [value]="selectedFilterValue || selectedFilterType">
+      <select (change)="onSelectChange($event)" [value]="selectedFilterValue || selectedFilterType">
         <option *ngIf="!selectedFilterType" value="">-- בחר סינון --</option>
         <option *ngIf="!selectedFilterType" value="statusName">סטטוס</option>
         <option *ngIf="!selectedFilterType" value="priorityName">עדיפות</option>
         <option *ngIf="!selectedFilterType" value="categoryName">קטגוריה</option>
 
         <ng-container *ngIf="selectedFilterType">
-            <option value="">-- בחר ערך --</option>
-            <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val[selectedFilterType]">
-                {{ val[selectedFilterType] }}
-            </option>
+          <option value="">-- בחר ערך --</option>
+          <option *ngFor="let val of filterOptions[selectedFilterType]" [value]="val">
+            {{ val }}
+          </option>
         </ng-container>
-    </select>
-    <button *ngIf="selectedFilterType" (click)="resetFilter()">
-        אפס / שנה סינון
-    </button>
-</div>
+      </select>
+      <button *ngIf="selectedFilterType" (click)="resetFilter()">אפס / שנה סינון</button>
+    </div>
 
-<div class="bug-table-container">
     <h2 class="table-title">רשימת כל הבאגים</h2>
+
     <div class="table-wrapper">
-        <table class="bug-table">
-            <thead>
-                <tr>
-                    <th>מזהה הבאג</th>
-                    <th>קטגוריה</th>
-                    <th>שם הבאג</th>
-                    <th>עדיפות</th>
-                    <th>סטטוס</th>
-                    <th>נפתח ע"י</th>
-                    <th>תאריך</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let bug of bugs">
-                    <td>{{ bug.bugId }}</td>
-                    <td>{{ bug.categoryName }}</td>
-                    <td>{{ bug.title }}</td>
-                    <td>
-                        <span [ngClass]="{
-              'priority-low': bug.priorityName === 'Low',
-              'priority-medium': bug.priorityName === 'Medium',
-              'priority-high': bug.priorityName === 'High',
-              'priority-critical': bug.priorityName === 'Critical'
-            }">
-                            {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
-                            bug.priorityName === 'High' ? '★★★' : '★★★★' }}
-                        </span>
-                    </td>
-                    <td>
-                        <span [ngClass]="{
-  'status-open': bug.statusName === 'Open',
-  'status-active': bug.statusName === 'Active',
-  'status-close': bug.statusName === 'Close',
-  'status-cancelled': bug.statusName === 'Cancelled',
-  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
-}">
-                            {{ bug.statusName }}
-                        </span>
-                    </td>
-                    <td>{{ bug.createdByUserFullName }}</td>
-                    <td>{{ bug.createdDate | date:'dd/MM/yyyy' }}</td>
-                </tr>
-            </tbody>
-        </table>
+      <table class="bug-table" dir="rtl">
+        <thead>
+          <tr>
+            <th></th>
+            <th>מזהה הבאג</th>
+            <th>קטגוריה</th>
+            <th>שם הבאג</th>
+            <th>עדיפות</th>
+            <th>סטטוס</th>
+            <th>נפתח ע"י</th>
+            <th>תאריך</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let bug of bugs">
+            <tr [class.selected]="selectedBug?.bugId === bug.bugId">
+              <td>
+                <button class="toggle-arrow" (click)="toggleBug(bug, $event)">
+                  <i class="fas fa-chevron-left" [class.rotated]="selectedBug?.bugId === bug.bugId"></i>
+                </button>
+              </td>
+              <td>{{ bug.bugId }}</td>
+              <td>{{ bug.categoryName }}</td>
+              <td>{{ bug.title }}</td>
+              <td>
+                <span [ngClass]="{
+                  'priority-low': bug.priorityName === 'Low',
+                  'priority-medium': bug.priorityName === 'Medium',
+                  'priority-high': bug.priorityName === 'High',
+                  'priority-critical': bug.priorityName === 'Critical'
+                }">
+                  {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
+                  bug.priorityName === 'High' ? '★★★' : '★★★★' }}
+                </span>
+              </td>
+              <td>
+                <span [ngClass]="{
+                  'status-open': bug.statusName === 'Open',
+                  'status-active': bug.statusName === 'Active',
+                  'status-close': bug.statusName === 'Close',
+                  'status-cancelled': bug.statusName === 'Cancelled',
+                  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+                }">
+                  {{ bug.statusName }}
+                </span>
+              </td>
+              <td>{{ bug.createdByUserFullName }}</td>
+              <td>{{ bug.createdDate | date:'dd/MM/yyyy' }}</td>
+            </tr>
+
+            <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
+              <td colspan="8">
+                <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
+                  (bugChanged)="onBugChanged()">
+                </app-bug-detail>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
 
     <div class="pagination-controls">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">הקודם</button>
-        <span>עמוד {{ currentPage }}</span>
-        <button (click)="nextPage()">הבא</button>
+      <button (click)="prevPage()" [disabled]="currentPage === 1">הקודם</button>
+      <span>עמוד {{ currentPage }}</span>
+      <button (click)="nextPage()">הבא</button>
     </div>
+  </div>
 </div>

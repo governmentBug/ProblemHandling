@@ -130,8 +130,68 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/api/Bugs/all": {
+      "get": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "GetAllBugDetials",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugDetalsDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bugs/compare": {
       "post": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "IdentifyingRecurringBugs",
+        "requestBody": {
+          "x-name": "bugComprisonQuery",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BugComparisonQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BugSummariesDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Bugs/updateToClose/{id}": {
+      "put": {
         "tags": [
           "Bugs"
         ],
@@ -166,64 +226,6 @@
           },
           "400": {
             "description": ""
-          }
-        }
-      }
-    },
-    "/api/Bugs/all": {
-      "get": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "GetAllBugDetials",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BugDetalsDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Bugs/compare": {
-      "get": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "IdentifyingRecurringBugs",
-        "requestBody": {
-          "x-name": "bugComprisonQuery",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BugComparisonQuery"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BugSummariesDto"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -1366,6 +1368,11 @@
             "items": {
               "$ref": "#/components/schemas/AttachmentDto"
             }
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },
@@ -1397,10 +1404,6 @@
         "additionalProperties": false,
         "properties": {
           "bugId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "statusId": {
             "type": "integer",
             "format": "int32"
           },

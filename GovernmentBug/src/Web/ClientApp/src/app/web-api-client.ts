@@ -20,9 +20,9 @@ export interface IBugsClient {
     getBugDetialsByID(id: number): Observable<BugDetalsDto>;
     updateBug(id: number, command: UpdateBugCommand): Observable<void>;
     deleteBug(id: number): Observable<void>;
-    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void>;
     getAllBugDetials(): Observable<BugDetalsDto[]>;
     identifyingRecurringBugs(bugComprisonQuery: BugComparisonQuery): Observable<BugSummariesDto[]>;
+    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void>;
 }
 
 @Injectable({
@@ -244,61 +244,6 @@ export class BugsClient implements IBugsClient {
         return _observableOf(null as any);
     }
 
-    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void> {
-        let url_ = this.baseUrl + "/api/Bugs/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateBugAndClosed(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdateBugAndClosed(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processUpdateBugAndClosed(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
     getAllBugDetials(): Observable<BugDetalsDto[]> {
         let url_ = this.baseUrl + "/api/Bugs/all";
         url_ = url_.replace(/[?&]$/, "");
@@ -370,7 +315,7 @@ export class BugsClient implements IBugsClient {
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processIdentifyingRecurringBugs(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -404,6 +349,61 @@ export class BugsClient implements IBugsClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateBugAndClosed(id: number, command: UpdateBugAndClosedCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Bugs/updateToClose/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateBugAndClosed(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateBugAndClosed(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateBugAndClosed(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2540,6 +2540,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
     title?: string;
     description?: string;
     attachments?: AttachmentDto[];
+    categoryId?: number | undefined;
 
     constructor(data?: IBugComparisonQuery) {
         if (data) {
@@ -2559,6 +2560,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
                 for (let item of _data["attachments"])
                     this.attachments!.push(AttachmentDto.fromJS(item));
             }
+            this.categoryId = _data["categoryId"];
         }
     }
 
@@ -2578,6 +2580,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
             for (let item of this.attachments)
                 data["attachments"].push(item.toJSON());
         }
+        data["categoryId"] = this.categoryId;
         return data;
     }
 }
@@ -2586,6 +2589,7 @@ export interface IBugComparisonQuery {
     title?: string;
     description?: string;
     attachments?: AttachmentDto[];
+    categoryId?: number | undefined;
 }
 
 export class AttachmentDto implements IAttachmentDto {
@@ -2642,7 +2646,6 @@ export interface IAttachmentDto {
 
 export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
     bugId?: number;
-    statusId?: number;
     reasonForClosure?: string;
     closedBy?: string;
 
@@ -2658,7 +2661,6 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
     init(_data?: any) {
         if (_data) {
             this.bugId = _data["bugId"];
-            this.statusId = _data["statusId"];
             this.reasonForClosure = _data["reasonForClosure"];
             this.closedBy = _data["closedBy"];
         }
@@ -2674,7 +2676,6 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["bugId"] = this.bugId;
-        data["statusId"] = this.statusId;
         data["reasonForClosure"] = this.reasonForClosure;
         data["closedBy"] = this.closedBy;
         return data;
@@ -2683,7 +2684,6 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
 
 export interface IUpdateBugAndClosedCommand {
     bugId?: number;
-    statusId?: number;
     reasonForClosure?: string;
     closedBy?: string;
 }

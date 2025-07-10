@@ -127,6 +127,7 @@ export class BugDetailComponent implements OnInit {
       case 'Close': return 'status-close';
       case 'Active': return 'status-active';
       case 'Cancelled': return 'status-cancelled';
+      case 'Close without opening a bug': return 'status-close-without-opening'
       default: return '';
     }
   }

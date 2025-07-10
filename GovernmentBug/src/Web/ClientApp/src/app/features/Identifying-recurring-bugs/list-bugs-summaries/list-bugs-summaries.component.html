@@ -1,0 +1,30 @@
+<div class="side-drawer">
+  <div class="drawer-header center-title">
+    <span> באגים דומים</span>
+    <button class="close-btn" (click)="$event.stopPropagation(); viewBug.emit(-1)">✖</button>
+  </div>
+  <ul class="drawer-list">
+    <li *ngFor="let bug of bugsSummaries">
+      <div class="bug-summary center-fields">
+        <div class="bug-fields">
+          <div><b>כותרת:</b> {{ bug.title || '---' }}</div>
+          <div><b>תאריך יצירה:</b> {{ bug.createdDate | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div>
+            <span [ngClass]="{
+              'status-open': bug.statusName === 'Open',
+              'status-active': bug.statusName === 'Active',
+              'status-close': bug.statusName === 'Close',
+              'status-cancelled': bug.statusName === 'Cancelled',
+              'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+            }">
+              {{ bug.statusName || bug.statusId || '---' }}
+            </span>
+                        <b>:סטטוס</b>
+
+          </div>
+        </div>
+        <button class="view-btn below-btn" (click)="onViewBug(bug.bugID!)">צפה</button>
+      </div>
+    </li>
+  </ul>
+</div>

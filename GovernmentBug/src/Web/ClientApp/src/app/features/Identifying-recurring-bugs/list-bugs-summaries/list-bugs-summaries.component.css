@@ -1,0 +1,120 @@
+.side-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 100vh;
+  background: #fffbe7;
+  box-shadow: 2px 0 16px 0 rgba(0,0,0,0.13);
+  z-index: 1000;
+  padding: 1.5rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  animation: slideInDrawer 0.3s;
+}
+@keyframes slideInDrawer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.drawer-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+}
+.drawer-header.center-title {
+  justify-content: space-between !important;
+  color: #1976d2;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.drawer-header span {
+  flex: 1;
+  text-align: center;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #d9534f;
+  margin-left: 0;
+  margin-right: 0;
+}
+.drawer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.bug-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ffe6a1;
+}
+.bug-title {
+  font-size: 1.1rem;
+  color: #856404;
+  font-weight: bold;
+}
+.view-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 1.1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.view-btn:hover {
+  background: #1251a3;
+}
+.center-fields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.bug-fields {
+  text-align: center;
+  margin-bottom: 0.7rem;
+}
+.below-btn {
+  margin-top: 0.2rem;
+  width: 80px;
+}
+.status-open {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.status-active {
+  background-color: #cce5ff;
+  color: #004085;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.status-close {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.status-close-without-opening {
+  background-color: #ffe5b4;
+  color: #8a6d3b;
+  padding: 4px 10px;
+  border-radius: 8px;
+}

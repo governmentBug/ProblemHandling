@@ -23,8 +23,7 @@ public class GetBugDetailsHandler : IRequestHandler<GetBugDetails, List<BugDetal
     {
         var bugs = await _context.Bugs
             .AsNoTracking()
-            .Include(b => b.CreatedByUser)
-            .Select(b => new BugDetalsDto
+              .Select(b => new BugDetalsDto
             {
                 BugId = b.BugID,
                 Title = b.Title,
