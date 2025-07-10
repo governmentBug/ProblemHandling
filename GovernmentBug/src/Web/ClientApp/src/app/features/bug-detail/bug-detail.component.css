@@ -103,10 +103,10 @@
   font-size: 14px;
 }
 
-/* סטטוס בעריכה */
+/* צבעים של סטטוסים */
 .status-open {
-  background-color: #ffcccc;
-  color: #a00;
+  background-color: #FDEDED;
+  color: #D32F2F;
   padding: 6px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -115,8 +115,8 @@
 }
 
 .status-close {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #E8F5E9;
+  color: #388E3C;
   padding: 6px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -125,8 +125,8 @@
 }
 
 .status-active {
-  background-color: #e7f3fe;
-  color: #31708f;
+  background-color: #E3F2FD;
+  color: #1565C0;
   padding: 6px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -135,8 +135,18 @@
 }
 
 .status-cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #F3E5F5;
+  color: #7B1FA2;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.status-close-without-opening {
+  background-color: #FFF3E0;
+  color: #F57C00;
   padding: 6px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -169,6 +179,13 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
+}
+
+.bug-files {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #333;
 }
 
 .bug-actions {
@@ -205,78 +222,6 @@
 .delete-btn {
   background-color: #ff3b3b;
   color: white;
-}
-
-.bug-files {
-  display: flex;
-  gap: 16px;
-  font-size: 14px;
-  color: #333;
-}
-
-/* popup למחיקה */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.popup-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 400px;
-  border: 2px solid #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.popup-title {
-  color: red;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 12px;
-  text-align: right;
-}
-
-.popup-content textarea {
-  width: 100%;
-  height: 80px;
-  padding: 10px;
-  font-size: 14px;
-  resize: none;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  direction: rtl;
-  margin-bottom: 16px;
-}
-
-.popup-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-btn {
-  background-color: #e60000;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.delete-btn i {
-  font-size: 16px;
 }
 
 /* שדות טקסט */
@@ -321,4 +266,5 @@ textarea.edit-inline {
   cursor: pointer;
   box-sizing: border-box;
   margin: 0 auto;
+  border-radius: 6px;
 }

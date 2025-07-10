@@ -1,7 +1,7 @@
 <div *ngIf="bug" class="bug-container">
 
   <div class="top-bar full">
-    <div></div> 
+    <div></div>
     <div class="report-date">
       דווח ע"י {{bug.createdByUserFullName}} {{ bug.createdDate | date: 'dd/MM/yyyy' }}
     </div>
@@ -42,15 +42,18 @@
         </div>
       </div>
 
-      <div class="status-summary" style="margin-top: 10px; text-align: right; font-size: 12px; color: #333;">
-        <div class="status-line" style="margin-bottom: 4px;">
+      <div class="status-summary">
+        <div class="status-line">
           סטטוס:
           <span *ngIf="!isEditMode" [ngClass]="{
             'status-open': bug.statusName === 'Open',
             'status-close': bug.statusName === 'Close',
             'status-active': bug.statusName === 'Active',
-            'status-cancelled': bug.statusName === 'Cancelled'
-          }">{{ bug.statusName }}</span>
+            'status-cancelled': bug.statusName === 'Cancelled',
+            'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+          }">
+            {{ bug.statusName }}
+          </span>
           <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" class="edit-inline select-box">
             <option *ngFor="let s of statuses" [value]="s.statusId">{{ s.statusName }}</option>
           </select>
