@@ -21,7 +21,16 @@ export class DemoComponent implements OnInit {
   isCommentsPanelOpen = true;
   isAuthorizedToComment = true;
   ngOnInit() {
-    this.getBugById(3)
+    this.route.paramMap.subscribe(params => {
+      const bugId = Number(params.get('id'));
+      if (bugId) {
+        this.getBugById(bugId);
+      }
+      else {
+        console.error('לא נמצא מזהה באג תקין');
+        this.getBugById(3); // Default to a known bug ID
+      }
+    });
   }
 
   getBugById(id: number) {

@@ -156,7 +156,7 @@
       }
     },
     "/api/Bugs/compare": {
-      "get": {
+      "post": {
         "tags": [
           "Bugs"
         ],
@@ -1368,6 +1368,11 @@
             "items": {
               "$ref": "#/components/schemas/AttachmentDto"
             }
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },

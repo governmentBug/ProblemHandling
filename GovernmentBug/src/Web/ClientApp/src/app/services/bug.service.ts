@@ -12,7 +12,6 @@ import { BugDetalsDto, BugsClient, UpdateBugAndClosedCommand, UpdateBugCommand }
 export class BugService {
   basicUrl: string = "https://localhost:5001/api/Bugs/";
   constructor(public bugServer: HttpClient, public BugClient: BugsClient, public commentService: CommentService) { }
-
   getAllBugs(): Observable<Array<BugDetalsDto>> {
     return this.BugClient.getAllBugDetials();
   }
