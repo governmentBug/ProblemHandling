@@ -13,6 +13,7 @@ using CoenM.ImageHash.HashAlgorithms;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using GovernmentBug.Application.Common.Models;
+using GovernmentBug.Application.Common.Services;
 
 
 namespace GovernmentBug.Application.Bugs.Queries.BugComparison
@@ -22,6 +23,7 @@ namespace GovernmentBug.Application.Bugs.Queries.BugComparison
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<AttachmentDto> Attachments { get; set; } = new();
+        public int? CategoryId { get; set; }
     }
     public class BugComparisonQueryHandler : IRequestHandler<BugComparisonQuery, List<BugSummariesDto>>
     {
@@ -39,20 +41,40 @@ namespace GovernmentBug.Application.Bugs.Queries.BugComparison
             _bugComparisonConfig = bugComparisonConfig;
             _imageComparisonService = imageComparisonService;
         }
+
+        string NormalizeText(string text)
+        {
+            var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            return string.Join(' ', words.Select(SynonymProvider.NormalizeWord));
+        }
         public async Task<List<BugSummariesDto>> Handle(BugComparisonQuery request, CancellationToken cancellationToken)
         {
-            var exitingBugs = await _context.Bugs.ToListAsync(cancellationToken); 
+            Console.WriteLine(request.Title);
+            var exitingBugs = await _context.Bugs
+                .Where(b=>b.CategoryId == request.CategoryId)
+                .ToListAsync(cancellationToken); 
             var similarBugs = new List<BugSummariesDto>();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             foreach (var bug in exitingBugs)
             {
-                int titleScore = Fuzz.Ratio(request.Title, bug.Title);
-                int descriptionScore = Fuzz.Ratio(request.Description, bug.Description);
+
+                string normalizedTitle = NormalizeText(request.Title);
+                string normalizedBugTitle = NormalizeText(bug.Title);
+                int titleScore = Fuzz.TokenSetRatio(normalizedTitle, normalizedBugTitle);
+                string normalizedDescription = NormalizeText(request.Description);
+                string normalizedBugDescription = NormalizeText(bug.Description);
+                int descriptionScore = Fuzz.TokenSetRatio(normalizedDescription, normalizedBugDescription);
+                Console.WriteLine(titleScore+"..."+descriptionScore+"....."+_bugComparisonConfig.FuzzyMatchThreshold);
                 if (titleScore >= _bugComparisonConfig.FuzzyMatchThreshold &&
                     descriptionScore >= _bugComparisonConfig.FuzzyMatchThreshold)
                 {
+                    Console.WriteLine("-----------------------------------------");
                     similarBugs.Add(_mapper.Map<BugSummariesDto>(bug));
                 }
             }
+            sw.Stop();
+            Console.WriteLine($"DB Load: {sw.ElapsedMilliseconds} ms");
+            Console.WriteLine($"Loaded {exitingBugs.Count} bugs");
             return similarBugs;
         }
     }

@@ -14,7 +14,7 @@ export class BugService {
   constructor(public bugServer: HttpClient, public BugClient: BugsClient, public commentService: CommentService) { }
 
   getAllBugs(): Observable<Array<Bug>> {
-    return this.bugServer.get<Array<Bug>>(`${this.basicUrl}all`);
+    return this.bugServer.get<Array<Bug>>(`${this.basicUrl}`);
   }
   getCategories(): Observable<string[]> {
     return this.bugServer.get<string[]>("https://localhost:5001/api/Category");

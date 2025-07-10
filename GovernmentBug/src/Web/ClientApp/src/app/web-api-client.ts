@@ -370,7 +370,7 @@ export class BugsClient implements IBugsClient {
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processIdentifyingRecurringBugs(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -2540,6 +2540,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
     title?: string;
     description?: string;
     attachments?: AttachmentDto[];
+    categoryId?: number | undefined;
 
     constructor(data?: IBugComparisonQuery) {
         if (data) {
@@ -2559,6 +2560,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
                 for (let item of _data["attachments"])
                     this.attachments!.push(AttachmentDto.fromJS(item));
             }
+            this.categoryId = _data["categoryId"];
         }
     }
 
@@ -2578,6 +2580,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
             for (let item of this.attachments)
                 data["attachments"].push(item.toJSON());
         }
+        data["categoryId"] = this.categoryId;
         return data;
     }
 }
@@ -2586,6 +2589,7 @@ export interface IBugComparisonQuery {
     title?: string;
     description?: string;
     attachments?: AttachmentDto[];
+    categoryId?: number | undefined;
 }
 
 export class AttachmentDto implements IAttachmentDto {
