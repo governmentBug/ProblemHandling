@@ -21,7 +21,6 @@ export class StateService {
     public CategoryClient: CategoryClient,
   ) {}
 
-  // שליפת כל העדיפויות (עם קאש)
   getAllPriority() {
     if (this.priorities) {
       return new Observable<any[]>(observer => {

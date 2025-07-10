@@ -130,44 +130,6 @@
             "description": ""
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "UpdateBugAndClosed",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBugAndClosedCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": ""
-          }
-        }
       }
     },
     "/api/Bugs/all": {
@@ -224,6 +186,46 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Bugs/updateToClose/{id}": {
+      "put": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "UpdateBugAndClosed",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBugAndClosedCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
           }
         }
       }
@@ -1402,10 +1404,6 @@
         "additionalProperties": false,
         "properties": {
           "bugId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "statusId": {
             "type": "integer",
             "format": "int32"
           },

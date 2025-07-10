@@ -10,38 +10,25 @@ import { BugDetalsDto, BugsClient, UpdateBugAndClosedCommand, UpdateBugCommand }
   providedIn: 'root'
 })
 export class BugService {
-  basicUrl: string = "https://localhost:5001/api/Bugs/all";
+  basicUrl: string = "https://localhost:5001/api/Bugs/";
   constructor(public bugServer: HttpClient, public BugClient: BugsClient, public commentService: CommentService) { }
-
-  getAllBugs(): Observable<Array<Bug>> {
-    return this.bugServer.get<Array<Bug>>(`${this.basicUrl}`);
+  getAllBugs(): Observable<Array<BugDetalsDto>> {
+    return this.BugClient.getAllBugDetials();
   }
-  getCategories(): Observable<string[]> {
-    return this.bugServer.get<string[]>("https://localhost:5001/api/Category");
-  }
-
-  getStatuses(): Observable<string[]> {
-    return this.bugServer.get<string[]>("https://localhost:5001/api/Status");
-  }
-
-  getPriorities(): Observable<string[]> {
-    return this.bugServer.get<string[]>("https://localhost:5001/api/Priority");
-  }
-
   getBugById(id: number): Observable<BugDetalsDto> {
     return this.BugClient.getBugDetialsByID(id);
   }
   updateBug(id: number, update: any): Observable<void> {
-    const command=new UpdateBugCommand() 
-    command.bugId=id
-    command.categoryId=update.categoryId
-    command.description=update.description
-    command.priorityId=update.priorityId
-    command.title=update.title
-    command.statusId=update.statusId
+    const command = new UpdateBugCommand()
+    command.bugId = id
+    command.categoryId = update.categoryId
+    command.description = update.description
+    command.priorityId = update.priorityId
+    command.title = update.title
+    command.statusId = update.statusId
     //בהמשך נטפל במי שמטפל בבאג
     console.log(command);
-    
+
     return this.BugClient.updateBug(id, command);
   }
 
@@ -49,7 +36,6 @@ export class BugService {
     const command = new UpdateBugAndClosedCommand();
     command.bugId = id;
     command.reasonForClosure = reasonForClosure;
-    command.statusId=6
     return this.BugClient.updateBugAndClosed(id, command);
   }
   deleteBug(id: number): Observable<void> {
