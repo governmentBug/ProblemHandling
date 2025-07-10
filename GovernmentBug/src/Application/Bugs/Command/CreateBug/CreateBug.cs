@@ -57,7 +57,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
 
 
         _context.Bugs.Add(entity);
-        await _mailService.SendBugCreatedEmailAsync(entity, cancellationToken);
+        //await _mailService.SendBugCreatedEmailAsync(entity, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 

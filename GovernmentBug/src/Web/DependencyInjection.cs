@@ -17,7 +17,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<IUser, CurrentUser>();
         builder.Services.Configure<BugComparisonSettings>(
-            builder.Configuration.GetSection("BugComparison"));
+        builder.Configuration.GetSection("BugComparison"));
         builder.Services.AddScoped<IBugComparisonConfig, BugComparisonConfig>();
         builder.Services.AddScoped<IImageComparisonService, ImageComparisonService>();
 

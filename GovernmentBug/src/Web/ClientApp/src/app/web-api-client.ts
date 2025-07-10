@@ -2644,6 +2644,7 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
     bugId?: number;
     statusId?: number;
     reasonForClosure?: string;
+    closedBy?: string;
 
     constructor(data?: IUpdateBugAndClosedCommand) {
         if (data) {
@@ -2659,6 +2660,7 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
             this.bugId = _data["bugId"];
             this.statusId = _data["statusId"];
             this.reasonForClosure = _data["reasonForClosure"];
+            this.closedBy = _data["closedBy"];
         }
     }
 
@@ -2674,6 +2676,7 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
         data["bugId"] = this.bugId;
         data["statusId"] = this.statusId;
         data["reasonForClosure"] = this.reasonForClosure;
+        data["closedBy"] = this.closedBy;
         return data;
     }
 }
@@ -2682,6 +2685,7 @@ export interface IUpdateBugAndClosedCommand {
     bugId?: number;
     statusId?: number;
     reasonForClosure?: string;
+    closedBy?: string;
 }
 
 export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {
