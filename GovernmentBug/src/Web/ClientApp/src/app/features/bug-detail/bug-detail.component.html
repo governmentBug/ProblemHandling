@@ -3,9 +3,7 @@
   <div class="report-date">
     דווח ע"י {{bug.createdByUserFullName}} {{ bug.createdDate | date: 'dd/MM/yyyy' }}
   </div>
-
   <div class="bug-grid">
-    <!-- ימין: תיאור וכותרת -->
     <div class="description-section">
       <div class="bug-title-box">
         <ng-container *ngIf="!isEditMode">{{ bug.title }}</ng-container>
@@ -41,38 +39,38 @@
         </div>
       </div>
       <div class="status-section">
-        <div>סטטוס:
+        <div class="status">סטטוס:
           <span *ngIf="!isEditMode" [ngClass]="{
-              'status-open': bug.statusName === 'Open',
-              'status-close': bug.statusName === 'Close',
-              'status-active': bug.statusName === 'Active',
-              'status-cancelled': bug.statusName === 'Cancelled'
-            }">
+                  'status-open': bug.statusName === 'Open',
+                  'status-active': bug.statusName === 'Active',
+                  'status-close': bug.statusName === 'Close',
+                  'status-cancelled': bug.statusName === 'Cancelled',
+                  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+                }">
             {{ bug.statusName }}
           </span>
-          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" >
+          <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId">
             <option *ngFor="let s of statuses" [value]="s.statusId">
               <span [ngClass]="{
-                'status-open': s.statusName === 'Open',
-                'status-close': s.statusName === 'Close',
-                'status-active': s.statusName === 'Active',
-                'status-cancelled': s.statusName === 'Cancelled'
-              }">
+                  'status-open': bug.statusName === 'Open',
+                  'status-active': bug.statusName === 'Active',
+                  'status-close': bug.statusName === 'Close',
+                  'status-cancelled': bug.statusName === 'Cancelled',
+                  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+                }">
                 {{ s.statusName }}
               </span>
             </option>
           </select>
         </div>
-        <div>מטופל ע"י: {{ bug.createdByUserFullName }}</div>
+        <div class="assingBy">מטופל ע"י: {{ bug.createdByUserFullName }}</div>
       </div>
     </div>
 
 
-    <!-- שמאל ריק -->
     <div></div>
   </div>
 
-  <!-- כפתורים -->
   <div class="footer-row">
     <div class="bug-files">
       <span>video.mp4 📹</span>
@@ -80,7 +78,7 @@
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>
-            <button class="save-btn" *ngIf="isEditMode " (click)="saveChanges()">Save</button>
+      <button class="save-btn" *ngIf="isEditMode " (click)="saveChanges()">Save</button>
       <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">cancelEdit</button>
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
         Delete <i class="fa fa-trash"></i>
