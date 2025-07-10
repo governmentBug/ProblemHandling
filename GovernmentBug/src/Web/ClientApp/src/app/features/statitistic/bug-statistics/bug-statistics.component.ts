@@ -5,6 +5,7 @@ import { BugStatusByMonthsDTO } from 'src/app/web-api-client';
 import { YearService } from '../dates.service';
 import { StatusBugsByMonthsComponent } from '../status-bugs-by-months/status-bugs-by-months.component';
 import { TotalOpenBugsComponent } from '../total-open-bugs/total-open-bugs.component';
+import { OpenBugsByPriorityComponent } from "../open-bugs-by-priority/open-bugs-by-priority.component";
 
 @Component({
   selector: 'app-bug-statistics',
@@ -12,7 +13,7 @@ import { TotalOpenBugsComponent } from '../total-open-bugs/total-open-bugs.compo
   imports: [ChoosingDateComponent,
     BugsPerMonthComponent,
     StatusBugsByMonthsComponent,
-    TotalOpenBugsComponent],
+    TotalOpenBugsComponent, OpenBugsByPriorityComponent],
   templateUrl: './bug-statistics.component.html',
   styleUrl: './bug-statistics.component.css'
 })
