@@ -51,19 +51,19 @@ export class AllBugsComponent implements OnInit {
   }
 
   loadFilterOptions() {
-    this.stateService.StatusClient.getAllStatuses().subscribe({
+    this.stateService.getAllStatuses().subscribe({
       next: statuses => {
         this.filterOptions['statusName'] = statuses.map(s => s.statusName);
       },
       error: err => console.error('שגיאה בסטטוסים:', err)
     });
 
-    this.stateService.PriorityClient.getAllPriorities().subscribe({
+    this.stateService.getAllPriority().subscribe({
       next: priorities => this.filterOptions['priorityName'] = priorities.map(p => p.priorityName),
       error: err => console.error('שגיאה בעדיפויות:', err)
     });
 
-    this.stateService.CategoryClient.getAllCategories().subscribe({
+    this.stateService.getAllCategories().subscribe({
       next: categories => this.filterOptions['categoryName'] = categories.map(c => c.categoryName),
       error: err => console.error('שגיאה בקטגוריות:', err)
     });

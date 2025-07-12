@@ -7,9 +7,11 @@
     <li *ngFor="let bug of bugsSummaries">
       <div class="bug-summary center-fields">
         <div class="bug-fields">
-          <div><b>כותרת:</b> {{ bug.title || '---' }}</div>
-          <div><b>תאריך יצירה:</b> {{ bug.createdDate | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div> {{ bug.title || '---' }}</div>
+          <div><b>נוצר בתאריך</b> <br/>{{ bug.createdDate | date:'dd/MM/yyyy HH:mm' }}</div>
           <div>
+             <b>סטטוס</b>
+             <br/>
             <span [ngClass]="{
               'status-open': bug.statusName === 'Open',
               'status-active': bug.statusName === 'Active',
@@ -17,9 +19,9 @@
               'status-cancelled': bug.statusName === 'Cancelled',
               'status-close-without-opening': bug.statusName === 'Close without opening a bug'
             }">
-              {{ bug.statusName || bug.statusId || '---' }}
+              {{ bug.statusName || '---' }}
             </span>
-                        <b>:סטטוס</b>
+                       
 
           </div>
         </div>

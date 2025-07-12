@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BugsClient, BugComparisonQuery, BugSummariesDto } from 'src/app/web-api-client';
 import { ListBugsSummariesComponent } from '../list-bugs-summaries/list-bugs-summaries.component';
 import { Router } from '@angular/router';
+import { StateService } from 'src/app/services/state.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-search-same-bugs',
@@ -26,30 +28,35 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
   loading = false;
 
   constructor(private bugsClient: BugsClient,
-    private router: Router
+    private router: Router,
+    private stateService: StateService
   ) {}
 
-  searchRecurringBugs() {
-    this.loading = true;
-    this.bugsClient.identifyingRecurringBugs(this.bugComparisonQuery).subscribe({
-      next: (result) => {
-        this.loading = false;
-        if (result && result.length > 0) {
-          this.recurringBugs = result;
-          this.message = `נמצאו ${result.length} באגים חוזרים!`;
-          this.showDrawer = true;
-        } else {
-          this.message = '';
-          this.showDrawer = false;
-        }
-      },
-      error: () => {
-        this.loading = false;
-        this.message = 'אירעה שגיאה בחיפוש.';
+ async searchRecurringBugs() {
+  this.loading = true;
+  await firstValueFrom(this.stateService.getAllStatuses()); // ודא שהסטטוסים נטענו
+  this.bugsClient.identifyingRecurringBugs(this.bugComparisonQuery).subscribe({
+    next: (result) => {
+      this.loading = false;
+      if (result && result.length > 0) {
+        result.forEach(bug => {
+          bug.statusName = this.stateService.getStatusById(bug.statusId);
+        });
+        this.recurringBugs = result;
+        this.message = `נמצאו ${result.length} באגים חוזרים!`;
+        this.showDrawer = true;
+      } else {
+        this.message = '';
         this.showDrawer = false;
       }
-    });
-  }
+    },
+    error: () => {
+      this.loading = false;
+      this.message = 'אירעה שגיאה בחיפוש.';
+      this.showDrawer = false;
+    }
+  });
+}
   closeDrawer() {
     this.showDrawer = false;
   }

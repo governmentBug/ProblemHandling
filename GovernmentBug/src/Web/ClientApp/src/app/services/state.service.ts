@@ -14,11 +14,14 @@ export class StateService {
   private priorities: any[] | null = null;
   private statuses: any[] | null = null;
   private categories: any[] | null = null;
+  private prioritiesMap: { [id: number]: string } = {};
+  private statusesMap: { [id: number]: string } = {};
+  private categoriesMap: { [id: number]: string } = {};
 
   constructor(
-    public PriorityClient: PriorityClient,
-    public StatusClient: StatusClient,
-    public CategoryClient: CategoryClient,
+    private PriorityClient: PriorityClient,
+    private StatusClient: StatusClient,
+    private CategoryClient: CategoryClient,
   ) {}
 
   getAllPriority() {
@@ -29,8 +32,20 @@ export class StateService {
       });
     }
     return this.PriorityClient.getAllPriorities().pipe(
-      tap(data => this.priorities = data)
+      tap(data => {
+        this.priorities = data;
+        this.prioritiesMap = {};
+        data.forEach(item => this.prioritiesMap[item.priorityId] = item.priorityName);
+      })
     );
+  }
+
+  getPriorityById(id: number): string | undefined {
+    if (!this.priorities) {
+      this.getAllPriority().subscribe(); // שליפה ראשונית
+      return undefined;
+    }
+    return this.prioritiesMap[id];
   }
 
   // שליפת כל הסטטוסים (עם קאש)
@@ -42,8 +57,20 @@ export class StateService {
       });
     }
     return this.StatusClient.getAllStatuses().pipe(
-      tap(data => this.statuses = data)
+      tap(data => {
+        this.statuses = data;
+        this.statusesMap = {};
+        data.forEach(item => this.statusesMap[item.statusId] = item.statusName);
+      })
     );
+  }
+
+  getStatusById(id: number): string | undefined {
+    if (!this.statuses) {
+      this.getAllStatuses().subscribe(); // שליפה ראשונית
+      return undefined;
+    }
+    return this.statusesMap[id];
   }
 
   // שליפת כל הקטגוריות (עם קאש)
@@ -55,7 +82,19 @@ export class StateService {
       });
     }
     return this.CategoryClient.getAllCategories().pipe(
-      tap(data => this.categories = data)
+      tap(data => {
+        this.categories = data;
+        this.categoriesMap = {};
+        data.forEach(item => this.categoriesMap[item.categoryId] = item.categoryName);
+      })
     );
+  }
+
+  getCategoryById(id: number): string | undefined {
+    if (!this.categories) {
+      this.getAllCategories().subscribe(); // שליפה ראשונית
+      return undefined;
+    }
+    return this.categoriesMap[id];
   }
 }
