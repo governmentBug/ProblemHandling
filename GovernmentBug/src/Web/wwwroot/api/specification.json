@@ -274,6 +274,59 @@
         }
       }
     },
+    "/api/BugStatistics/averagetreatmenttime/{priorityId}/{categoryId}/{created}": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "AverageTreatmentTime",
+        "parameters": [
+          {
+            "name": "priorityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "created",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/openbugsbypriority": {
       "get": {
         "tags": [

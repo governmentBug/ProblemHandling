@@ -30,5 +30,6 @@ namespace GovernmentBug.Domain.Entities
         public string ReasonForClosure {  get; set; }=string.Empty;
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+        public ICollection<BugHistory> BugHistories { get; set; } = new List<BugHistory>();
     }
 }
