@@ -417,6 +417,7 @@ export class BugsClient implements IBugsClient {
 export interface IBugStatisticsClient {
     totalOpenBugs(): Observable<number>;
     getBugs(): Observable<BugSummariesDto[]>;
+    averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
     getBugsByMonths(year: number): Observable<ByMonthsDto>;
     getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
@@ -529,6 +530,64 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number> {
+        let url_ = this.baseUrl + "/api/BugStatistics/averagetreatmenttime/{priorityId}/{categoryId}/{created}";
+        if (priorityId === undefined || priorityId === null)
+            throw new Error("The parameter 'priorityId' must be defined.");
+        url_ = url_.replace("{priorityId}", encodeURIComponent("" + priorityId));
+        if (categoryId === undefined || categoryId === null)
+            throw new Error("The parameter 'categoryId' must be defined.");
+        url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+        if (created === undefined || created === null)
+            throw new Error("The parameter 'created' must be defined.");
+        url_ = url_.replace("{created}", encodeURIComponent(created ? "" + created.toISOString() : "null"));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAverageTreatmentTime(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAverageTreatmentTime(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAverageTreatmentTime(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
