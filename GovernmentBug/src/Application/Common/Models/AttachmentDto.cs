@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace GovernmentBug.Application.Common.Models
 {
-    public class AttachmentDto
+    public class AttachmentsDto
     {
         public int AttachmentId { get; set; }
         public int BugId { get; set; }

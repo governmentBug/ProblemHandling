@@ -12,15 +12,14 @@ using GovernmentBug.Application.TodoItems.Commands.CreateTodoItem;
 using GovernmentBug.Domain.Entities;
 using GovernmentBug.Domain.Enums;
 using GovernmentBug.Domain.Events;
-
 namespace GovernmentBug.Application.Bugs.Command.CreateBug;
 public record CreateBugCommand : IRequest<int>
 {
     public int BugID { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public int PriorityId { get; set; } 
-    public int CategoryId {  get; set; }
+    public int PriorityId { get; set; }
+    public int CategoryId { get; set; }
     public int CreatedByUserId { get; set; }
     public DateTime Created { get; set; }
     public int StatusId { get; set; }
@@ -43,7 +42,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             BugID = request.BugID,
             Title = request.Title,
             Description = request.Description,
-            CategoryId=request.CategoryId,
+            CategoryId = request.CategoryId,
             PriorityId = request.PriorityId,
             CreatedByUserId = request.CreatedByUserId,
             Created = request.Created,
@@ -59,7 +58,3 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
         return entity.BugID;
     }
 }
-
-
-
-

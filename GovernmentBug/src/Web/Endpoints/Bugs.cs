@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GovernmentBug.Web.Endpoints;
 
-public class Bugs :EndpointGroupBase
+public class Bugs : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
@@ -37,7 +37,7 @@ public class Bugs :EndpointGroupBase
         return TypedResults.Created($"/{nameof(Bugs)}/{id}", id);
     }
 
-    public async Task<Ok<BugDetalsDto>> GetBugDetialsByID(ISender sender,int id)
+    public async Task<Ok<BugDetalsDto>> GetBugDetialsByID(ISender sender, int id)
     {
         var result = await sender.Send(new GetBugDetailsQuery(id));
 
