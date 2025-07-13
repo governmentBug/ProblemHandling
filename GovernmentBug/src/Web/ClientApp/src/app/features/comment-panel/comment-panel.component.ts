@@ -17,6 +17,7 @@ export class CommentPanelComponent {
   @Output() commentAdded = new EventEmitter<string>();
   @Output() commentDeleted = new EventEmitter<number>();
   @Output() closePanel = new EventEmitter<void>();
+  @ViewChild('commentInput') commentInput!: ElementRef;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   adding = false;
   newComment: string = '';
@@ -32,6 +33,9 @@ export class CommentPanelComponent {
 
   openAdd() {
     this.adding = true;
+      setTimeout(() => {
+      this.commentInput?.nativeElement?.focus();
+  });
   }
 
   cancelAdd() {

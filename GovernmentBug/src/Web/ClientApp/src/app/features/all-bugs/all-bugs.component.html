@@ -1,8 +1,12 @@
 <div class="bug-and-comments-wrapper">
   <!-- פאנל התגובות בצד שמאל -->
   <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
-    <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
-      (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)" (closePanel)="onClosePanel()">
+    <app-comment-panel 
+    [comments]="comments" 
+    [isAuthorizedToComment]="isAuthorizedToComment"
+    (commentAdded)="onCommentAdded($event)" 
+    (commentDeleted)="onCommentDeleted($event)" 
+    (closePanel)="onClosePanel()">
     </app-comment-panel>
   </div>
 

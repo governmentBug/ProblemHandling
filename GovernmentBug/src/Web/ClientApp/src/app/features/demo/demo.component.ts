@@ -90,4 +90,5 @@ export class DemoComponent implements OnInit {
   onClosePanel(): void {
     this.isCommentsPanelOpen = false;
   }
+  
 }

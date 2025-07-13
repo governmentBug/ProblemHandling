@@ -58,7 +58,7 @@
             <option *ngFor="let s of statuses" [value]="s.statusId">{{ s.statusName }}</option>
           </select>
         </div>
-        <div class="assigned-to">
+        <div class="assigned-to" *ngIf="bug.statusName==='Active'">
           מטופל ע"י: {{ bug.createdByUserFullName }}
         </div>
       </div>
@@ -69,8 +69,8 @@
 
   <div class="footer-row">
     <div class="bug-files">
-      <span>video.mp4 📹</span>
-      <span>image.jpeg 📌</span>
+      <span><i class="fas fa-image"></i></span>
+      <span><i class="fas fa-video"></i></span>
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>

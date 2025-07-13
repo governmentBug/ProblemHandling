@@ -162,14 +162,11 @@ export class AllBugsComponent implements OnInit {
     this.bugService.getBugById(id).subscribe({
       next: updatedBug => {
         this.selectedBug = updatedBug;
-
-        // עדכון הבאג ברשימה allBugs
         const indexAll = this.allBugs.findIndex(b => b.bugId === updatedBug.bugId);
         if (indexAll !== -1) {
           this.allBugs[indexAll] = updatedBug;
         }
 
-        // עדכון הבאג ברשימת הבאגים המוצגת (bugs)
         const indexFiltered = this.bugs.findIndex(b => b.bugId === updatedBug.bugId);
         if (indexFiltered !== -1) {
           this.bugs[indexFiltered] = updatedBug;
