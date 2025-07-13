@@ -75,6 +75,9 @@ export class BugDetailComponent implements OnInit {
       priorityId: this.editedBug.priorityId,
       statusId: this.editedBug.statusId
     };
+  if(this.editedBug.statusName==="Close")
+       this.openPopup()
+    
     this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
       {
         next: () => {
