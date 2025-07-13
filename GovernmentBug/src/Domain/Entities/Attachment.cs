@@ -8,7 +8,7 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace GovernmentBug.Domain.Entities
 {
-    public class Attachment:BaseAuditableEntity
+    public class Attachments : BaseAuditableEntity
     {
        
         [Key]
@@ -22,8 +22,7 @@ namespace GovernmentBug.Domain.Entities
         [MaxLength(50)]
         public string FileType { get; set; } = string.Empty;
 
-        [MaxLength(500)]
-        public string FilePath { get; set; } = string.Empty;
+        public byte[] FilePath { get; set; } = Array.Empty<byte>();
 
     }
 }

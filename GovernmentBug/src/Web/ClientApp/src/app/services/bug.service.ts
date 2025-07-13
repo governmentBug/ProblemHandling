@@ -2,14 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bug } from '../models/bug.model';
+import { AbbBug } from '../models/addBug.model';
+import { Category } from '../models/category.module';
 import { CommentService } from './Comment.service';
 import { BugDetalsDto, BugsClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class BugService {
+
   basicUrl: string = "https://localhost:5001/api/Bugs/";
   constructor(public bugServer: HttpClient, public BugClient: BugsClient, public commentService: CommentService) { }
   getAllBugs(): Observable<Array<BugDetalsDto>> {
@@ -41,8 +43,9 @@ export class BugService {
   deleteBug(id: number): Observable<void> {
     return this.BugClient.deleteBug(id);
   }
-  createBug(bug: AbbBug): Observable<Bug> {
+
+  createBug(bug: AbbBug): Observable<AbbBug> {
     const createUrl: string = "https://localhost:5001/api/Bugs";
-    return this.bugServer.post<Bug>(createUrl, bug);
+    return this.bugServer.post<AbbBug>(createUrl, bug);
   }
 }

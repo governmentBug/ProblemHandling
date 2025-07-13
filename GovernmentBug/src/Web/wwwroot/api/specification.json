@@ -6,6 +6,39 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Attachments": {
+      "post": {
+        "tags": [
+          "Attachments"
+        ],
+        "operationId": "CreateAttachments",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAttachmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Bugs": {
       "post": {
         "tags": [
@@ -1259,6 +1292,26 @@
   },
   "components": {
     "schemas": {
+      "CreateAttachmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
       "CreateBugCommand": {
         "type": "object",
         "additionalProperties": false,

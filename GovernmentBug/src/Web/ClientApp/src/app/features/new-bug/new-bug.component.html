@@ -1,17 +1,52 @@
-<p>{{formattedDate}}</p>
+<div class="bug-form-container">
+<div class="report-container">
+  <p class="report-info">
+    באג זה מדווח ע"י {{ userName }} בתאריך {{ formattedDate }}
+  </p>
+  <p class="report-infoR">
+    יש {{numDocuments}} מסמכים מצורפים ו {{numFilm}} הסרטות מצורפות
+  </p>
+</div>
 
-<form (ngSubmit)="addBug()" #bugForm="ngForm">
-  <label for="title">Title:</label>
-  <input type="text" id="title" [(ngModel)]="newBug.title" name="title" required>
+  <form (ngSubmit)="addBug()" #bugForm="ngForm" class="bug-form-grid">
 
-  <label for="description">Description:</label>
-  <textarea id="description" [(ngModel)]="newBug.description" name="description" required></textarea>
+    <!-- עמודה ימנית -->
+    <div class="right-col">
+      <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
+        class="input-field" id="nameB"/>
 
-  <label for="userId">User ID:</label>
-  <input type="number" id="createdByUserId" [(ngModel)]="newBug.createdByUserId" name="createdByUserId" required>
+      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field">
+        <option value="" disabled selected>קטגוריה</option>
+        <option *ngFor="let category of allCategory" [value]="category.id">
+          {{ category.categoryName }}
+        </option>
+      </select>
 
-  <label for="priority">Priority:</label>
-  <input type="text" id="priortyId" [(ngModel)]="newBug.priortyId" name="priortyId" required>
+      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field">
+        <option value="" disabled selected>עדיפות</option>
+        <option *ngFor="let priority of allPriority" [value]="priority.id">
+          {{ priority.priorityName }}
+        </option>
+      </select>
+    </div>
 
-  <button type="submit">Add Bug</button>
-</form>
+    <!-- עמודה שמאלית -->
+    <div class="left-col">
+      <textarea [(ngModel)]="newBug.description" name="description" placeholder="תיאור הבאג" class="textarea-field"
+        required></textarea>
+    </div>
+
+    <!-- שורת כפתורים -->
+    <div class="buttons-row">
+      <input accept="image/*" type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none;" />
+      <button type="button" class="screen-btn yellow" (click)="onButtonClickFile()">📎 צילום מסך</button>
+ 
+      <input accept=".mp4, .webm, .avi, .mov" type="file" id="filmInput" (change)="onFilmSelected($event)" style="display: none;" />
+      <button type="button" class="screen-btn blue" (click)="onButtonClickFilm()">🎥 הקלטת מסך</button>
+    </div>
+
+    <!-- כפתור שמירה -->
+    <button type="submit" class="save-btn">save 📄</button>
+
+  </form>
+</div>
