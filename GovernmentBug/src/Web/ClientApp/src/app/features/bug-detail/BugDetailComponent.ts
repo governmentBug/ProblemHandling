@@ -23,7 +23,7 @@ export class BugDetailComponent implements OnInit {
   isEditMode = false;
   editedBug: BugDetalsDto = new UpdateBugCommand();
 
-  // רשימות לבחירה
+
   priorities: Array<PriorityDto>
   categories: Array<CategoryDto>
   statuses: Array<StatusDto>
@@ -75,9 +75,6 @@ export class BugDetailComponent implements OnInit {
       priorityId: this.editedBug.priorityId,
       statusId: this.editedBug.statusId
     };
-  
-       this.openPopup()
-    
     this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
       {
         next: () => {

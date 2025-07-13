@@ -82,3 +82,17 @@
     </div>
   </div>
 </div>
+
+<div class="popup-overlay" *ngIf="showPopup" (click)="onOverlayClick($event)">
+  <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
+    <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>
+
+    <textarea [(ngModel)]="closeReason" rows="4" placeholder="נימוק/הערה לסגירת הבאג"></textarea>
+
+    <div class="popup-actions">
+      <button class="delete-btn" (click)="submitClose()">
+        Delete <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
