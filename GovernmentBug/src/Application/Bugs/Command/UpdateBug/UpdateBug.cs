@@ -15,10 +15,7 @@ namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
         public string Description { get; set; } = string.Empty;
         public int PriorityId { get; set; }
         public int CategoryId { get; set; }
-        public int CreatedByUserId { get; set; }
-        public DateTime Created { get; set; }
         public int StatusId { get; set; }
-        public string ReasonForClosure {  get; set; }= string.Empty;
 
     }
 

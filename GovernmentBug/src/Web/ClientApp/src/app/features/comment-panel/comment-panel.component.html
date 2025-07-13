@@ -1,0 +1,40 @@
+<button class="close-btn" (click)="close()">❮</button>
+
+<div class="comments-list" #scrollContainer>
+  <div class="comment" *ngFor="let c of comments">
+    <div class="icon">
+      <img src="assets/user-icon.png" alt="user" />
+    </div>
+    <div class="text">
+      <p>{{ c.commentText }}</p>
+      <small>
+        נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
+      </small>
+    </div>
+    <button *ngIf="isAuthorizedToComment" class="delete-btn" (click)="deleteComment(c.commentID)">
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+</div>
+
+<div class="add-section">
+  <ng-container *ngIf="isAuthorizedToComment">
+    <div *ngIf="adding" class="add-form">
+      <textarea
+       class="comment-textarea"
+      focus 
+      #commentInput
+      [(ngModel)]="newComment" 
+      (keydown.enter)="handleEnter($event)"
+      placeholder="כתוב כאן הערה...">
+    </textarea>
+      <div class="actions">
+        <button class="add-btn" (click)="saveComment()">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+
+      </div>
+    </div>
+    <button *ngIf="!adding" class="add-btn" (click)="openAdd()">+</button>
+  </ng-container>
+</div>

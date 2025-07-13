@@ -36,6 +36,6 @@ public class Status : EndpointGroupBase
     public async Task<Created<StatusDto>> CreateStatus(ISender sender, CreateStatusCommand command)
     {
         var statusDto = await sender.Send(command);
-        return TypedResults.Created($"/api/status/id/{statusDto.Id}", statusDto);
+        return TypedResults.Created($"/api/status/id/{statusDto.StatusId}", statusDto);
     }
 }
