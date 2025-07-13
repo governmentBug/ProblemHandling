@@ -14,10 +14,12 @@ namespace GovernmentBug.Application.Priority.Queries.GetPriorityByName
 public class GetPriorityByNameQueryHandler : IRequestHandler<GetPriorityByNameQuery, PriorityDto>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public GetPriorityByNameQueryHandler(IApplicationDbContext dbContext)
+        public GetPriorityByNameQueryHandler(IApplicationDbContext dbContext,IMapper mapper)
         {
             _context = dbContext;
+            _mapper = mapper;
         }
 
         public async Task<PriorityDto> Handle(GetPriorityByNameQuery request, CancellationToken cancellationToken)
@@ -26,16 +28,17 @@ public class GetPriorityByNameQueryHandler : IRequestHandler<GetPriorityByNameQu
                 .Where(p => p.PriorityName == request.Name)
                 .Select(p => new PriorityDto
                 {
-                    Id = p.Id,
+                    PriorityId = p.Id,
                     PriorityName = p.PriorityName
                 })
+
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (priority == null)
             {
                 throw new InvalidOperationException($"Priority with name '{request.Name}' was not found.");
             }
-            return priority;
+            return _mapper.Map<PriorityDto>(priority);
         }
     }
 

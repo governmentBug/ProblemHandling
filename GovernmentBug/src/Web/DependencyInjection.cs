@@ -1,6 +1,8 @@
 ﻿using Azure.Identity;
 using GovernmentBug.Application.Common.Interfaces;
+using GovernmentBug.Application.Common.Services;
 using GovernmentBug.Infrastructure.Data;
+using GovernmentBug.Web.Configuration;
 using GovernmentBug.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +16,10 @@ public static class DependencyInjection
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<IUser, CurrentUser>();
+        builder.Services.Configure<BugComparisonSettings>(
+            builder.Configuration.GetSection("BugComparison"));
+        builder.Services.AddScoped<IBugComparisonConfig, BugComparisonConfig>();
+        builder.Services.AddScoped<IImageComparisonService, ImageComparisonService>();
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHealthChecks()

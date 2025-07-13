@@ -1,8 +1,10 @@
 using GovernmentBug.Application.Bugs.Command.CreateBug;
 using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
+using GovernmentBug.Application.Bugs.Queries.BugComparison;
 using GovernmentBug.Application.Bugs.Queries.GetBugDetails;
 using GovernmentBug.Application.Bugs.Queries.GetBugsList;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth;
 using GovernmentBug.Application.Common.Models;
 using GovernmentBug.Application.TodoItems.Commands.CreateTodoItem;
@@ -11,6 +13,7 @@ using GovernmentBug.Application.TodoItems.Commands.UpdateTodoItem;
 using GovernmentBug.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using GovernmentBug.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -24,8 +27,9 @@ public class Bugs : EndpointGroupBase
             .MapGet(GetBugDetialsByID, "{id}")
             .MapPut(UpdateBug, "{id}")
             .MapDelete(DeleteBug, "{id}")
-            .MapGet(GetAllBugDetials, "all");
-
+            .MapGet(GetAllBugDetials, "all")
+            .MapPost(IdentifyingRecurringBugs, "compare")
+            .MapPut(UpdateBugAndClosed, "updateToClose/{id}");
     }
 
 
@@ -52,6 +56,15 @@ public class Bugs : EndpointGroupBase
         return TypedResults.NoContent();
     }
 
+    public async Task<Results<NoContent, BadRequest>> UpdateBugAndClosed(ISender sender, int id, UpdateBugAndClosedCommand command)
+    {
+        if (id != command.BugId) return TypedResults.BadRequest();
+
+        await sender.Send(command);
+
+        return TypedResults.NoContent();
+    }
+
 
     public async Task<NoContent> DeleteBug(ISender sender, int id)
     {
@@ -65,6 +78,10 @@ public class Bugs : EndpointGroupBase
         var result = await sender.Send(new GetBugDetails());
         return TypedResults.Ok(result);
     }
-
+    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender,[FromBody] BugComparisonQuery bugComprisonQuery)
+    {
+        var result = await sender.Send(bugComprisonQuery);
+        return result;
+    }
 }
 

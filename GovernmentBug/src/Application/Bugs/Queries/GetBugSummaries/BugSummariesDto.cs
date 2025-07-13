@@ -13,12 +13,14 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugsList
     {
         public int BugID { get; init; }
         public string? Title { get; init; }
-        public string? PriortyId { get; init; }
+        public DateTime CreatedDate { get; set; }
+        public int StatusId { get; set; }
+        public string  StatusName { get; set; } = null!;
         private class Mapping : Profile
         {
             public Mapping()
             {
-                CreateMap<Bug,BugSummariesDto >();
+                CreateMap<Bug, BugSummariesDto>().ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.StatusName));
             }
         }
     }

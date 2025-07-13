@@ -4,6 +4,8 @@ using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths;
 using Microsoft.AspNetCore.Http.HttpResults;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetTotalOpenBugs;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
+using GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -14,6 +16,8 @@ public class BugStatistics : EndpointGroupBase
         app.MapGroup(this)
          .MapGet(TotalOpenBugs, "totalopenbugs")
          .MapGet(GetBugs)
+         .MapGet(AverageTreatmentTime, "averagetreatmenttime/{priorityId}/{categoryId}/{created}")
+         .MapGet(GetOpenBugsByPriority, "openbugsbypriority")
          .MapGet(GetBugsByMonths, "bymonth/{year}")
          .MapGet(GetBugStatusByMonths, "openbugsstatus/{month}/{year}");
 
@@ -38,5 +42,15 @@ public class BugStatistics : EndpointGroupBase
     {
         var result = await sender.Send(new GetBugsStatsQuery(month,year));
         return result;
+    }
+    public async Task<OpenBugsByPriorityDto> GetOpenBugsByPriority(ISender sender)
+    {
+        var result = await sender.Send(new GetOpenBugsByPriorityQuery());
+        return result;
+    }
+    public async Task<int> AverageTreatmentTime(ISender sender, int priorityId, int categoryId, DateTime created)
+    {
+        var result = await sender.Send(new AverageTreatmentTimeQuery(priorityId, categoryId, created));
+        return (int)result;
     }
 }
