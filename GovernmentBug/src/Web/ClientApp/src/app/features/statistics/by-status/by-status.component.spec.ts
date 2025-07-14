@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChoosingYearComponent } from './choosing-date.component';
+import { ByStatusComponent } from './by-status.component';
 
-describe('ChoosingYearComponent', () => {
-  let component: ChoosingYearComponent;
-  let fixture: ComponentFixture<ChoosingYearComponent>;
+describe('ByStatusComponent', () => {
+  let component: ByStatusComponent;
+  let fixture: ComponentFixture<ByStatusComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChoosingYearComponent]
+      imports: [ByStatusComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChoosingYearComponent);
+    fixture = TestBed.createComponent(ByStatusComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

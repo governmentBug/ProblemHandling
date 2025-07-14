@@ -1,7 +1,7 @@
 
 export class Status {
   constructor(
-    public id?: number,
+    public statusId?: number,
     public statusName?: string,
   ) {}
 }
