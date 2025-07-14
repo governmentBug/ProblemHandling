@@ -14,7 +14,7 @@ import { routes } from './app.routes';
         FormsModule,
         RouterModule.forRoot(routes),
         BrowserAnimationsModule,
-        ModalModule.forRoot()
+        ModalModule.forRoot(),
     ],
     providers: [
         { provide: APP_ID, useValue: 'ng-cli-universal' },

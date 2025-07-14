@@ -1,0 +1,91 @@
+.bug-form-container {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 30px auto;
+  background-color: #fefefe;
+  font-family: Arial, sans-serif;
+}
+
+.report-container {
+  display: flex;
+  justify-content: space-between; /* מפזר את האלמנטים בין הקצוות */
+  margin-bottom: 20px; /* ריווח בין האלמנטים */
+}
+
+.report-info, .report-infoR {
+  font-weight: bold;
+}
+
+/* טופס ברשת של 2 עמודות */
+.bug-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.left-col {
+  width: 100%;
+}
+
+.input-field,
+.select-field,
+.textarea-field {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.textarea-field {
+  height: 150px;
+  resize: vertical;
+}
+
+/* שורת כפתורים */
+.buttons-row {
+  grid-column: 1 / span 2;
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.screen-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.screen-btn.yellow {
+  background-color: #ffe199;
+}
+
+.screen-btn.blue {
+  background-color: #aef1f6;
+}
+
+/* כפתור שמירה */
+.save-btn {
+  grid-column: 1 / span 2;
+  background-color: #a0f5aa;
+  border: 2px solid #60e66b;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 20px auto 0;
+  display: block;
+}

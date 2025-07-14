@@ -7,7 +7,7 @@ public interface IApplicationDbContext
     DbSet<TodoList> TodoLists { get; }
 
     DbSet<TodoItem> TodoItems { get; }
-    DbSet<Attachment> Attachments { get; }
+    DbSet<Attachments> Attachments { get; }
     DbSet<BugHistory> BugHistories { get; }
     DbSet<Bug> Bugs { get; }
     DbSet<Comment> Comments { get; }

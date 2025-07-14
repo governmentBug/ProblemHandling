@@ -15,6 +15,77 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface IAttachmentsClient {
+    createAttachments(command: CreateAttachmentCommand): Observable<number>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AttachmentsClient implements IAttachmentsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    createAttachments(command: CreateAttachmentCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/Attachments";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateAttachments(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateAttachments(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processCreateAttachments(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IBugsClient {
     createBug(command: CreateBugCommand): Observable<number>;
     getBugDetialsByID(id: number): Observable<BugDetalsDto>;
@@ -417,6 +488,7 @@ export class BugsClient implements IBugsClient {
 export interface IBugStatisticsClient {
     totalOpenBugs(): Observable<number>;
     getBugs(): Observable<BugSummariesDto[]>;
+    averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
     getBugsByMonths(year: number): Observable<ByMonthsDto>;
     getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
@@ -529,6 +601,64 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number> {
+        let url_ = this.baseUrl + "/api/BugStatistics/averagetreatmenttime/{priorityId}/{categoryId}/{created}";
+        if (priorityId === undefined || priorityId === null)
+            throw new Error("The parameter 'priorityId' must be defined.");
+        url_ = url_.replace("{priorityId}", encodeURIComponent("" + priorityId));
+        if (categoryId === undefined || categoryId === null)
+            throw new Error("The parameter 'categoryId' must be defined.");
+        url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+        if (created === undefined || created === null)
+            throw new Error("The parameter 'created' must be defined.");
+        url_ = url_.replace("{created}", encodeURIComponent(created ? "" + created.toISOString() : "null"));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAverageTreatmentTime(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAverageTreatmentTime(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAverageTreatmentTime(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2280,6 +2410,54 @@ export class WeatherForecastsClient implements IWeatherForecastsClient {
     }
 }
 
+export class CreateAttachmentCommand implements ICreateAttachmentCommand {
+    bugId?: number;
+    fileName?: string;
+    fileType?: string;
+    filePath?: string;
+
+    constructor(data?: ICreateAttachmentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bugId = _data["bugId"];
+            this.fileName = _data["fileName"];
+            this.fileType = _data["fileType"];
+            this.filePath = _data["filePath"];
+        }
+    }
+
+    static fromJS(data: any): CreateAttachmentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateAttachmentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugId"] = this.bugId;
+        data["fileName"] = this.fileName;
+        data["fileType"] = this.fileType;
+        data["filePath"] = this.filePath;
+        return data;
+    }
+}
+
+export interface ICreateAttachmentCommand {
+    bugId?: number;
+    fileName?: string;
+    fileType?: string;
+    filePath?: string;
+}
+
 export class CreateBugCommand implements ICreateBugCommand {
     bugID?: number;
     title?: string;
@@ -2539,7 +2717,7 @@ export interface IBugSummariesDto {
 export class BugComparisonQuery implements IBugComparisonQuery {
     title?: string;
     description?: string;
-    attachments?: AttachmentDto[];
+    attachments?: AttachmentsDto[];
     categoryId?: number | undefined;
 
     constructor(data?: IBugComparisonQuery) {
@@ -2558,7 +2736,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
             if (Array.isArray(_data["attachments"])) {
                 this.attachments = [] as any;
                 for (let item of _data["attachments"])
-                    this.attachments!.push(AttachmentDto.fromJS(item));
+                    this.attachments!.push(AttachmentsDto.fromJS(item));
             }
             this.categoryId = _data["categoryId"];
         }
@@ -2588,18 +2766,18 @@ export class BugComparisonQuery implements IBugComparisonQuery {
 export interface IBugComparisonQuery {
     title?: string;
     description?: string;
-    attachments?: AttachmentDto[];
+    attachments?: AttachmentsDto[];
     categoryId?: number | undefined;
 }
 
-export class AttachmentDto implements IAttachmentDto {
+export class AttachmentsDto implements IAttachmentsDto {
     attachmentId?: number;
     bugId?: number;
     fileName?: string;
     fileType?: string;
     filePath?: string;
 
-    constructor(data?: IAttachmentDto) {
+    constructor(data?: IAttachmentsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2618,9 +2796,9 @@ export class AttachmentDto implements IAttachmentDto {
         }
     }
 
-    static fromJS(data: any): AttachmentDto {
+    static fromJS(data: any): AttachmentsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AttachmentDto();
+        let result = new AttachmentsDto();
         result.init(data);
         return result;
     }
@@ -2636,7 +2814,7 @@ export class AttachmentDto implements IAttachmentDto {
     }
 }
 
-export interface IAttachmentDto {
+export interface IAttachmentsDto {
     attachmentId?: number;
     bugId?: number;
     fileName?: string;

@@ -101,6 +101,57 @@
 }
 .close-btn {
   background: none;
+}
+
+/* עיצוב לפופ-אפ פרטי באג */
+.bug-popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.35);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bug-popup-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  padding: 2.2rem 2.5rem;
+  min-width: 320px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.bug-popup-modal h2 {
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.5rem;
+  color: #1976d2;
+}
+/* כפתור סגירה (איקס) בצד ימין ובצבע כחול */
+.bug-popup-modal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 1.15rem;
+  background: none !important;
+  color: #1976d2 !important;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.bug-popup-modal .close-btn:hover {
+  color: #1565c0 !important;
+}
+.bug-popup-modal div {
+  margin-bottom: 0.7rem;
+  font-size: 1.1rem;
   border: none;
   font-size: 1.3rem;
   cursor: pointer;

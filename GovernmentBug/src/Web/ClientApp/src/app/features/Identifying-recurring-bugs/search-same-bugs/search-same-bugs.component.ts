@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BugsClient, BugComparisonQuery, BugSummariesDto } from 'src/app/web-api-client';
+import { BugsClient, BugComparisonQuery, BugSummariesDto, BugDetalsDto } from 'src/app/web-api-client';
 import { ListBugsSummariesComponent } from '../list-bugs-summaries/list-bugs-summaries.component';
+import { BugDetailComponent } from 'src/app/features/bug-detail/BugDetailComponent';
 import { Router } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
 import { BugStatisticsClient } from 'src/app/web-api-client';
@@ -10,7 +11,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-search-same-bugs',
   standalone: true,
-  imports: [CommonModule, ListBugsSummariesComponent],
+  imports: [CommonModule, ListBugsSummariesComponent, BugDetailComponent],
   templateUrl: './search-same-bugs.component.html',
   styleUrl: './search-same-bugs.component.css'
 })
@@ -28,6 +29,9 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
   message = '';
   avaragedTime: string = '';
   loading = false;
+  selectedBug: BugDetalsDto | null = null;
+  showBugPopup = false;
+  authorizedUser: boolean = false; // ניתן לעדכן לפי הרשאות בפועל
 
   constructor(
     private bugsClient: BugsClient,
@@ -103,6 +107,24 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
       this.closeDrawer();
       return;
     }
-    this.router.navigate(['/demo/', id]);
+    // Navigate to the bug detail page
+   // this.router.navigate(['/bug-detail', id]);
+    this.loading = true;
+    this.bugsClient.getBugDetialsByID(id).subscribe({
+      next: (bug) => {
+        this.selectedBug = bug;
+        this.showBugPopup = true;
+        this.loading = false;
+      },
+      error: () => {
+        this.message = 'שגיאה בשליפת פרטי הבאג.';
+        this.loading = false;
+      }
+    });
+  }
+
+  closeBugPopup() {
+    this.showBugPopup = false;
+    this.selectedBug = null;
   }
 }

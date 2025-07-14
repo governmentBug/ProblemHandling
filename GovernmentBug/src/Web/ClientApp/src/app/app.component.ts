@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { routes } from './app.routes';
-import { AllBugsComponent } from "./features/all-bugs/all-bugs.component";
+import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone:true,
-  imports: [RouterModule],
+  imports: [ RouterOutlet, RouterLink, RouterLinkActive],
   
 })
 export class AppComponent {

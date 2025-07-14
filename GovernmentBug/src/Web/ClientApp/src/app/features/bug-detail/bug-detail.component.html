@@ -58,7 +58,7 @@
             <option *ngFor="let s of statuses" [value]="s.statusId">{{ s.statusName }}</option>
           </select>
         </div>
-        <div class="assigned-to">
+        <div class="assigned-to" *ngIf="bug.statusName==='Active'">
           מטופל ע"י: {{ bug.createdByUserFullName }}
         </div>
       </div>
@@ -69,14 +69,28 @@
 
   <div class="footer-row">
     <div class="bug-files">
-      <span>video.mp4 📹</span>
-      <span>image.jpeg 📌</span>
+      <span><i class="fas fa-image"></i></span>
+      <span><i class="fas fa-video"></i></span>
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>
       <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">Save</button>
       <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">cancelEdit</button>
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
+        Delete <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="popup-overlay" *ngIf="showPopup" (click)="onOverlayClick($event)">
+  <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
+    <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>
+
+    <textarea [(ngModel)]="closeReason" rows="4" placeholder="נימוק/הערה לסגירת הבאג"></textarea>
+
+    <div class="popup-actions">
+      <button class="delete-btn" (click)="submitClose()">
         Delete <i class="fa fa-trash"></i>
       </button>
     </div>

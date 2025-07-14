@@ -20,14 +20,21 @@
 <div class="add-section">
   <ng-container *ngIf="isAuthorizedToComment">
     <div *ngIf="adding" class="add-form">
-      <textarea [(ngModel)]="newComment" (keydown.enter)="handleEnter($event)"
-        placeholder="כתוב כאן הערה..."></textarea>
+      <textarea
+       class="comment-textarea"
+      focus 
+      #commentInput
+      [(ngModel)]="newComment" 
+      (keydown.enter)="handleEnter($event)"
+      placeholder="כתוב כאן הערה...">
+    </textarea>
       <div class="actions">
-        <button (click)="saveComment()">שמור</button>
-        <button (click)="cancelAdd()">ביטול</button>
+        <button class="add-btn" (click)="saveComment()">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+
       </div>
     </div>
-    <button *ngIf="!adding" class="add-btn" (click)="openAdd()">➕</button>
+    <button *ngIf="!adding" class="add-btn" (click)="openAdd()">+</button>
   </ng-container>
 </div>
-

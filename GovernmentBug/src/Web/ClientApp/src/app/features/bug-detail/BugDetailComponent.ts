@@ -23,7 +23,7 @@ export class BugDetailComponent implements OnInit {
   isEditMode = false;
   editedBug: BugDetalsDto = new UpdateBugCommand();
 
-  // רשימות לבחירה
+
   priorities: Array<PriorityDto>
   categories: Array<CategoryDto>
   statuses: Array<StatusDto>

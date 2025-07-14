@@ -13,7 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
-    public DbSet<Attachment> Attachments => Set<Attachment>();
+    public DbSet<Attachments> Attachments => Set<Attachments>();
     public DbSet<BugHistory> BugHistories => Set<BugHistory>();
     public DbSet<Bug> Bugs => Set<Bug>();
     public DbSet<Comment> Comments => Set<Comment>();
