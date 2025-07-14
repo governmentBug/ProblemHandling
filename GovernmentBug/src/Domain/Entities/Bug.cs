@@ -29,7 +29,7 @@ namespace GovernmentBug.Domain.Entities
         [StringLength(100)]
         public string ReasonForClosure {  get; set; }=string.Empty;
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+        public ICollection<Attachments> Attachments { get; set; } = new List<Attachments>();
         public ICollection<BugHistory> BugHistories { get; set; } = new List<BugHistory>();
     }
 }

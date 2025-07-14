@@ -1472,7 +1472,7 @@
           "attachments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AttachmentDto"
+              "$ref": "#/components/schemas/AttachmentsDto"
             }
           },
           "categoryId": {
@@ -1482,7 +1482,7 @@
           }
         }
       },
-      "AttachmentDto": {
+      "AttachmentsDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

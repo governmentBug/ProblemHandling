@@ -22,7 +22,7 @@ namespace GovernmentBug.Application.Bugs.Queries.BugComparison
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public List<AttachmentDto> Attachments { get; set; } = new();
+        public List<AttachmentsDto> Attachments { get; set; } = new();
         public int? CategoryId { get; set; }
     }
     public class BugComparisonQueryHandler : IRequestHandler<BugComparisonQuery, List<BugSummariesDto>>
