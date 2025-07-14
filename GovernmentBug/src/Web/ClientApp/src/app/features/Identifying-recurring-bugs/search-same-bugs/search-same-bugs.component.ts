@@ -5,6 +5,7 @@ import { ListBugsSummariesComponent } from '../list-bugs-summaries/list-bugs-sum
 import { BugDetailComponent } from 'src/app/features/bug-detail/BugDetailComponent';
 import { Router } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
+import { BugStatisticsClient } from 'src/app/web-api-client';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -26,14 +27,17 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
   recurringBugs: BugSummariesDto[] = [];
   showDrawer = false;
   message = '';
+  avaragedTime: string = '';
   loading = false;
   selectedBug: BugDetalsDto | null = null;
   showBugPopup = false;
   authorizedUser: boolean = false; // ניתן לעדכן לפי הרשאות בפועל
 
-  constructor(private bugsClient: BugsClient,
+  constructor(
+    private bugsClient: BugsClient,
     private router: Router,
-    private stateService: StateService
+    private stateService: StateService,
+    private bugStatisticsClient: BugStatisticsClient
   ) {}
 
  async searchRecurringBugs() {
@@ -47,7 +51,7 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
           bug.statusName = this.stateService.getStatusById(bug.statusId);
         });
         this.recurringBugs = result;
-        this.message = `נמצאו ${result.length} באגים חוזרים!`;
+        this.message = `יתכן שכבר קיים באג דומה במערכת`;
         this.showDrawer = true;
       } else {
         this.message = '';
@@ -63,6 +67,40 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
 }
   closeDrawer() {
     this.showDrawer = false;
+  }
+  cancelOpenBug() {
+    this.showDrawer = false;
+
+    this.router.navigate(['']);
+  }
+  async continueOpenBug() {
+    this.message = '';
+    this.showDrawer = false;
+    // נשתמש ב-priorityId ו-categoryId מתוך הבאג שנבחר או מתוך הבאג להשוואה
+    const priorityId = this.selectedBug?.priorityId || 1;
+    const categoryId = this.selectedBug?.categoryId || this.bugComparisonQuery.categoryId || 1;
+    const created = this.selectedBug?.createdDate ? new Date(this.selectedBug.createdDate) : new Date();
+    try {
+      const avgTime = await firstValueFrom(this.bugStatisticsClient.averageTreatmentTime(priorityId, categoryId, created));
+      if(avgTime==-1) {
+              this.avaragedTime = '.אין מספיק נתונים כדי לחשב זמן ממוצע לטיפול בבאג';
+      } else {
+          this.avaragedTime = `זמן ממוצע לטיפול בבאג מסוג זה: ${this.formatDuration(avgTime)}`;
+      }
+      console.log('זמן ממוצע לטיפול בבאג:', this.avaragedTime);
+    } catch {
+      this.avaragedTime = 'לא ניתן לחשב זמן ממוצע לטיפול בבאג.';
+    }
+  }
+
+  formatDuration(minutes: number): string {
+    if (!minutes || minutes < 1) return 'פחות מדקה';
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.round(minutes % 60);
+    let str = '';
+    if (hours > 0) str += `${hours} שעות `;
+    if (mins > 0) str += `${mins} דקות`;
+    return str.trim();
   }
   onViewBug(id: number) {
     if (id === -1) {

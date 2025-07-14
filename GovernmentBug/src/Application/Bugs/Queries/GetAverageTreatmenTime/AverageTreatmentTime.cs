@@ -48,6 +48,10 @@ namespace GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime
                     .FirstOrDefault();
                 totalDays += closedHistory != null ? (closedHistory.Created - b.CreatedDate).Days : 0;
             }
+            if(bugs.Count == 0)
+            {
+                return -1; 
+            }
             return totalDays / bugs.Count;
         }
     }
