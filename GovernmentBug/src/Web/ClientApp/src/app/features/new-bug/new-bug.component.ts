@@ -44,11 +44,14 @@ export class NewBugComponent implements OnInit {
   ngOnInit(): void {
     this.loadAllCategory();
     this.loadAllPriority();
+    this.newBug.statusId = 1;
+    this.newBug.created = this.formattedDateToSave;
+    this.newBug.createdByUserId = 1;
+    this.newBug.priorityId = 1;
   }
   // הוספת הבג בפועל
   async addBug() {
     console.log(this.newBug);
-
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       console.log('Bug created:', response);
