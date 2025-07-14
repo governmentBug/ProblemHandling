@@ -1,3 +1,56 @@
+/* הודעת זמן ממוצע לטיפול */
+.average-time-message {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 1.18rem;
+  color: #1976d2;
+  font-weight: bold;
+}
+/* כפתורי פעולה לבאגים דומים */
+.similar-bugs-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+.cancel-btn {
+  background: #ff3b3b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s;
+}
+.cancel-btn:hover {
+  background: #d32f2f;
+}
+.cancel-btn .icon {
+  width: 22px;
+  height: 22px;
+}
+.continue-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s;
+}
+.continue-btn:hover {
+  background: #1565c0;
+}
 .search-btn {
   background: #1976d2;
   color: #fff;

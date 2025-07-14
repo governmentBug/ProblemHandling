@@ -1,32 +1,37 @@
 <div class="side-drawer">
   <div class="drawer-header center-title">
+    <button class="close-btn" (click)="$event.stopPropagation(); viewBug.emit(-1)">
+      <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="#1976d2" stroke-width="2" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4" y2="16" stroke="#1976d2" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
     <span> באגים דומים</span>
-    <button class="close-btn" (click)="$event.stopPropagation(); viewBug.emit(-1)">✖</button>
   </div>
-  <ul class="drawer-list">
-    <li *ngFor="let bug of bugsSummaries">
-      <div class="bug-summary center-fields">
-        <div class="bug-fields">
-          <div> {{ bug.title || '---' }}</div>
-          <div><b>נוצר בתאריך</b> <br/>{{ bug.createdDate | date:'dd/MM/yyyy HH:mm' }}</div>
-          <div>
-             <b>סטטוס</b>
-             <br/>
-            <span [ngClass]="{
-              'status-open': bug.statusName === 'Open',
-              'status-active': bug.statusName === 'Active',
-              'status-close': bug.statusName === 'Close',
-              'status-cancelled': bug.statusName === 'Cancelled',
-              'status-close-without-opening': bug.statusName === 'Close without opening a bug'
-            }">
-              {{ bug.statusName || '---' }}
-            </span>
-                       
-
+  <div class="drawer-list">
+    <ng-container *ngFor="let bug of bugsSummaries">
+      <div>
+        <div class="bug-summary">
+          <div class="bug-fields">
+            <div class="bug-title">{{ bug.title || '---' }}</div>
+            <div><b>נוצר בתאריך</b> <br/>{{ bug.createdDate | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div>
+              <b>סטטוס</b>
+              <br/>
+              <span [ngClass]="{
+                'status-open': bug.statusName === 'Open',
+                'status-active': bug.statusName === 'Active',
+                'status-close': bug.statusName === 'Close',
+                'status-cancelled': bug.statusName === 'Cancelled',
+                'status-close-without-opening': bug.statusName === 'Close without opening a bug'
+              }">
+                {{ bug.statusName || '---' }}
+              </span>
+            </div>
+            <button class="view-btn styled-view-btn" (click)="onViewBug(bug.bugID!)">צפה</button>
           </div>
         </div>
-        <button class="view-btn below-btn" (click)="onViewBug(bug.bugID!)">צפה</button>
       </div>
-    </li>
-  </ul>
+    </ng-container>
+  </div>
 </div>
