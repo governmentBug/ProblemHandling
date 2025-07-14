@@ -2717,7 +2717,7 @@ export interface IBugSummariesDto {
 export class BugComparisonQuery implements IBugComparisonQuery {
     title?: string;
     description?: string;
-    attachments?: AttachmentDto[];
+    attachments?: AttachmentsDto[];
     categoryId?: number | undefined;
 
     constructor(data?: IBugComparisonQuery) {
@@ -2736,7 +2736,7 @@ export class BugComparisonQuery implements IBugComparisonQuery {
             if (Array.isArray(_data["attachments"])) {
                 this.attachments = [] as any;
                 for (let item of _data["attachments"])
-                    this.attachments!.push(AttachmentDto.fromJS(item));
+                    this.attachments!.push(AttachmentsDto.fromJS(item));
             }
             this.categoryId = _data["categoryId"];
         }
@@ -2766,18 +2766,18 @@ export class BugComparisonQuery implements IBugComparisonQuery {
 export interface IBugComparisonQuery {
     title?: string;
     description?: string;
-    attachments?: AttachmentDto[];
+    attachments?: AttachmentsDto[];
     categoryId?: number | undefined;
 }
 
-export class AttachmentDto implements IAttachmentDto {
+export class AttachmentsDto implements IAttachmentsDto {
     attachmentId?: number;
     bugId?: number;
     fileName?: string;
     fileType?: string;
     filePath?: string;
 
-    constructor(data?: IAttachmentDto) {
+    constructor(data?: IAttachmentsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2796,9 +2796,9 @@ export class AttachmentDto implements IAttachmentDto {
         }
     }
 
-    static fromJS(data: any): AttachmentDto {
+    static fromJS(data: any): AttachmentsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AttachmentDto();
+        let result = new AttachmentsDto();
         result.init(data);
         return result;
     }
@@ -2814,7 +2814,7 @@ export class AttachmentDto implements IAttachmentDto {
     }
 }
 
-export interface IAttachmentDto {
+export interface IAttachmentsDto {
     attachmentId?: number;
     bugId?: number;
     fileName?: string;
