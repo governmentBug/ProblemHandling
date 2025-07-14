@@ -44,15 +44,14 @@ public newBug: AbbBug = new AbbBug("גכגכ","dfdf",1,1,1,this.formattedDateToS
   ngOnInit(): void {
     this.loadAllCategory();
     this.loadAllPriority();
+    this.newBug.statusId = 1;
+    this.newBug.created = this.formattedDateToSave;
+    this.newBug.createdByUserId = 1;
+    this.newBug.priorityId = 1;
   }
   // הוספת הבג בפועל
   async addBug() {
     console.log(this.newBug);
-    // this.newBug.created = this.formattedDateToSave;
-    // this.newBug.categoryId =1
-    // this.newBug.priorityId = 1;
-    // this.newBug.createdByUserId = 1; // ניתן לשנות לפי המשתמש המחובר
-    // this.newBug.statusId = 1; // ניתן לשנות לפי הסטטוס הרצוי
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       console.log('Bug created:', response);
