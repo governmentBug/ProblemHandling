@@ -1,7 +1,7 @@
 
 export class Priority {
   constructor(
-    public id: number,
+    public priorityId: number,
     public priorityName?: string,
   ) {}
 }

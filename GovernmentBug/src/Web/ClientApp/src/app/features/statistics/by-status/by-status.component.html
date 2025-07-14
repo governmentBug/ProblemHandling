@@ -1,0 +1,23 @@
+<div class="by-status-container">
+  <div class="by-status-header">
+    סך הכל באגים במערכת: <span class="total-count">{{ byStatus.totalBugs }}</span>
+  </div>
+  <div class="by-status-grid">
+    <div class="status-box open">
+      <div class="status-title">פתוחים</div>
+      <div class="status-count">{{ byStatus.openBugs }}</div>
+    </div>
+    <div class="status-box active">
+      <div class="status-title">בטיפול</div>
+      <div class="status-count">{{ byStatus.activeBugs }}</div>
+    </div>
+    <div class="status-box cancelled">
+      <div class="status-title">בוטלו</div>
+      <div class="status-count">{{ byStatus.cancelledBugs }}</div>
+    </div>
+    <div class="status-box closed">
+      <div class="status-title">נסגרו</div>
+      <div class="status-count">{{ byStatus.closedBugs }}</div>
+    </div>
+  </div>
+</div>

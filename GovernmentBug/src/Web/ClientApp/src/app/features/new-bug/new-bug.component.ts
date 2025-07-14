@@ -27,7 +27,7 @@ export class NewBugComponent implements OnInit {
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
   // הבג להוספה
-  public newBug: AbbBug = new AbbBug();
+public newBug: AbbBug = new AbbBug("גכגכ","dfdf",1,1,1,this.formattedDateToSave,1);
   // שמירת נתונים מהמסד
   allCategory: Category[] = [];
   allPriority: Priority[] = [];
@@ -48,7 +48,11 @@ export class NewBugComponent implements OnInit {
   // הוספת הבג בפועל
   async addBug() {
     console.log(this.newBug);
-
+    // this.newBug.created = this.formattedDateToSave;
+    // this.newBug.categoryId =1
+    // this.newBug.priorityId = 1;
+    // this.newBug.createdByUserId = 1; // ניתן לשנות לפי המשתמש המחובר
+    // this.newBug.statusId = 1; // ניתן לשנות לפי הסטטוס הרצוי
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       console.log('Bug created:', response);

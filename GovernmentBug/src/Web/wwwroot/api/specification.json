@@ -263,6 +263,26 @@
         }
       }
     },
+    "/api/BugStatistics/bystatus": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetByStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/totalopenbugs": {
       "get": {
         "tags": [
@@ -1515,6 +1535,54 @@
           },
           "reasonForClosure": {
             "type": "string"
+          }
+        }
+      },
+      "ByStatusDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
+          },
+          "closeBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
+          },
+          "activeBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
+          },
+          "cancelledBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
+          }
+        }
+      },
+      "ByPriorityDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "low": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "medium": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "high": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "critical": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
