@@ -9,6 +9,7 @@ import { PriorityService } from 'src/app/services/priority.service';
 import { Priority } from 'src/app/models/priority.model';
 import { AddAtachment } from 'src/app/models/add-atachment.module';
 import { AddDocumentService } from 'src/app/services/add-atachment.service';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-new-bug',
@@ -152,4 +153,5 @@ export class NewBugComponent implements OnInit {
     const filmInput = document.getElementById('filmInput') as HTMLInputElement;
     filmInput.click();
   }
+
 }
