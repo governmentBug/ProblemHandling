@@ -46,8 +46,8 @@ public newBug: AbbBug = new AbbBug("גכגכ","dfdf",1,1,1,this.formattedDateToS
     this.loadAllPriority();
     this.newBug.statusId = 1;
     this.newBug.created = this.formattedDateToSave;
+    // מי שמשתמש עכשיו
     this.newBug.createdByUserId = 1;
-    this.newBug.priorityId = 1;
   }
   // הוספת הבג בפועל
   async addBug() {

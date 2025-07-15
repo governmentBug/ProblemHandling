@@ -21,7 +21,7 @@
           {{ category.categoryName }}
         </option>
       </select>
-
+      
       <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
         <option value="0" disabled>עדיפות</option>
         <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
