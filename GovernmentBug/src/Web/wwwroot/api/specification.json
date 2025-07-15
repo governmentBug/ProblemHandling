@@ -39,6 +39,91 @@
         }
       }
     },
+    "/api/Attachments/{Id}": {
+      "get": {
+        "tags": [
+          "Attachments"
+        ],
+        "operationId": "GetAttachmentsByBugID",
+        "parameters": [
+          {
+            "name": "Id",
+            "x-originalName": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AttachmentBugDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Attachments/{id}": {
+      "delete": {
+        "tags": [
+          "Attachments"
+        ],
+        "operationId": "DeleteAttachment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Attachments/create": {
+      "post": {
+        "tags": [
+          "Attachments"
+        ],
+        "operationId": "PostApiAttachmentsCreate",
+        "parameters": [
+          {
+            "name": "cmd",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CreateAttachmentCommandNew"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Bugs": {
       "post": {
         "tags": [
@@ -100,44 +185,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Bugs"
-        ],
-        "operationId": "UpdateBug",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBugCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": ""
           }
         }
       },
@@ -258,6 +305,30 @@
             "description": ""
           },
           "400": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Bugs/update": {
+      "post": {
+        "tags": [
+          "Bugs"
+        ],
+        "operationId": "PostApiBugsUpdate",
+        "parameters": [
+          {
+            "name": "cmd",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UpdateBugCommand"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
             "description": ""
           }
         }
@@ -1312,6 +1383,67 @@
           }
         }
       },
+      "AttachmentBugDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "attachmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string",
+            "format": "byte"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateAttachmentCommandNew": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentUploadDto"
+            }
+          }
+        }
+      },
+      "AttachmentUploadDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "attachmentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "isFilm": {
+            "type": "boolean"
+          }
+        }
+      },
       "CreateBugCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -1406,34 +1538,6 @@
           }
         }
       },
-      "UpdateBugCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "bugId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "priorityId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "categoryId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "statusId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "BugSummariesDto": {
         "type": "object",
         "additionalProperties": false,
@@ -1515,6 +1619,41 @@
           },
           "reasonForClosure": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateBugCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bugId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priorityId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "files": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/AttachmentUploadDto"
+            }
           }
         }
       },
