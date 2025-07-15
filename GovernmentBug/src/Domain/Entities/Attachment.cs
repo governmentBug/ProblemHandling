@@ -21,7 +21,6 @@ namespace GovernmentBug.Domain.Entities
 
         [MaxLength(50)]
         public string FileType { get; set; } = string.Empty;
-
         public byte[] FilePath { get; set; } = Array.Empty<byte>();
 
     }
