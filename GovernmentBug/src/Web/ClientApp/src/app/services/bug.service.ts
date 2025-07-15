@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bug } from '../models/bug.model';
 import { AbbBug } from '../models/addBug.model';
-import { Category } from '../models/category.module';
 import { CommentService } from './Comment.service';
 import { BugDetalsDto, BugsClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
 

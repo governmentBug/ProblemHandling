@@ -1,9 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Bug } from '../models/bug.model';
-import { CommentService } from './Comment.service';
-import { BugDetalsDto, BugsClient, CategoryClient, PriorityClient, StatusClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
+import { CategoryClient, PriorityClient, StatusClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
