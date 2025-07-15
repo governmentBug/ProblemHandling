@@ -15,16 +15,16 @@
       <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
         class="input-field" id="nameB"/>
 
-      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field">
-        <option value="" disabled selected>קטגוריה</option>
-        <option *ngFor="let category of allCategory" [value]="category.categoryId">
+      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
+        <option value="0" disabled>קטגוריה</option>
+        <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
           {{ category.categoryName }}
         </option>
       </select>
-
-      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field">
-        <option value="" disabled selected>עדיפות</option>
-        <option *ngFor="let priority of allPriority" [value]="priority.priorityId">
+      
+      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
+        <option value="0" disabled>עדיפות</option>
+        <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
           {{ priority.priorityName }}
         </option>
       </select>

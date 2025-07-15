@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetTotalOpenBugs;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
 using GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -13,7 +14,8 @@ public class BugStatistics : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
+        app.MapGroup(this).
+          MapGet(GetByStatus, "bystatus")
          .MapGet(TotalOpenBugs, "totalopenbugs")
          .MapGet(GetBugs)
          .MapGet(AverageTreatmentTime, "averagetreatmenttime/{priorityId}/{categoryId}/{created}")
@@ -21,6 +23,11 @@ public class BugStatistics : EndpointGroupBase
          .MapGet(GetBugsByMonths, "bymonth/{year}")
          .MapGet(GetBugStatusByMonths, "openbugsstatus/{month}/{year}");
 
+    }
+    public async Task<ByStatusDto> GetByStatus(ISender sender)
+    {
+        var result = await sender.Send(new GetByStatusQuery());
+        return result;
     }
     public async Task<int> TotalOpenBugs(ISender sender)
     {

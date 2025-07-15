@@ -1,12 +1,8 @@
 <div class="bug-and-comments-wrapper">
   <!-- פאנל התגובות בצד שמאל -->
   <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
-    <app-comment-panel 
-    [comments]="comments" 
-    [isAuthorizedToComment]="isAuthorizedToComment"
-    (commentAdded)="onCommentAdded($event)" 
-    (commentDeleted)="onCommentDeleted($event)" 
-    (closePanel)="onClosePanel()">
+    <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
+      (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)" (closePanel)="onClosePanel()">
     </app-comment-panel>
   </div>
 
@@ -60,23 +56,25 @@
               <td>{{ bug.title }}</td>
               <td>
                 <span [ngClass]="{
-                  'priority-low': bug.priorityName === 'Low',
-                  'priority-medium': bug.priorityName === 'Medium',
-                  'priority-high': bug.priorityName === 'High',
-                  'priority-critical': bug.priorityName === 'Critical'
-                }">
-                  {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
-                  bug.priorityName === 'High' ? '★★★' : '★★★★' }}
+  'priority-low': bug.priorityName === 'נמוכה',
+  'priority-medium': bug.priorityName === 'בינונית',
+  'priority-high': bug.priorityName === 'גבוהה',
+  'priority-critical': bug.priorityName === 'קריטית'
+}">
+                  {{ bug.priorityName === 'נמוכה' ? '★' :
+                  bug.priorityName === 'בינונית' ? '★★' :
+                  bug.priorityName === 'גבוהה' ? '★★★' : '★★★★' }}
                 </span>
+
               </td>
               <td>
                 <span [ngClass]="{
-                  'status-open': bug.statusName === 'Open',
-                  'status-active': bug.statusName === 'Active',
-                  'status-close': bug.statusName === 'Close',
-                  'status-cancelled': bug.statusName === 'Cancelled',
-                  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
-                }">
+  'status-open': bug.statusName === 'פתוח',
+  'status-active': bug.statusName === 'פעיל',
+  'status-close': bug.statusName === 'סגור',
+  'status-cancelled': bug.statusName === 'בוטל',
+  'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
+}">
                   {{ bug.statusName }}
                 </span>
               </td>

@@ -486,6 +486,7 @@ export class BugsClient implements IBugsClient {
 }
 
 export interface IBugStatisticsClient {
+    getByStatus(): Observable<ByStatusDto>;
     totalOpenBugs(): Observable<number>;
     getBugs(): Observable<BugSummariesDto[]>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
@@ -505,6 +506,54 @@ export class BugStatisticsClient implements IBugStatisticsClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    getByStatus(): Observable<ByStatusDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/bystatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ByStatusDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ByStatusDto>;
+        }));
+    }
+
+    protected processGetByStatus(response: HttpResponseBase): Observable<ByStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ByStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
 
     totalOpenBugs(): Observable<number> {
@@ -2860,6 +2909,110 @@ export class UpdateBugAndClosedCommand implements IUpdateBugAndClosedCommand {
 export interface IUpdateBugAndClosedCommand {
     bugId?: number;
     reasonForClosure?: string;
+}
+
+export class ByStatusDto implements IByStatusDto {
+    totalBugs?: number;
+    openBugs?: ByPriorityDto;
+    closeBugs?: ByPriorityDto;
+    activeBugs?: ByPriorityDto;
+    cancelledBugs?: ByPriorityDto;
+
+    constructor(data?: IByStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalBugs = _data["totalBugs"];
+            this.openBugs = _data["openBugs"] ? ByPriorityDto.fromJS(_data["openBugs"]) : <any>undefined;
+            this.closeBugs = _data["closeBugs"] ? ByPriorityDto.fromJS(_data["closeBugs"]) : <any>undefined;
+            this.activeBugs = _data["activeBugs"] ? ByPriorityDto.fromJS(_data["activeBugs"]) : <any>undefined;
+            this.cancelledBugs = _data["cancelledBugs"] ? ByPriorityDto.fromJS(_data["cancelledBugs"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ByStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalBugs"] = this.totalBugs;
+        data["openBugs"] = this.openBugs ? this.openBugs.toJSON() : <any>undefined;
+        data["closeBugs"] = this.closeBugs ? this.closeBugs.toJSON() : <any>undefined;
+        data["activeBugs"] = this.activeBugs ? this.activeBugs.toJSON() : <any>undefined;
+        data["cancelledBugs"] = this.cancelledBugs ? this.cancelledBugs.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IByStatusDto {
+    totalBugs?: number;
+    openBugs?: ByPriorityDto;
+    closeBugs?: ByPriorityDto;
+    activeBugs?: ByPriorityDto;
+    cancelledBugs?: ByPriorityDto;
+}
+
+export class ByPriorityDto implements IByPriorityDto {
+    total?: number;
+    low?: number;
+    medium?: number;
+    high?: number;
+    critical?: number;
+
+    constructor(data?: IByPriorityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.total = _data["total"];
+            this.low = _data["low"];
+            this.medium = _data["medium"];
+            this.high = _data["high"];
+            this.critical = _data["critical"];
+        }
+    }
+
+    static fromJS(data: any): ByPriorityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByPriorityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total;
+        data["low"] = this.low;
+        data["medium"] = this.medium;
+        data["high"] = this.high;
+        data["critical"] = this.critical;
+        return data;
+    }
+}
+
+export interface IByPriorityDto {
+    total?: number;
+    low?: number;
+    medium?: number;
+    high?: number;
+    critical?: number;
 }
 
 export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {

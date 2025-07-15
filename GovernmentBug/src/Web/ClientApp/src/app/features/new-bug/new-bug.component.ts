@@ -27,7 +27,7 @@ export class NewBugComponent implements OnInit {
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
   // הבג להוספה
-  public newBug: AbbBug = new AbbBug();
+public newBug: AbbBug = new AbbBug("גכגכ","dfdf",1,1,1,this.formattedDateToSave,1);
   // שמירת נתונים מהמסד
   allCategory: Category[] = [];
   allPriority: Priority[] = [];

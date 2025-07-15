@@ -1,0 +1,19 @@
+.chart-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+#statusPriorityChart {
+  width: 100% !important;
+  height: 400px !important;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  #statusPriorityChart {
+    height: 260px !important;
+  }
+}
