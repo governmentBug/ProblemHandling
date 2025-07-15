@@ -8,13 +8,18 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 {
     public class ByMonthsDto
     {
-        public int TotalBugs { get; set; }
-        public int[] ByMonth { get; set; }
+        public Dictionary<string, int> ByMonth { get; set; } = new Dictionary<string, int>();
 
-        public ByMonthsDto(int[] bugByMonth,int total)
+        public void Add(string month, int capacity)
         {
-            TotalBugs = total;
-            ByMonth = bugByMonth;   
+            if (ByMonth.ContainsKey(month))
+            {
+                ByMonth[month] += capacity;
+            }
+            else
+            {
+                ByMonth[month] = capacity;
+            }
         }
     }
 }
