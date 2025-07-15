@@ -46,8 +46,8 @@ export class NewBugComponent implements OnInit {
     this.loadAllPriority();
     this.newBug.statusId = 1;
     this.newBug.created = this.formattedDateToSave;
+    // מי שמשתמש עכשיו
     this.newBug.createdByUserId = 1;
-    this.newBug.priorityId = 1;
   }
   // הוספת הבג בפועל
   async addBug() {
