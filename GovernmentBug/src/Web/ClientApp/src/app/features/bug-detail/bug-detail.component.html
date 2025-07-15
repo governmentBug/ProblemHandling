@@ -69,8 +69,13 @@
 
   <div class="footer-row">
     <div class="bug-files">
-      <span><i class="fas fa-image"></i></span>
-      <span><i class="fas fa-video"></i></span>
+      <button *ngIf="!isEditMode" (click)="showFiles.emit(bug.bugId)">
+        הצגת קבצים
+      </button>
+      <span *ngIf="!isEditMode"><i class="fas fa-video"></i></span>
+      <div *ngIf="isEditMode" class="attachments-section">
+        <app-file-uploader (filesChanged)="onFilesChanged($event)"></app-file-uploader>
+      </div>
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>

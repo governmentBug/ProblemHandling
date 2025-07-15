@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
-import { BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
+import { AttachmentBugDto, BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
 import { StateService } from 'src/app/services/state.service';
+import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
+import { FileUpload } from 'src/app/models/FileUpload';
 
 @Component({
   selector: 'app-bug-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FileUploaderComponent],
   templateUrl: './bug-detail.component.html',
   styleUrl: './bug-detail.component.css'
 })
@@ -17,16 +19,15 @@ export class BugDetailComponent implements OnInit {
   @Input() bug!: BugDetalsDto;
   @Input() AuthorizedUser!: boolean;
   @Output() bugChanged = new EventEmitter<any>();
-
+  @Output() showFiles = new EventEmitter<number>();
   showPopup = false;
   closeReason = '';
   isEditMode = false;
   editedBug: BugDetalsDto = new UpdateBugCommand();
-
-
   priorities: Array<PriorityDto>
   categories: Array<CategoryDto>
   statuses: Array<StatusDto>
+  selectedFiles: FileUpload[] = [];
   constructor(private bugService: BugService, public stateService: StateService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -52,6 +53,9 @@ export class BugDetailComponent implements OnInit {
       err => console.error(err)
     )
   }
+  onFilesChanged(files: FileUpload[]) {
+    this.selectedFiles = files;
+  }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bug'] && this.bug) {
       this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
@@ -68,14 +72,22 @@ export class BugDetailComponent implements OnInit {
   }
 
   saveChanges() {
-    const dtoToSend = {
-      title: this.editedBug.title,
-      description: this.editedBug.description,
-      categoryId: this.editedBug.categoryId,
-      priorityId: this.editedBug.priorityId,
-      statusId: this.editedBug.statusId
-    };
-    this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
+    const formData = new FormData();
+    formData.append('bugId', this.bug.bugId.toString());
+    formData.append('title', this.editedBug.title);
+    formData.append('description', this.editedBug.description);
+    formData.append('categoryId', this.editedBug.categoryId.toString());
+    formData.append('priorityId', this.editedBug.priorityId.toString());
+    formData.append('statusId', this.editedBug.statusId.toString());
+    this.selectedFiles.forEach((attachment, index) => {
+      formData.append(`Files[${index}].File`, attachment.file);
+      formData.append(`Files[${index}].IsFilm`, attachment.isFilm.toString());
+      if (attachment.attachmentId !== undefined) {
+        formData.append(`Files[${index}].AttachmentId`, attachment.attachmentId.toString());
+      }
+    });
+
+    this.bugService.updateBug(this.bug.bugId, formData).subscribe(
       {
         next: () => {
           this.bugChanged.emit();

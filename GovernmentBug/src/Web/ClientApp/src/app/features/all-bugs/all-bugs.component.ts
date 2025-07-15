@@ -5,34 +5,34 @@ import { Bug } from 'src/app/models/bug.model';
 import { BugService } from 'src/app/services/bug.service';
 import { CommentService } from 'src/app/services/Comment.service';
 import { ActivatedRoute } from '@angular/router';
-import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
+import { AttachmentBugDto, BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
 import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
 import { StateService } from 'src/app/services/state.service';
 import { CommentPanelComponent } from '../comment-panel/comment-panel.component';
+import { PannelAttacmentsComponent } from "../pannel-attacments/pannel-attacments.component";
 
 @Component({
   selector: 'app-all-bugs',
   standalone: true,
-  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent],
+  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent, PannelAttacmentsComponent],
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })
 export class AllBugsComponent implements OnInit {
   allBugs: BugDetalsDto[] = [];
   bugs: BugDetalsDto[] = [];
-
   currentPage = 1;
   pageSize = 15;
-
   selectedFilterType: string = '';
   selectedFilterValue: string = '';
-
   searchText: string = '';
   selectedBug: BugDetalsDto
   comments: CommentsBugDto[] = [];
   isCommentsPanelOpen = true;
   isAuthorizedToComment = true;
   filterOptions: { [key: string]: string[] } = {};
+  isFilesPanelOpen = false;
+  attachedFiles: Array<AttachmentBugDto>;
 
   constructor(private bugService: BugService, private stateService: StateService, public CommentService: CommentService, public route: ActivatedRoute) { }
   ngOnInit(): void {
@@ -234,9 +234,13 @@ export class AllBugsComponent implements OnInit {
       this.isCommentsPanelOpen = false;
     } else {
       this.selectedBug = bug;
-      this.getBugById(bug.bugId); 
+      this.getBugById(bug.bugId);
       this.isCommentsPanelOpen = true;
     }
   }
+  openFilesPanel(bugId:number) {
+  this.isFilesPanelOpen = true;
+}
+
 }
 

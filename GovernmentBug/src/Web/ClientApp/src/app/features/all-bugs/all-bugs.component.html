@@ -1,15 +1,19 @@
 <div class="bug-and-comments-wrapper">
   <!-- פאנל התגובות בצד שמאל -->
-  <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
-    <app-comment-panel 
-    [comments]="comments" 
+  <div class="comment-panel" 
+  *ngIf="isCommentsPanelOpen && selectedBug">
+    <app-comment-panel [comments]="comments" 
     [isAuthorizedToComment]="isAuthorizedToComment"
     (commentAdded)="onCommentAdded($event)" 
     (commentDeleted)="onCommentDeleted($event)" 
     (closePanel)="onClosePanel()">
     </app-comment-panel>
   </div>
-
+  <app-pannel-attacments 
+  *ngIf="isFilesPanelOpen" 
+  [bugId]="selectedBug.bugId"
+  (close)="isFilesPanelOpen = false">
+</app-pannel-attacments>
   <!-- אזור הטבלה בימין -->
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
     <div class="search-filter-bar">
@@ -87,7 +91,7 @@
             <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
               <td colspan="8">
                 <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
-                  (bugChanged)="onBugChanged()">
+                  (bugChanged)="onBugChanged()" (showFiles)="openFilesPanel($event)">
                 </app-bug-detail>
               </td>
             </tr>
