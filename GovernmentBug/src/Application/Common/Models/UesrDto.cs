@@ -12,5 +12,13 @@ public class UserDto
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public List<BugDto> CreatedBugs { get; set; } = new();
+    public class Mapper : Profile
+    {
+        public Mapper() 
+        {
+            CreateMap<Domain.Entities.Users, UserDto>()
+                .ReverseMap();
+        }
+    }
 
 }
