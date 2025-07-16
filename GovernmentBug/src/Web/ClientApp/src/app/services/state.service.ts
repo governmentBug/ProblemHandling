@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CategoryClient, PriorityClient, StatusClient, UpdateBugAndClosedCommand, UpdateBugCommand } from '../web-api-client';
+import { CategoryClient, PriorityClient, StatusClient, UpdateBugAndClosedCommand, UpdateBugCommand, UsersClient } from '../web-api-client';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
