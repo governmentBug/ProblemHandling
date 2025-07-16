@@ -1,0 +1,27 @@
+<div class="attachments-wrapper">
+
+  <!-- העלאת קבצים -->
+  <div *ngIf="isEditMode" class="upload-box">
+    <label class="upload-label">
+      📁 העלאת קבצים
+      <input type="file" multiple hidden (change)="onFileSelected($event)" />
+    </label>
+  </div>
+
+  <!-- תצוגת קבצים -->
+  <div class="attachment-card" *ngFor="let f of files">
+    <button *ngIf="isEditMode && f.attachmentId !== 0"
+            class="delete-btn"
+            (click)="deleteAttachment(f.attachmentId)">✕</button>
+
+    <ng-container *ngIf="attachmentService.isImage(f.fileType); else showVideo">
+      <img class="preview-img" [src]="f.url" loading="lazy" />
+    </ng-container>
+
+    <ng-template #showVideo >
+      <video class="preview-video" [src]="f.url" controls></video>
+    </ng-template>
+
+    <div class="file-name">{{ f.fileName }}</div>
+  </div>
+</div>
