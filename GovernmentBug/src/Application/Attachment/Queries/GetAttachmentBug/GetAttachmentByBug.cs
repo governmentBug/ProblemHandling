@@ -36,8 +36,8 @@ public class GetAttacmentBugQueryHandler : IRequestHandler<GetAttachmentBug, Lis
                     AttachmentId=b.AttachmentId,
                     BugId=b.BugId,
                     FileName=b.FileName,
-                    FilePath=b.FilePath,
-                    FileType=b.FileType
+                    //FilePath= b.FilePath,
+                    FileType =b.FileType
                 })
                .ToListAsync(cancellationToken);
 

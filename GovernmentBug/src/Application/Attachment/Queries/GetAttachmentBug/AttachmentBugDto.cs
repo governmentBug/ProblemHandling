@@ -11,6 +11,6 @@ public class AttachmentBugDto
     public int BugId { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string FileType { get; set; } = string.Empty;
-    public byte[] FilePath { get; set; } = Array.Empty<byte>();
+    //public byte[] FilePath { get; set; } = Array.Empty<byte>();
     public string url { get; set; } = string.Empty;
 }
