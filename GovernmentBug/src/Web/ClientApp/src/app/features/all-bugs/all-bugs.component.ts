@@ -33,13 +33,6 @@ export class AllBugsComponent implements OnInit {
   isCommentsPanelOpen = true;
   isAuthorizedToComment = true;
   filterOptions: { [key: string]: string[] } = {};
-  sortDirections: { [key: string]: 'desc' | 'asc' } = {};
-  readonly priorityOrder: Record<string, number> = {
-    'נמוכה': 1,
-    'בינונית': 2,
-    'גבוהה': 3,
-    'קריטית': 4
-  };
 
   constructor(private bugService: BugService, private stateService: StateService, public CommentService: CommentService, public route: ActivatedRoute) { }
   ngOnInit(): void {
@@ -241,45 +234,9 @@ export class AllBugsComponent implements OnInit {
       this.isCommentsPanelOpen = false;
     } else {
       this.selectedBug = bug;
-      this.getBugById(bug.bugId);
+      this.getBugById(bug.bugId); 
       this.isCommentsPanelOpen = true;
     }
   }
-  // מאפיין לשמירת כיוון מיון לכל עמודה
-
-  sort(column: string) {
-    if (!this.allBugs.length) return;
-
-    this.sortDirections[column] = this.sortDirections[column] === 'asc' ? 'desc' : 'asc';
-    const direction = this.sortDirections[column];
-
-    this.allBugs.sort((a, b) => {
-      const valA = a[column];
-      const valB = b[column];
-
-      if (column === 'priorityName') {
-        const numA = this.priorityOrder[valA];
-        const numB = this.priorityOrder[valB];
-        return direction === 'asc' ? numA - numB : numB - numA;
-      }
-      const dateA = new Date(valA);
-      const dateB = new Date(valB);
-
-      if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-        return direction === 'asc'
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      }
-
-      if (typeof valA === 'string') {
-        return direction === 'asc'
-          ? valA.localeCompare(valB, undefined, { sensitivity: 'base' })
-          : valB.localeCompare(valA, undefined, { sensitivity: 'base' });
-      }
-
-      return direction === 'asc' ? valA - valB : valB - valA;
-    });
-
-    this.applyFilterAndPage();
-  }
 }
+
