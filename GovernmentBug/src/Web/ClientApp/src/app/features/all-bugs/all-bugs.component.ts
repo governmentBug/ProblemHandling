@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Bug } from 'src/app/models/bug.model';
 import { BugService } from 'src/app/services/bug.service';
 import { CommentService } from 'src/app/services/Comment.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
 import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
 import { StateService } from 'src/app/services/state.service';
@@ -34,6 +34,7 @@ export class AllBugsComponent implements OnInit {
   isAuthorizedToComment = true;
   filterOptions: { [key: string]: string[] } = {};
   sortDirections: { [key: string]: 'desc' | 'asc' } = {};
+
   readonly priorityOrder: Record<string, number> = {
     'נמוכה': 1,
     'בינונית': 2,
@@ -41,7 +42,9 @@ export class AllBugsComponent implements OnInit {
     'קריטית': 4
   };
 
-  constructor(private bugService: BugService, private stateService: StateService, public CommentService: CommentService, public route: ActivatedRoute) { }
+  constructor(private bugService: BugService, private stateService: StateService,
+    public CommentService: CommentService, public route: ActivatedRoute,
+    private router: Router) { }
   ngOnInit(): void {
     this.loadAllBugs();
     this.loadFilterOptions();
@@ -281,5 +284,9 @@ export class AllBugsComponent implements OnInit {
     });
 
     this.applyFilterAndPage();
+  }
+
+  addBug() {
+    this.router.navigate(['/addBug']);
   }
 }

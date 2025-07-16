@@ -8,6 +8,10 @@
 
   <!-- אזור הטבלה בימין -->
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
+    <div class="dialog-content">
+      <button (click)="addBug()">דיווח על באג ➕</button>
+    </div>
+
     <div class="search-filter-bar">
       <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
         placeholder="חיפוש לפי כותרת, תקציר, שם יוצר או תאריך" />
