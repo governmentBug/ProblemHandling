@@ -1,26 +1,51 @@
 import { Injectable } from "@angular/core";
 import { AttachmentBugDto, AttachmentsClient } from "../web-api-client";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttachmentService {
-  constructor(private AttClient:AttachmentsClient) {}
+  constructor(private AttClient:AttachmentsClient,private http:HttpClient) {}
+ createAttachments(files:File[],bugId:number) {
+    const formData = new FormData();
+    formData.append('BugId', bugId.toString());
+    files.forEach((file, index) => {
+      formData.append(`Files[${index}].File`, file, file.name);
+      formData.append(`Files[${index}].IsFilm`, 'false'); 
+    });
 
-//   uploadAttachment(file: File): Observable<any> {
-//     const formData = new FormData();
-//     formData.append('file', file);
+     this.http.post('/api/Attachments/create', formData).subscribe({
+      next: (r) => {alert('הקבצים הועלו בהצלחה!')
+        console.log(r);
+      },
+      error: err => console.error('שגיאה בהעלאה', err)
+    });
 
-//     return this.http.post('/api/attachments', formData);
-//   }
-
-// createAttachment(formData:FormData):Observable<any>{
-//   return this.AttClient.createAttachments()
-// }
+  }
   getAttachmentsBug(BugId:number): Observable<Array<AttachmentBugDto>> {
     return this.AttClient.getAttachmentsByBugID(BugId);
   }
+  getAttachmentsByBug(bugId: number): Observable<AttachmentBugDto[]> {
+  return this.AttClient.listAttachmentsByBug(bugId);
+}
+
+getFileContent(id: number): Observable<Blob> {
+  const url = `https://localhost:5001/api/attachments/download/${id}`;
+  return this.http.get(url, { responseType: 'blob' });
+}
+/** בקשה בפועל להורדת Blob */
+getBlobUrl(id: number, mime: string) {
+  return this.http.get(this.downloadUrl(id), { responseType: 'blob' })
+    .pipe(map(blob => {
+      // אם את חייבת base64→Uint8Array→createPreviewUrl:
+      // const fr = new FileReader();
+      // ... אבל ObjectURL יותר פשוט:
+      return URL.createObjectURL(blob);
+    }));
+}
+
 
   deleteAttachment(id: number): Observable<any> {
     return this.AttClient.deleteAttachment(id);
@@ -41,12 +66,22 @@ base64ToUint8Array(base64: string): Uint8Array {
     return URL.createObjectURL(blob);
   }
 
-  isImage(fileType: string): boolean {
-    return fileType?.startsWith('image/');
+  /** רשימת קבצים (מטא‑דאטה קל) */
+  getByBug(bugId: number): Observable<AttachmentBugDto[]> {
+    return this.AttClient.getAttachmentsByBugID(bugId);
   }
 
-  isVideo(fileType: string): boolean {
-    return fileType?.startsWith('video/');
+  /** URL מלא להורדת קובץ מה‑API */
+  downloadUrl(id: number): string {
+    return `/attachments/download/${id}`;          // או environment.api + …
   }
 
+  /** תצוגה מקומית לקבצים חדשים שעדיין לא הועלו */
+  localPreview(file: File): string {
+    return URL.createObjectURL(file);              // ביטול ב‑ngOnDestroy
+  }
+
+
+  isImage(type: string)  { return type.startsWith('image/'); }
+  isVideo(type: string)  { return type.startsWith('video/'); }
 }

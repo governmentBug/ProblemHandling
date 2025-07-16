@@ -17,14 +17,14 @@
 
       <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field">
         <option value="" disabled selected>קטגוריה</option>
-        <option *ngFor="let category of allCategory" [value]="category.id">
+        <option *ngFor="let category of allCategory" [value]="category.categoryId">
           {{ category.categoryName }}
         </option>
       </select>
 
       <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field">
         <option value="" disabled selected>עדיפות</option>
-        <option *ngFor="let priority of allPriority" [value]="priority.id">
+        <option *ngFor="let priority of allPriority" [value]="priority.pariorityId">
           {{ priority.priorityName }}
         </option>
       </select>
