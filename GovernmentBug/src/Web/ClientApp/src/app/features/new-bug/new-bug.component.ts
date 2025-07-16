@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AbbBug } from 'src/app/models/addBug.model';
-import { CategoryService } from 'src/app/services/category.service';
 import { FormsModule } from '@angular/forms';
-import { Category } from 'src/app/models/category.module';
 import { BugService } from 'src/app/services/bug.service';
 import { CommonModule } from '@angular/common';
-import { PriorityService } from 'src/app/services/priority.service';
-import { Priority } from 'src/app/models/priority.model';
 import { AddAtachment } from 'src/app/models/add-atachment.module';
 import { AddDocumentService } from 'src/app/services/add-atachment.service';
+import { StateService } from 'src/app/services/state.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-bug',
@@ -19,8 +18,8 @@ import { AddDocumentService } from 'src/app/services/add-atachment.service';
 })
 
 export class NewBugComponent implements OnInit {
-  constructor(private bugService: BugService, private categoryService: CategoryService
-    , private priorityService: PriorityService, private addDocumentService: AddDocumentService) { }
+  constructor(private bugService: BugService, private stateService: StateService
+    , private addDocumentService: AddDocumentService, private router: Router) { }
 
   // תאריך
   createdDate: Date = new Date();
@@ -29,8 +28,8 @@ export class NewBugComponent implements OnInit {
   // הבג להוספה
   public newBug: AbbBug = new AbbBug();
   // שמירת נתונים מהמסד
-  allCategory: Category[] = [];
-  allPriority: Priority[] = [];
+  allCategory: any[] = [];
+  allPriority: any[] = [];
   // שמירת נתונים משתנים
   bugId: number = 0;
   numDocuments: number = 0;
@@ -44,11 +43,14 @@ export class NewBugComponent implements OnInit {
   ngOnInit(): void {
     this.loadAllCategory();
     this.loadAllPriority();
+    this.newBug.statusId = 1;
+    this.newBug.created = this.formattedDateToSave;
+    // מי שמשתמש עכשיו
+    this.newBug.createdByUserId = 1;
   }
   // הוספת הבג בפועל
   async addBug() {
     console.log(this.newBug);
-
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       console.log('Bug created:', response);
@@ -60,6 +62,15 @@ export class NewBugComponent implements OnInit {
 
       // הוספת ההסרטות
       await this.addAttachments(this.allFilms, true);
+
+      Swal.fire({
+        title: 'הבאג נשמר!',
+        text: 'הבאג נוסף בהצלחה.',
+        icon: 'success',
+        confirmButtonText: 'אוקי'
+      });
+
+      this.router.navigate(['/']);
 
     } catch (error) {
       console.error('Error creating bug:', error);
@@ -112,7 +123,7 @@ export class NewBugComponent implements OnInit {
   }
   // הבאת נתונים מהמסד
   loadAllCategory() {
-    this.categoryService.getAllCategory().subscribe({
+    this.stateService.getAllCategories().subscribe({
       next: Category => {
         this.allCategory = Category;
       },
@@ -121,32 +132,94 @@ export class NewBugComponent implements OnInit {
   }
   // הבאת נתונים מהמסד
   loadAllPriority() {
-    this.priorityService.getAllPriority().subscribe({
+    this.stateService.getAllPriority().subscribe({
       next: Priority => {
         this.allPriority = Priority;
       },
       error: err => console.error('שגיאה בקבלת Priority:', err)
     });
   }
-  // הוספת קובץ
-  onFileSelected(event: any) {
-    this.allFiles.push(event.target.files[0]);
-    this.numDocuments++;
+  // צילום מסך
+  async onScreenshot() {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const track = stream.getVideoTracks()[0];
+
+      const video = document.createElement('video');
+      video.style.display = 'none'; // לא מציג אותו
+      video.srcObject = stream;
+      video.play();
+
+      await new Promise<void>((resolve) => {
+        video.onloadedmetadata = () => resolve();
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      this.numDocuments++;
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+          this.allFiles.push(file);
+        }
+        track.stop(); // לסגור את הזרם מיד
+      }, 'image/png');
+    } catch (err) {
+      console.error('שגיאה בצילום מסך', err);
+    }
   }
-  // הוספת הסטרה
-  onFilmSelected(event: any) {
-    this.allFilms.push(event.target.files[0]);
-    this.numFilm++;
-    console.log(this.allFilms);
-  }
-  // לחיצה על הוספת קובץ
-  onButtonClickFile() {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    fileInput.click();
-  }
-  // לחיצה על הוספת הסרטה
-  onButtonClickFilm() {
-    const filmInput = document.getElementById('filmInput') as HTMLInputElement;
-    filmInput.click();
+  // הסרטת מסך
+  async onRecordVideo() {
+    try {
+      // מבקש מהמשתמש הרשאות להקליט וידאו ואודיו מהמסך
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true
+      });
+
+      // יוצר אלמנט אודיו ומנגן את הזרם
+      const audioElement = document.createElement('audio');
+      audioElement.srcObject = stream;
+      audioElement.play();
+
+      // יוצר MediaRecorder כדי להקליט את הזרם
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks = []; // מערך לאחסון הנתונים המוקלטים
+
+      // כאשר יש נתונים זמינים, מוסיף אותם למערך
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+      this.numFilm++; // מעדכן את מספר המסמכים
+
+      // כאשר ההקלטה נעצרת
+      mediaRecorder.onstop = () => {
+        // יוצר Blob מהנתונים המוקלטים
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const videoURL = URL.createObjectURL(blob); // יוצר URL לוידאו
+
+        // יוצר אלמנט וידאו ומגדיר את ה-src לוידאו המוקלט
+        const videoElement = document.createElement('video');
+        videoElement.src = videoURL;
+        videoElement.controls = true; // מוסיף כפתורי שליטה
+
+        console.log(this.allFiles);
+
+        // מוסיף את הוידאו המוקלט לרשימת הקבצים
+        this.allFiles.push(new File([blob], 'recording.webm', { type: 'video/webm' }));
+      };
+
+      mediaRecorder.start(); // מתחיל את ההקלטה
+    } catch (err) {
+      console.error('שגיאה בהקלטת וידאו', err); // מדפיס שגיאה אם משהו משתבש
+    }
   }
 }

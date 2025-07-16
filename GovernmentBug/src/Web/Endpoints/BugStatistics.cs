@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetTotalOpenBugs;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
 using GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -13,7 +14,8 @@ public class BugStatistics : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
+        app.MapGroup(this).
+          MapGet(GetByStatus, "bystatus")
          .MapGet(TotalOpenBugs, "totalopenbugs")
          .MapGet(GetBugs)
          .MapGet(AverageTreatmentTime, "averagetreatmenttime/{priorityId}/{categoryId}/{created}")
@@ -22,14 +24,19 @@ public class BugStatistics : EndpointGroupBase
          .MapGet(GetBugStatusByMonths, "openbugsstatus/{month}/{year}");
 
     }
+    public async Task<ByStatusDto> GetByStatus(ISender sender)
+    {
+        var result = await sender.Send(new GetByStatusQuery());
+        return result;
+    }
     public async Task<int> TotalOpenBugs(ISender sender)
     {
         var result = await sender.Send(new GetTotalOpenBugsQuery());
         return result;
     }
-    public async Task<ByMonthsDto> GetBugsByMonths(ISender sender, int year)
+    public async Task<ByMonthsDto> GetBugsByMonths(ISender sender, int categoryId,int userId, int year)
     {
-        var result = await sender.Send(new GetByMonthsQuery(year));
+        var result = await sender.Send(new GetByMonthsQuery(year,categoryId,userId));
         return result;
     }
     public async Task<List<BugSummariesDto>> GetBugs(ISender sender)

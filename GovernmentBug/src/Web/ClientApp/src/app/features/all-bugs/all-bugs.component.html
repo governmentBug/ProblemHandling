@@ -7,6 +7,10 @@
   </div>
 
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
+    <div class="dialog-content">
+      <button (click)="addBug()">דיווח על באג ➕</button>
+    </div>
+
     <div class="search-filter-bar">
       <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
         placeholder="חיפוש לפי כותרת, תקציר, שם יוצר או תאריך" />
@@ -33,13 +37,13 @@
         <thead>
           <tr>
             <th></th>
-            <th>מזהה הבאג</th>
-            <th>קטגוריה</th>
-            <th>שם הבאג</th>
-            <th>עדיפות</th>
-            <th>סטטוס</th>
-            <th>נפתח ע"י</th>
-            <th>תאריך</th>
+            <th><i class="fa fa-sort" (click)="sort('bugId')"></i> מזהה הבאג</th>
+            <th><i class="fa fa-sort" (click)="sort('categoryName')"></i> קטגוריה</th>
+            <th><i class="fa fa-sort" (click)="sort('title')"></i> שם הבאג</th>
+            <th><i class="fa fa-sort" (click)="sort('priorityName')"></i> עדיפות</th>
+            <th><i class="fa fa-sort" (click)="sort('statusName')"></i> סטטוס</th>
+            <th><i class="fa fa-sort" (click)="sort('createdByUserFullName')"></i> נפתח ע"י</th>
+            <th><i class="fa fa-sort" (click)="sort('createdDate')"></i> תאריך</th>
           </tr>
         </thead>
         <tbody>
@@ -55,23 +59,25 @@
               <td>{{ bug.title }}</td>
               <td>
                 <span [ngClass]="{
-                  'priority-low': bug.priorityName === 'Low',
-                  'priority-medium': bug.priorityName === 'Medium',
-                  'priority-high': bug.priorityName === 'High',
-                  'priority-critical': bug.priorityName === 'Critical'
-                }">
-                  {{ bug.priorityName === 'Low' ? '★' : bug.priorityName === 'Medium' ? '★★' :
-                  bug.priorityName === 'High' ? '★★★' : '★★★★' }}
+  'priority-low': bug.priorityName === 'נמוכה',
+  'priority-medium': bug.priorityName === 'בינונית',
+  'priority-high': bug.priorityName === 'גבוהה',
+  'priority-critical': bug.priorityName === 'קריטית'
+}">
+                  {{ bug.priorityName === 'נמוכה' ? '★' :
+                  bug.priorityName === 'בינונית' ? '★★' :
+                  bug.priorityName === 'גבוהה' ? '★★★' : '★★★★' }}
                 </span>
+
               </td>
               <td>
                 <span [ngClass]="{
-                  'status-open': bug.statusName === 'Open',
-                  'status-active': bug.statusName === 'Active',
-                  'status-close': bug.statusName === 'Close',
-                  'status-cancelled': bug.statusName === 'Cancelled',
-                  'status-close-without-opening': bug.statusName === 'Close without opening a bug'
-                }">
+  'status-open': bug.statusName === 'פתוח',
+  'status-active': bug.statusName === 'פעיל',
+  'status-close': bug.statusName === 'סגור',
+  'status-cancelled': bug.statusName === 'בוטל',
+  'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
+}">
                   {{ bug.statusName }}
                 </span>
               </td>

@@ -23,9 +23,9 @@
   transition: width 0.3s ease;
 
   display: flex;
-  flex-direction: column; /* סידור אנכי */
-  align-items: flex-start; /* מיושר לשמאל */
-  direction: rtl; /* שומר על RTL לטבלה ותוכן */
+  flex-direction: column; 
+  align-items: flex-start; 
+  direction: rtl; 
 }
 
 .bug-table-container.narrow {
@@ -38,7 +38,7 @@
   display: flex;
   justify-content: flex-start;
   gap: 10px;
-  direction: ltr; /* כדי שהחיפוש יהיה מימין לשמאל רגיל */
+  direction: ltr;
   padding: 0 1rem;
 }
 
@@ -65,7 +65,7 @@
 .table-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  align-self: flex-start; /* מיושר לשמאל */
+  align-self: flex-start; 
 }
 
 .table-wrapper {
@@ -79,7 +79,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
-  direction: rtl; /* טקסט בטבלה ב-RTL */
+  direction: rtl; 
 }
 
 .bug-table th,

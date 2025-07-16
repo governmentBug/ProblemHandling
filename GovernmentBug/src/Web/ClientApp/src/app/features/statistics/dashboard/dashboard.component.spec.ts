@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TotalOpenBugsComponent } from './total-open-bugs.component';
+import { DashboardComponent } from './dashboard.component';
 
-describe('TotalOpenBugsComponent', () => {
-  let component: TotalOpenBugsComponent;
-  let fixture: ComponentFixture<TotalOpenBugsComponent>;
+describe('DashboardComponent', () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TotalOpenBugsComponent]
+      imports: [DashboardComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TotalOpenBugsComponent);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

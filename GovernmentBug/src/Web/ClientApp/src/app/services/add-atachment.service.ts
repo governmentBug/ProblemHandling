@@ -10,7 +10,6 @@ import { AddAtachment } from '../models/add-atachment.module';
 export class AddDocumentService {
 
   constructor(public AttachmentServer: HttpClient) { }
-  // public selectedPriority:  | null = null;
   AddAtachment(addAtachment: AddAtachment): Observable<AddAtachment> {
     const createUrl: string = "https://localhost:5001/api/Attachments";
     return this.AttachmentServer.post<AddAtachment>(createUrl, addAtachment);

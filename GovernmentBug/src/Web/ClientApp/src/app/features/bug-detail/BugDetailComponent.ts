@@ -143,11 +143,11 @@ export class BugDetailComponent implements OnInit {
     const status = this.statuses?.find(s => s.statusId === id);
     if (!status) return '';
     switch (status.statusName) {
-      case 'Open': return 'status-open';
-      case 'Close': return 'status-close';
-      case 'Active': return 'status-active';
-      case 'Cancelled': return 'status-cancelled';
-      case 'Close without opening a bug': return 'status-close-without-opening'
+      case 'פתוח': return 'status-open';
+      case 'סגור': return 'status-close';
+      case 'פעיל': return 'status-active';
+      case 'בוטל': return 'status-cancelled';
+      case 'נסגר מבלי להיפתח': return 'status-close-without-opening';
       default: return '';
     }
   }

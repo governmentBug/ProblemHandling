@@ -8,33 +8,26 @@ using GovernmentBug.Application.Common.Interfaces;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 {
-    public record class GetByMonthsQuery(int? year) : IRequest<ByMonthsDto>
-    {
-    }
-    public class GetByMonthsQueryHandler : IRequestHandler<GetByMonthsQuery, ByMonthsDto>
+    public record class GetByMonthsQuery(int Year, int? CategoryId, int? UserId) : IRequest<ByMonthsDto>;
+    public class GetByMonthsQueryHandler: IRequestHandler<GetByMonthsQuery, ByMonthsDto>
     {
         private readonly IApplicationDbContext _context;
-        public GetByMonthsQueryHandler(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+
+        public GetByMonthsQueryHandler(IApplicationDbContext context) => _context = context;
 
         public Task<ByMonthsDto> Handle(GetByMonthsQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Bugs.AsQueryable();
-            if (request.year != null)
+            var lastYear = DateTime.Now.AddMonths(-12*(request.Year+1));
+            var bugs = _context.Bugs
+                .Where(b => b.CreatedDate >= lastYear)
+                .Where(b => !request.CategoryId.HasValue || b.CategoryId == request.CategoryId)
+                .Where(b => !request.UserId.HasValue || b.CreatedByUserId == request.UserId);
+            var byMonthsDto = new ByMonthsDto();
+            foreach (var b in bugs)
             {
-                query = query.Where(b => b.CreatedDate.Year == request.year);
+                var month = b.CreatedDate.ToString("MMMM", new System.Globalization.CultureInfo("he-IL"));
+                byMonthsDto.Add(month, 1);
             }
-            var bugByMonth = new int[12];
-            foreach (var bug in query)
-            {
-                if (bug.CreatedDate.Month >= 1 && bug.CreatedDate.Month <= 12)
-                {
-                    bugByMonth[bug.CreatedDate.Month - 1]++;
-                }
-            }
-            var byMonthsDto = new ByMonthsDto(bugByMonth, query.Count()) { };
             return Task.FromResult(byMonthsDto);
         }
     }

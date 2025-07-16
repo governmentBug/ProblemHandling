@@ -1,6 +1,0 @@
-<div class="year-picker-container">
-  <select id="year-select" (change)="onSelectChange($event)">
-    <option *ngFor="let y of arr" [value]="y[0]" [selected]="y[0] === selected">{{ y[1] }}</option>
-  </select>
-  <label for="year-select"> {{ title }}:</label>
-</div>

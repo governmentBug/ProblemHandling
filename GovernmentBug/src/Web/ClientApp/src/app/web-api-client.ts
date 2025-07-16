@@ -757,11 +757,12 @@ export class BugsClient implements IBugsClient {
 }
 
 export interface IBugStatisticsClient {
+    getByStatus(): Observable<ByStatusDto>;
     totalOpenBugs(): Observable<number>;
     getBugs(): Observable<BugSummariesDto[]>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
-    getBugsByMonths(year: number): Observable<ByMonthsDto>;
+    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto>;
     getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
 }
 
@@ -776,6 +777,54 @@ export class BugStatisticsClient implements IBugStatisticsClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    getByStatus(): Observable<ByStatusDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/bystatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ByStatusDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ByStatusDto>;
+        }));
+    }
+
+    protected processGetByStatus(response: HttpResponseBase): Observable<ByStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ByStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
 
     totalOpenBugs(): Observable<number> {
@@ -988,11 +1037,19 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getBugsByMonths(year: number): Observable<ByMonthsDto> {
-        let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}";
+    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}?";
         if (year === undefined || year === null)
             throw new Error("The parameter 'year' must be defined.");
         url_ = url_.replace("{year}", encodeURIComponent("" + year));
+        if (categoryId === undefined || categoryId === null)
+            throw new Error("The parameter 'categoryId' must be defined and cannot be null.");
+        else
+            url_ += "categoryId=" + encodeURIComponent("" + categoryId) + "&";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined and cannot be null.");
+        else
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2538,7 +2595,9 @@ export class TodoListsClient implements ITodoListsClient {
 }
 
 export interface IUsersClient {
+    getAllUsers(): Observable<UserDto[]>;
     createUsers(command: CreateUserCommand): Observable<number>;
+    getUserById(id: number): Observable<UserDto>;
 }
 
 @Injectable({
@@ -2552,6 +2611,61 @@ export class UsersClient implements IUsersClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ?? "";
+    }
+
+    getAllUsers(): Observable<UserDto[]> {
+        let url_ = this.baseUrl + "/api/Users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserDto[]>;
+        }));
+    }
+
+    protected processGetAllUsers(response: HttpResponseBase): Observable<UserDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UserDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
 
     createUsers(command: CreateUserCommand): Observable<number> {
@@ -2598,6 +2712,57 @@ export class UsersClient implements IUsersClient {
                 result201 = resultData201 !== undefined ? resultData201 : <any>null;
     
             return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserById(id: number): Observable<UserDto> {
+        let url_ = this.baseUrl + "/api/Users/id/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserById(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserDto>;
+        }));
+    }
+
+    protected processGetUserById(response: HttpResponseBase): Observable<UserDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -3277,6 +3442,110 @@ export interface IUpdateBugAndClosedCommand {
     reasonForClosure?: string;
 }
 
+export class ByStatusDto implements IByStatusDto {
+    totalBugs?: number;
+    openBugs?: ByPriorityDto;
+    closeBugs?: ByPriorityDto;
+    activeBugs?: ByPriorityDto;
+    cancelledBugs?: ByPriorityDto;
+
+    constructor(data?: IByStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalBugs = _data["totalBugs"];
+            this.openBugs = _data["openBugs"] ? ByPriorityDto.fromJS(_data["openBugs"]) : <any>undefined;
+            this.closeBugs = _data["closeBugs"] ? ByPriorityDto.fromJS(_data["closeBugs"]) : <any>undefined;
+            this.activeBugs = _data["activeBugs"] ? ByPriorityDto.fromJS(_data["activeBugs"]) : <any>undefined;
+            this.cancelledBugs = _data["cancelledBugs"] ? ByPriorityDto.fromJS(_data["cancelledBugs"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ByStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalBugs"] = this.totalBugs;
+        data["openBugs"] = this.openBugs ? this.openBugs.toJSON() : <any>undefined;
+        data["closeBugs"] = this.closeBugs ? this.closeBugs.toJSON() : <any>undefined;
+        data["activeBugs"] = this.activeBugs ? this.activeBugs.toJSON() : <any>undefined;
+        data["cancelledBugs"] = this.cancelledBugs ? this.cancelledBugs.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IByStatusDto {
+    totalBugs?: number;
+    openBugs?: ByPriorityDto;
+    closeBugs?: ByPriorityDto;
+    activeBugs?: ByPriorityDto;
+    cancelledBugs?: ByPriorityDto;
+}
+
+export class ByPriorityDto implements IByPriorityDto {
+    total?: number;
+    low?: number;
+    medium?: number;
+    high?: number;
+    critical?: number;
+
+    constructor(data?: IByPriorityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.total = _data["total"];
+            this.low = _data["low"];
+            this.medium = _data["medium"];
+            this.high = _data["high"];
+            this.critical = _data["critical"];
+        }
+    }
+
+    static fromJS(data: any): ByPriorityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByPriorityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total;
+        data["low"] = this.low;
+        data["medium"] = this.medium;
+        data["high"] = this.high;
+        data["critical"] = this.critical;
+        return data;
+    }
+}
+
+export interface IByPriorityDto {
+    total?: number;
+    low?: number;
+    medium?: number;
+    high?: number;
+    critical?: number;
+}
+
 export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {
     properties?: { [key: string]: number; };
 
@@ -3326,8 +3595,7 @@ export interface IOpenBugsByPriorityDto {
 }
 
 export class ByMonthsDto implements IByMonthsDto {
-    totalBugs?: number;
-    byMonth?: number[];
+    byMonth?: { [key: string]: number; };
 
     constructor(data?: IByMonthsDto) {
         if (data) {
@@ -3340,11 +3608,12 @@ export class ByMonthsDto implements IByMonthsDto {
 
     init(_data?: any) {
         if (_data) {
-            this.totalBugs = _data["totalBugs"];
-            if (Array.isArray(_data["byMonth"])) {
-                this.byMonth = [] as any;
-                for (let item of _data["byMonth"])
-                    this.byMonth!.push(item);
+            if (_data["byMonth"]) {
+                this.byMonth = {} as any;
+                for (let key in _data["byMonth"]) {
+                    if (_data["byMonth"].hasOwnProperty(key))
+                        (<any>this.byMonth)![key] = _data["byMonth"][key];
+                }
             }
         }
     }
@@ -3358,19 +3627,19 @@ export class ByMonthsDto implements IByMonthsDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalBugs"] = this.totalBugs;
-        if (Array.isArray(this.byMonth)) {
-            data["byMonth"] = [];
-            for (let item of this.byMonth)
-                data["byMonth"].push(item);
+        if (this.byMonth) {
+            data["byMonth"] = {};
+            for (let key in this.byMonth) {
+                if (this.byMonth.hasOwnProperty(key))
+                    (<any>data["byMonth"])[key] = (<any>this.byMonth)[key];
+            }
         }
         return data;
     }
 }
 
 export interface IByMonthsDto {
-    totalBugs?: number;
-    byMonth?: number[];
+    byMonth?: { [key: string]: number; };
 }
 
 export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
@@ -4322,6 +4591,308 @@ export class UpdateTodoListCommand implements IUpdateTodoListCommand {
 export interface IUpdateTodoListCommand {
     id?: number;
     title?: string | undefined;
+}
+
+export class UserDto implements IUserDto {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: BugDto[];
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.role = _data["role"];
+            if (Array.isArray(_data["createdBugs"])) {
+                this.createdBugs = [] as any;
+                for (let item of _data["createdBugs"])
+                    this.createdBugs!.push(BugDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["role"] = this.role;
+        if (Array.isArray(this.createdBugs)) {
+            data["createdBugs"] = [];
+            for (let item of this.createdBugs)
+                data["createdBugs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUserDto {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: BugDto[];
+}
+
+export abstract class BaseEntity implements IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+
+    constructor(data?: IBaseEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["domainEvents"])) {
+                this.domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    this.domainEvents!.push(BaseEvent.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BaseEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEntity' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+}
+
+export abstract class BaseAuditableEntity extends BaseEntity implements IBaseAuditableEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+
+    constructor(data?: IBaseAuditableEntity) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.lastModifiedBy = _data["lastModifiedBy"];
+        }
+    }
+
+    static override fromJS(data: any): BaseAuditableEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseAuditableEntity' cannot be instantiated.");
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["lastModifiedBy"] = this.lastModifiedBy;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBaseAuditableEntity extends IBaseEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+}
+
+export class BugDto extends BaseAuditableEntity implements IBugDto {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    statusId?: string;
+    createdByUserId?: number;
+    createdByUserFullName?: string;
+    createdDate?: Date;
+    comments?: CommentDto[];
+
+    constructor(data?: IBugDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.priortyId = _data["priortyId"];
+            this.statusId = _data["statusId"];
+            this.createdByUserId = _data["createdByUserId"];
+            this.createdByUserFullName = _data["createdByUserFullName"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(CommentDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): BugDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BugDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["priortyId"] = this.priortyId;
+        data["statusId"] = this.statusId;
+        data["createdByUserId"] = this.createdByUserId;
+        data["createdByUserFullName"] = this.createdByUserFullName;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBugDto extends IBaseAuditableEntity {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    statusId?: string;
+    createdByUserId?: number;
+    createdByUserFullName?: string;
+    createdDate?: Date;
+    comments?: CommentDto[];
+}
+
+export class CommentDto implements ICommentDto {
+    commentID?: number;
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+
+    constructor(data?: ICommentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.commentID = _data["commentID"];
+            this.bugID = _data["bugID"];
+            this.commentText = _data["commentText"];
+            this.commentedBy = _data["commentedBy"];
+            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CommentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["commentID"] = this.commentID;
+        data["bugID"] = this.bugID;
+        data["commentText"] = this.commentText;
+        data["commentedBy"] = this.commentedBy;
+        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICommentDto {
+    commentID?: number;
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+}
+
+export abstract class BaseEvent implements IBaseEvent {
+
+    constructor(data?: IBaseEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): BaseEvent {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEvent' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IBaseEvent {
 }
 
 export class CreateUserCommand implements ICreateUserCommand {

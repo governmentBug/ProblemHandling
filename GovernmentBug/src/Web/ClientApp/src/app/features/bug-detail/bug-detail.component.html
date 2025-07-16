@@ -46,12 +46,12 @@
         <div class="status-line">
           סטטוס:
           <span *ngIf="!isEditMode" [ngClass]="{
-            'status-open': bug.statusName === 'Open',
-            'status-close': bug.statusName === 'Close',
-            'status-active': bug.statusName === 'Active',
-            'status-cancelled': bug.statusName === 'Cancelled',
-            'status-close-without-opening': bug.statusName === 'Close without opening a bug'
-          }">
+  'status-open': bug.statusName === 'פתוח',
+  'status-close': bug.statusName === 'סגור',
+  'status-active': bug.statusName === 'פעיל',
+  'status-cancelled': bug.statusName === 'בוטל',
+  'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
+}">
             {{ bug.statusName }}
           </span>
           <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" class="edit-inline select-box">

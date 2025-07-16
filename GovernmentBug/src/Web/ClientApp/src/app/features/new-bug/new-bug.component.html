@@ -1,30 +1,30 @@
 <div class="bug-form-container">
-<div class="report-container">
-  <p class="report-info">
-    באג זה מדווח ע"י {{ userName }} בתאריך {{ formattedDate }}
-  </p>
-  <p class="report-infoR">
-    יש {{numDocuments}} מסמכים מצורפים ו {{numFilm}} הסרטות מצורפות
-  </p>
-</div>
+  <div class="report-container">
+    <p class="report-info">
+      באג זה מדווח ע"י {{ userName }} בתאריך {{ formattedDate }}
+    </p>
+    <p class="report-infoR">
+      יש {{numDocuments}} מסמכים מצורפים ו {{numFilm}} הסרטות מצורפות
+    </p>
+  </div>
 
   <form (ngSubmit)="addBug()" #bugForm="ngForm" class="bug-form-grid">
 
     <!-- עמודה ימנית -->
     <div class="right-col">
       <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
-        class="input-field" id="nameB"/>
+        class="input-field" id="nameB" />
 
-      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field">
-        <option value="" disabled selected>קטגוריה</option>
-        <option *ngFor="let category of allCategory" [value]="category.categoryId">
+      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
+        <option value="0" disabled>קטגוריה</option>
+        <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
           {{ category.categoryName }}
         </option>
       </select>
 
-      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field">
-        <option value="" disabled selected>עדיפות</option>
-        <option *ngFor="let priority of allPriority" [value]="priority.pariorityId">
+      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
+        <option value="0" disabled>עדיפות</option>
+        <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
           {{ priority.priorityName }}
         </option>
       </select>
@@ -38,11 +38,10 @@
 
     <!-- שורת כפתורים -->
     <div class="buttons-row">
-      <input accept="image/*" type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none;" />
-      <button type="button" class="screen-btn yellow" (click)="onButtonClickFile()">📎 צילום מסך</button>
- 
-      <input accept=".mp4, .webm, .avi, .mov" type="file" id="filmInput" (change)="onFilmSelected($event)" style="display: none;" />
-      <button type="button" class="screen-btn blue" (click)="onButtonClickFilm()">🎥 הקלטת מסך</button>
+
+      <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
+      <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
+
     </div>
 
     <!-- כפתור שמירה -->
