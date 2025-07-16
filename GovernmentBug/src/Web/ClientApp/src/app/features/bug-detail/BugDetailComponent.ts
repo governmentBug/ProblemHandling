@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
-import { BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
+import { AttachmentBugDto, BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
 import { StateService } from 'src/app/services/state.service';
+import { FileUpload } from 'src/app/models/FileUpload';
+import { InlineAttachmentsComponent } from "../inline-attachments/inline-attachments.component";
+import { AttachmentService } from 'src/app/services/Attachment.Service';
 
 @Component({
   selector: 'app-bug-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InlineAttachmentsComponent],
   templateUrl: './bug-detail.component.html',
   styleUrl: './bug-detail.component.css'
 })
@@ -17,17 +20,20 @@ export class BugDetailComponent implements OnInit {
   @Input() bug!: BugDetalsDto;
   @Input() AuthorizedUser!: boolean;
   @Output() bugChanged = new EventEmitter<any>();
+  @Output() showFiles = new EventEmitter<number>();
+  @Output() isEditModeChanged = new EventEmitter<boolean>()
 
   showPopup = false;
   closeReason = '';
   isEditMode = false;
   editedBug: BugDetalsDto = new UpdateBugCommand();
-
-
   priorities: Array<PriorityDto>
   categories: Array<CategoryDto>
   statuses: Array<StatusDto>
-  constructor(private bugService: BugService, public stateService: StateService, private route: ActivatedRoute) { }
+  showAttachments = false;
+  filesToAdd: File[] = [];
+  filesToDelete: number[] = [];
+  constructor(private bugService: BugService, public stateService: StateService, private attachmentService: AttachmentService) { }
 
   ngOnInit(): void {
     this.initState()
@@ -52,19 +58,26 @@ export class BugDetailComponent implements OnInit {
       err => console.error(err)
     )
   }
+  // onFilesChanged(files: FileUpload[]) {
+  //   this.selectedFiles = files;
+  // }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bug'] && this.bug) {
       this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     }
   }
-
+  onFilesChanged(data: { newFiles: File[], deletedFileIds: number[] }) {
+    this.filesToAdd = data.newFiles;
+    this.filesToDelete = data.deletedFileIds;
+  }
   toggleEdit() {
     this.isEditMode = true;
+    this.isEditModeChanged.emit(this.isEditMode)
   }
-
   cancelEdit() {
     this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     this.isEditMode = false;
+    this.isEditModeChanged.emit(this.isEditMode)
   }
 
   saveChanges() {
@@ -78,8 +91,14 @@ export class BugDetailComponent implements OnInit {
     this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
       {
         next: () => {
+          if(this.filesToAdd.length>0)
+            this.attachmentService.createAttachments(this.filesToAdd, this.bug.bugId)
+          for (const id of this.filesToDelete) {
+            this.attachmentService.deleteAttachment(id).subscribe();
+          }
           this.bugChanged.emit();
           this.isEditMode = false;
+          this.isEditModeChanged.emit(this.isEditMode);
         },
         error: err => console.error(err)
       }

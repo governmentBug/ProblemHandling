@@ -1,3 +1,4 @@
+
 using GovernmentBug.Application.Bugs.Command.CreateBug;
 using GovernmentBug.Application.Bugs.Command.DeleteBug;
 using GovernmentBug.Application.Bugs.Commands.UpdateBug;
@@ -78,10 +79,9 @@ public class Bugs : EndpointGroupBase
         var result = await sender.Send(new GetBugDetails());
         return TypedResults.Ok(result);
     }
-    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender,[FromBody] BugComparisonQuery bugComprisonQuery)
+    public async Task<List<BugSummariesDto>> IdentifyingRecurringBugs(ISender sender, [FromBody] BugComparisonQuery bugComprisonQuery)
     {
         var result = await sender.Send(bugComprisonQuery);
         return result;
     }
 }
-

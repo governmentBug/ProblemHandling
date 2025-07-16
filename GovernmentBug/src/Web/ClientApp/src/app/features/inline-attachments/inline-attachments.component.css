@@ -1,0 +1,110 @@
+/* inline-attachments.component.css */
+
+.inline-attachments-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+/* קו‑רוחב עם גלילת X */
+.attachments-list {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 4px;             /* מקום ל‑scrollbar */
+}
+
+.attachment {
+  position: relative;
+  flex: 0 0 90px;                  /* רוחב קבוע 90px */
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px #0002;
+  pointer-events: none;            /* שלא יחסום את הכפתור */
+}
+
+.remove-btn {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  font: 14px/18px sans-serif;
+  background: #fff;
+  border: 1px solid #e33;
+  border-radius: 50%;
+  color: #e33;
+  cursor: pointer;
+}
+
+.upload-box input { margin-top: .5rem; }
+
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.8);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+.lightbox img, .lightbox video {
+  max-width: 90vw; max-height: 90vh;
+  border-radius: 8px;
+}
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-image, .popup-video {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 8px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.popup-file-name {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+.preview-img,
+.preview-video {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
