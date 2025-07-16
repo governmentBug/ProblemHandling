@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { AddAtachment } from 'src/app/models/add-atachment.module';
 import { AddDocumentService } from 'src/app/services/add-atachment.service';
 import { StateService } from 'src/app/services/state.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-bug',
@@ -17,7 +19,7 @@ import { StateService } from 'src/app/services/state.service';
 
 export class NewBugComponent implements OnInit {
   constructor(private bugService: BugService, private stateService: StateService
-    , private addDocumentService: AddDocumentService) { }
+    , private addDocumentService: AddDocumentService, private router: Router) { }
 
   // תאריך
   createdDate: Date = new Date();
@@ -60,6 +62,15 @@ export class NewBugComponent implements OnInit {
 
       // הוספת ההסרטות
       await this.addAttachments(this.allFilms, true);
+
+      Swal.fire({
+        title: 'הבאג נשמר!',
+        text: 'הבאג נוסף בהצלחה.',
+        icon: 'success',
+        confirmButtonText: 'אוקי'
+      });
+
+      this.router.navigate(['/']);
 
     } catch (error) {
       console.error('Error creating bug:', error);
@@ -128,7 +139,7 @@ export class NewBugComponent implements OnInit {
       error: err => console.error('שגיאה בקבלת Priority:', err)
     });
   }
-// צילום מסך
+  // צילום מסך
   async onScreenshot() {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -163,7 +174,7 @@ export class NewBugComponent implements OnInit {
       console.error('שגיאה בצילום מסך', err);
     }
   }
-// הסרטת מסך
+  // הסרטת מסך
   async onRecordVideo() {
     try {
       // מבקש מהמשתמש הרשאות להקליט וידאו ואודיו מהמסך
@@ -201,7 +212,7 @@ export class NewBugComponent implements OnInit {
         videoElement.controls = true; // מוסיף כפתורי שליטה
 
         console.log(this.allFiles);
-        
+
         // מוסיף את הוידאו המוקלט לרשימת הקבצים
         this.allFiles.push(new File([blob], 'recording.webm', { type: 'video/webm' }));
       };

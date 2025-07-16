@@ -22,7 +22,7 @@ export class StateService {
     private PriorityClient: PriorityClient,
     private StatusClient: StatusClient,
     private CategoryClient: CategoryClient,
-  private UsersClient: UsersClient
+    private UsersClient: UsersClient
   ) {}
   // שליפת כל המשתמשים (עם קאש)
   getAllUsers() {
