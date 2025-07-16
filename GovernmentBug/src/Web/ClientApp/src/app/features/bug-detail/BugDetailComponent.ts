@@ -5,7 +5,6 @@ import { BugService } from 'src/app/services/bug.service';
 import { ActivatedRoute } from '@angular/router';
 import { AttachmentBugDto, BugDetalsDto, CategoryDto, PriorityDto, StatusDto, UpdateBugCommand } from 'src/app/web-api-client';
 import { StateService } from 'src/app/services/state.service';
-import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { FileUpload } from 'src/app/models/FileUpload';
 import { InlineAttachmentsComponent } from "../inline-attachments/inline-attachments.component";
 import { AttachmentService } from 'src/app/services/Attachment.Service';
