@@ -491,7 +491,7 @@ export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
-    getBugsByMonths(categoryId: number, userId: number): Observable<ByMonthsDto>;
+    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto>;
     getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
 }
 
@@ -766,8 +766,11 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getBugsByMonths(categoryId: number, userId: number): Observable<ByMonthsDto> {
-        let url_ = this.baseUrl + "/api/BugStatistics/bymonth?";
+    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}?";
+        if (year === undefined || year === null)
+            throw new Error("The parameter 'year' must be defined.");
+        url_ = url_.replace("{year}", encodeURIComponent("" + year));
         if (categoryId === undefined || categoryId === null)
             throw new Error("The parameter 'categoryId' must be defined and cannot be null.");
         else

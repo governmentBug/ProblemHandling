@@ -34,13 +34,13 @@
         <thead>
           <tr>
             <th></th>
-            <th>מזהה הבאג</th>
-            <th>קטגוריה</th>
-            <th>שם הבאג</th>
-            <th>עדיפות</th>
-            <th>סטטוס</th>
-            <th>נפתח ע"י</th>
-            <th>תאריך</th>
+            <th><i class="fa fa-sort" (click)="sort('bugId')"></i> מזהה הבאג</th>
+            <th><i class="fa fa-sort" (click)="sort('categoryName')"></i> קטגוריה</th>
+            <th><i class="fa fa-sort" (click)="sort('title')"></i> שם הבאג</th>
+            <th><i class="fa fa-sort" (click)="sort('priorityName')"></i> עדיפות</th>
+            <th><i class="fa fa-sort" (click)="sort('statusName')"></i> סטטוס</th>
+            <th><i class="fa fa-sort" (click)="sort('createdByUserFullName')"></i> נפתח ע"י</th>
+            <th><i class="fa fa-sort" (click)="sort('createdDate')"></i> תאריך</th>
           </tr>
         </thead>
         <tbody>
