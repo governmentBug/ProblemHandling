@@ -34,9 +34,9 @@ public class BugStatistics : EndpointGroupBase
         var result = await sender.Send(new GetTotalOpenBugsQuery());
         return result;
     }
-    public async Task<ByMonthsDto> GetBugsByMonths(ISender sender, int categoryId,int userId)
+    public async Task<ByMonthsDto> GetBugsByMonths(ISender sender, int categoryId,int userId,int year)
     {
-        var result = await sender.Send(new GetByMonthsQuery(categoryId,userId));
+        var result = await sender.Send(new GetByMonthsQuery(year,categoryId,userId));
         return result;
     }
     public async Task<List<BugSummariesDto>> GetBugs(ISender sender)

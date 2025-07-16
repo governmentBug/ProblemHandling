@@ -3,18 +3,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bug } from '../models/bug.model';
 import { CommentService } from './Comment.service';
-import { BugDetalsDto, BugsClient, CategoryClient, PriorityClient, StatusClient, UpdateBugAndClosedCommand, UpdateBugCommand, UsersClient } from '../web-api-client';
+import { BugDetalsDto, BugsClient, CategoryClient, CategoryDto, PriorityClient, PriorityDto, StatusClient, StatusDto, UpdateBugAndClosedCommand, UpdateBugCommand, UserDto, UsersClient } from '../web-api-client';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
-  basicUrl: string = "https://localhost:5001/api/Bugs/all";
-  private priorities: any[] | null = null;
-  private statuses: any[] | null = null;
-  private categories: any[] | null = null;
-  private users: any[] | null = null;
+  private priorities: PriorityDto[] | null = null;
+  private statuses: StatusDto[] | null = null;
+  private categories: CategoryDto[] | null = null;
+  private users: UserDto[] | null = null;
   private prioritiesMap: { [id: number]: string } = {};
   private statusesMap: { [id: number]: string } = {};
   private categoriesMap: { [id: number]: string } = {};

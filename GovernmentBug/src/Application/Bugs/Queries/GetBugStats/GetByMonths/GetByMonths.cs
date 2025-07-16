@@ -8,7 +8,7 @@ using GovernmentBug.Application.Common.Interfaces;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 {
-    public record class GetByMonthsQuery(int? CategoryId, int? UserId) : IRequest<ByMonthsDto>;
+    public record class GetByMonthsQuery(int Year,int? CategoryId, int? UserId) : IRequest<ByMonthsDto>;
     public class GetByMonthsQueryHandler: IRequestHandler<GetByMonthsQuery, ByMonthsDto>
     {
         private readonly IApplicationDbContext _context;
@@ -17,7 +17,7 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 
         public Task<ByMonthsDto> Handle(GetByMonthsQuery request, CancellationToken cancellationToken)
         {
-            var lastYear = DateTime.Now.AddMonths(-12);
+            var lastYear = DateTime.Now.AddMonths(-12*(request.Year+1));
             var bugs = _context.Bugs
                 .Where(b => b.CreatedDate >= lastYear)
                 .Where(b => !request.CategoryId.HasValue || b.CategoryId == request.CategoryId)
