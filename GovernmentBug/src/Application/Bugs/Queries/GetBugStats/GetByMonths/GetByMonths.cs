@@ -8,7 +8,7 @@ using GovernmentBug.Application.Common.Interfaces;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 {
-    public record class GetByMonthsQuery(int Year,int? CategoryId, int? UserId) : IRequest<ByMonthsDto>;
+    public record class GetByMonthsQuery(int Year, int? CategoryId, int? UserId) : IRequest<ByMonthsDto>;
     public class GetByMonthsQueryHandler: IRequestHandler<GetByMonthsQuery, ByMonthsDto>
     {
         private readonly IApplicationDbContext _context;
