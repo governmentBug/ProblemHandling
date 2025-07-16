@@ -220,10 +220,6 @@ export class AllBugsComponent implements OnInit {
     this.isFilesPanelOpen = true;
   }
 
-}
-    }
-  }
-  // מאפיין לשמירת כיוון מיון לכל עמודה
 
   sort(column: string) {
     if (!this.allBugs.length) return;
