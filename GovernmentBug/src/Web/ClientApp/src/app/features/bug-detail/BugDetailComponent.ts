@@ -7,11 +7,13 @@ import { AttachmentBugDto, BugDetalsDto, CategoryDto, PriorityDto, StatusDto, Up
 import { StateService } from 'src/app/services/state.service';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 import { FileUpload } from 'src/app/models/FileUpload';
+import { InlineAttachmentsComponent } from "../inline-attachments/inline-attachments.component";
+import { AttachmentService } from 'src/app/services/Attachment.Service';
 
 @Component({
   selector: 'app-bug-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, FileUploaderComponent],
+  imports: [CommonModule, FormsModule, InlineAttachmentsComponent],
   templateUrl: './bug-detail.component.html',
   styleUrl: './bug-detail.component.css'
 })
@@ -20,6 +22,8 @@ export class BugDetailComponent implements OnInit {
   @Input() AuthorizedUser!: boolean;
   @Output() bugChanged = new EventEmitter<any>();
   @Output() showFiles = new EventEmitter<number>();
+  @Output() isEditModeChanged = new EventEmitter<boolean>()
+
   showPopup = false;
   closeReason = '';
   isEditMode = false;
@@ -27,8 +31,10 @@ export class BugDetailComponent implements OnInit {
   priorities: Array<PriorityDto>
   categories: Array<CategoryDto>
   statuses: Array<StatusDto>
-  selectedFiles: FileUpload[] = [];
-  constructor(private bugService: BugService, public stateService: StateService, private route: ActivatedRoute) { }
+  showAttachments = false;
+  filesToAdd: File[] = [];
+  filesToDelete: number[] = [];
+  constructor(private bugService: BugService, public stateService: StateService, private attachmentService: AttachmentService) { }
 
   ngOnInit(): void {
     this.initState()
@@ -53,45 +59,47 @@ export class BugDetailComponent implements OnInit {
       err => console.error(err)
     )
   }
-  onFilesChanged(files: FileUpload[]) {
-    this.selectedFiles = files;
-  }
+  // onFilesChanged(files: FileUpload[]) {
+  //   this.selectedFiles = files;
+  // }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bug'] && this.bug) {
       this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     }
   }
-
+  onFilesChanged(data: { newFiles: File[], deletedFileIds: number[] }) {
+    this.filesToAdd = data.newFiles;
+    this.filesToDelete = data.deletedFileIds;
+  }
   toggleEdit() {
     this.isEditMode = true;
+    this.isEditModeChanged.emit(this.isEditMode)
   }
-
   cancelEdit() {
     this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     this.isEditMode = false;
+    this.isEditModeChanged.emit(this.isEditMode)
   }
 
   saveChanges() {
-    const formData = new FormData();
-    formData.append('bugId', this.bug.bugId.toString());
-    formData.append('title', this.editedBug.title);
-    formData.append('description', this.editedBug.description);
-    formData.append('categoryId', this.editedBug.categoryId.toString());
-    formData.append('priorityId', this.editedBug.priorityId.toString());
-    formData.append('statusId', this.editedBug.statusId.toString());
-    this.selectedFiles.forEach((attachment, index) => {
-      formData.append(`Files[${index}].File`, attachment.file);
-      formData.append(`Files[${index}].IsFilm`, attachment.isFilm.toString());
-      if (attachment.attachmentId !== undefined) {
-        formData.append(`Files[${index}].AttachmentId`, attachment.attachmentId.toString());
-      }
-    });
-
-    this.bugService.updateBug(this.bug.bugId, formData).subscribe(
+    const dtoToSend = {
+      title: this.editedBug.title,
+      description: this.editedBug.description,
+      categoryId: this.editedBug.categoryId,
+      priorityId: this.editedBug.priorityId,
+      statusId: this.editedBug.statusId
+    };
+    this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
       {
         next: () => {
+          if(this.filesToAdd.length>0)
+            this.attachmentService.createAttachments(this.filesToAdd, this.bug.bugId)
+          for (const id of this.filesToDelete) {
+            this.attachmentService.deleteAttachment(id).subscribe();
+          }
           this.bugChanged.emit();
           this.isEditMode = false;
+          this.isEditModeChanged.emit(this.isEditMode);
         },
         error: err => console.error(err)
       }

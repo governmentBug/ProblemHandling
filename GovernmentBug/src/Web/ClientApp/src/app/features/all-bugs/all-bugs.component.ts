@@ -9,12 +9,11 @@ import { AttachmentBugDto, BugDetalsDto, CommentsBugDto } from 'src/app/web-api-
 import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
 import { StateService } from 'src/app/services/state.service';
 import { CommentPanelComponent } from '../comment-panel/comment-panel.component';
-import { PannelAttacmentsComponent } from "../pannel-attacments/pannel-attacments.component";
 
 @Component({
   selector: 'app-all-bugs',
   standalone: true,
-  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent, PannelAttacmentsComponent],
+  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent],
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })
@@ -32,8 +31,7 @@ export class AllBugsComponent implements OnInit {
   isAuthorizedToComment = true;
   filterOptions: { [key: string]: string[] } = {};
   isFilesPanelOpen = false;
-  attachedFiles: Array<AttachmentBugDto>;
-
+  IsEditMode :boolean= false
   constructor(private bugService: BugService, private stateService: StateService, public CommentService: CommentService, public route: ActivatedRoute) { }
   ngOnInit(): void {
     this.loadAllBugs();
@@ -171,8 +169,6 @@ export class AllBugsComponent implements OnInit {
         if (indexFiltered !== -1) {
           this.bugs[indexFiltered] = updatedBug;
         }
-
-        this.loadComments();
       },
       error: err => {
         console.error('שגיאה בשליפת באג:', err);
@@ -185,50 +181,14 @@ export class AllBugsComponent implements OnInit {
     }
   }
 
-  loadComments(): void {
-    this.CommentService.getCommentsByBugId(this.selectedBug.bugId).subscribe({
-      next: (res) => {
-        this.comments = res
-        console.log(res);
-
-      },
-      error: (err) => console.error('שגיאה בשליפת תגובות', err)
-    });
-  }
-
-  addComment(commentText: string): void {
-    this.CommentService.addComment(this.selectedBug.bugId, commentText).subscribe({
-      next: () => this.loadComments(),
-      error: (err) => console.error('שגיאה בהוספת תגובה', err)
-    });
-  }
-
   checkPermissions(): void {
     // this.bugService.getCurrentUserPermissions(this.bug.bugId).subscribe(res => {
     //   this.isAuthorizedToComment = res.canComment;
     // });
   }
 
-  openCommentsPanel(): void {
-    this.isCommentsPanelOpen = true;
-  }
-
-  onCommentAdded(content: string): void {
-    this.addComment(content)
-  }
-
-  onCommentDeleted(commentId: number): void {
-    this.CommentService.deleteComment(commentId).subscribe(() => {
-      this.loadComments();
-    });
-  }
-
-  onClosePanel(): void {
-    this.isCommentsPanelOpen = false;
-  }
   toggleBug(bug: BugDetalsDto, event: MouseEvent): void {
     event.stopPropagation();
-
     if (this.selectedBug?.bugId === bug.bugId) {
       this.selectedBug = null;
       this.isCommentsPanelOpen = false;
@@ -238,9 +198,16 @@ export class AllBugsComponent implements OnInit {
       this.isCommentsPanelOpen = true;
     }
   }
-  openFilesPanel(bugId:number) {
-  this.isFilesPanelOpen = true;
-}
+  openCommentsPanel(): void {
+    this.isCommentsPanelOpen = true;
+  }
+  onClosePanel(): void {
+    this.isCommentsPanelOpen = false;
+  }
+
+  openFilesPanel(bugId: number) {
+    this.isFilesPanelOpen = true;
+  }
 
 }
 
