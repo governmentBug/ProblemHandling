@@ -1,3 +1,60 @@
+.bug-form {
+  max-width: 800px;
+  margin: 30px auto;
+  font-family: Arial, sans-serif;
+}
+
+.row-full {
+  margin-bottom: 20px;
+}
+
+.row-full input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.row-split {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+}
+
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.select-field,
+.textarea-field {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.textarea-field {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* label {
+  font-weight: bold;
+  margin-bottom: 5px;
+} */
+
+
 .bug-form-container {
   border: 1px solid #ccc;
   border-radius: 12px;
@@ -18,19 +75,20 @@
   font-weight: bold;
 }
 
-/* טופס ברשת של 2 עמודות */
-.bug-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-  align-items: start;
-}
+/* label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: right; 
+} */
 
 .right-col,
 .left-col {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  text-align: right; /* מיקום התוכן בצד ימין */
+}
+.row-full{
   text-align: right; /* מיקום התוכן בצד ימין */
 }
 
@@ -105,8 +163,9 @@
 
 label {
   color: #333; /* צבע רגיל */
-  margin-bottom: -15px; /* ריווח מתחת לתווית */
-  font-weight: bold; /* להפוך את התוויות לבולטות */
+  margin-bottom: -10px; /* ריווח מתחת לתווית */
+  font-weight: bold;
+  /* text-align: right; */
 }
 
 label:after {
@@ -116,4 +175,95 @@ label:after {
 
 .red {
   background-color: rgb(211, 246, 147); /* שים את הצבע הרצוי */
+}
+
+
+
+.attachments-container {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+}
+
+.attachments-container h3 {
+  margin-bottom: 10px;
+  color: #444;
+  font-size: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+
+ .attachments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* תמיד 3 */
+  gap: 15px;
+}
+
+@media (min-width: 1200px) {
+  .attachments-list {
+    grid-template-columns: repeat(4, 1fr); /* במסך ממש רחב - 4 */
+  }
+}
+
+@media (max-width: 600px) {
+  .attachments-list {
+    grid-template-columns: repeat(2, 1fr); /* במסכים צרים - 2 */
+  }
+}
+
+.attachment-item {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  transition: box-shadow 0.3s ease;
+}
+
+.attachment-item:hover {
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.attachment-preview {
+  max-width: 100%;
+  max-height: 150px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.attachment-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.attachment-actions button {
+  border: none;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.attachment-actions button:hover {
+  background-color: #ddd;
+}
+
+.attachment-link {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #0077cc;
+  word-break: break-all;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
 }

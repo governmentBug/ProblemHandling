@@ -10,56 +10,70 @@
 
   <form (ngSubmit)="addBug()" #bugForm="ngForm" class="bug-form-grid">
 
-    <!-- עמודה ימנית -->
-    <div class="right-col">
-      <label for="categoryId">קטגוריה:</label>
-      <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
-        <option value="0" disabled selected>קטגוריה</option>
-        <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
-          {{ category.categoryName }}
-        </option>
-      </select>
+    <div class="bug-form">
+      <div class="row-full">
+        <label for="nameB">:שם/תקציר הבאג</label>
+        <input type="text" [(ngModel)]="newBug.title" name="title" required class="input-field" id="nameB" />
+      </div>
 
-      <label for="priorityId">עדיפות:</label>
-      <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
-        <option value="0" disabled selected>עדיפות</option>
-        <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
-          {{ priority.priorityName }}
-        </option>
-      </select>
-    </div>
+      <div class="row-split">
+        <div class="left-col">
+          <label for="categoryId">:קטגוריה</label>
+          <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
+            <option value="0" disabled selected>קטגוריה</option>
+            <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
+              {{ category.categoryName }}
+            </option>
+          </select>
 
-    <!-- עמודה שמאלית -->
+          <label for="priorityId">:עדיפות</label>
+          <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
+            <option value="0" disabled selected>עדיפות</option>
+            <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
+              {{ priority.priorityName }}
+            </option>
+          </select>
+        </div>
 
-
-    <div class="left-col">
-      <label for="nameB">שם/תקציר הבאג:</label>
-      <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
-        class="input-field" id="nameB" />
-        
-      <label for="description">תיאור הבאג:</label>
-      <textarea [(ngModel)]="newBug.description" name="description" placeholder="תיאור הבאג" class="textarea-field"
-        required></textarea>
+        <div class="right-col">
+          <label for="description">:תיאור הבאג</label>
+          <textarea [(ngModel)]="newBug.description" name="description" class="textarea-field" required></textarea>
+        </div>
+      </div>
     </div>
 
     <!-- שורת כפתורים -->
     <div class="buttons-row">
+      <button type="button" class="screen-btn red" (click)="allAttachments()">לצפיה במסמכים</button>
       <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
       <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
-      <button type="button" class="screen-btn red" (click)="allAttachments()">לצפיה במסמכים</button>
     </div>
 
     <!-- כפתור שמירה -->
     <button type="submit" class="save-btn" [disabled]="!bugForm.valid">save 📄</button>
   </form>
 
-  <!-- <div *ngIf="attachedFiles.length > 0">
-  <h3>הקלטות:</h3>
-  <video *ngFor="let file of attachedFiles" 
-         [src]="getVideoUrl(file.file)" 
-         controls 
-         width="400">
-  </video>
-</div> -->
+
+  <div *ngIf="showAttachments" class="attachments-container">
+    <h3>📎 קבצים מצורפים</h3>
+    <ul class="attachments-list">
+      <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
+        <a [href]="getFileUrl(file)" target="_blank" class="attachment-link">{{ file.name }}</a>
+
+        <ng-container *ngIf="file.type.startsWith('image')">
+          <img [src]="getFileUrl(file)" alt="{{file.name}}" class="attachment-preview" />
+        </ng-container>
+
+        <ng-container *ngIf="file.type.startsWith('video')">
+          <video [src]="getFileUrl(file)" controls class="attachment-preview"></video>
+        </ng-container>
+
+        <div class="attachment-actions">
+          <button (click)="renameFile(i)">✏️ שנה שם</button>
+          <button (click)="removeFileByIndex(i)">🗑️ מחק</button>
+        </div>
+      </li>
+    </ul>
+  </div>
 
 </div>
