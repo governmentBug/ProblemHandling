@@ -20,13 +20,10 @@ import { CommentPanelComponent } from '../comment-panel/comment-panel.component'
 export class AllBugsComponent implements OnInit {
   allBugs: BugDetalsDto[] = [];
   bugs: BugDetalsDto[] = [];
-
   currentPage = 1;
   pageSize = 15;
-
   selectedFilterType: string = '';
   selectedFilterValue: string = '';
-
   searchText: string = '';
   selectedBug: BugDetalsDto
   comments: CommentsBugDto[] = [];
@@ -35,6 +32,8 @@ export class AllBugsComponent implements OnInit {
   filterOptions: { [key: string]: string[] } = {};
   sortDirections: { [key: string]: 'desc' | 'asc' } = {};
 
+  isFilesPanelOpen = false;
+  IsEditMode :boolean= false
   readonly priorityOrder: Record<string, number> = {
     'נמוכה': 1,
     'בינונית': 2,
@@ -181,8 +180,6 @@ export class AllBugsComponent implements OnInit {
         if (indexFiltered !== -1) {
           this.bugs[indexFiltered] = updatedBug;
         }
-
-        this.loadComments();
       },
       error: err => {
         console.error('שגיאה בשליפת באג:', err);
@@ -195,50 +192,14 @@ export class AllBugsComponent implements OnInit {
     }
   }
 
-  loadComments(): void {
-    this.CommentService.getCommentsByBugId(this.selectedBug.bugId).subscribe({
-      next: (res) => {
-        this.comments = res
-        console.log(res);
-
-      },
-      error: (err) => console.error('שגיאה בשליפת תגובות', err)
-    });
-  }
-
-  addComment(commentText: string): void {
-    this.CommentService.addComment(this.selectedBug.bugId, commentText).subscribe({
-      next: () => this.loadComments(),
-      error: (err) => console.error('שגיאה בהוספת תגובה', err)
-    });
-  }
-
   checkPermissions(): void {
     // this.bugService.getCurrentUserPermissions(this.bug.bugId).subscribe(res => {
     //   this.isAuthorizedToComment = res.canComment;
     // });
   }
 
-  openCommentsPanel(): void {
-    this.isCommentsPanelOpen = true;
-  }
-
-  onCommentAdded(content: string): void {
-    this.addComment(content)
-  }
-
-  onCommentDeleted(commentId: number): void {
-    this.CommentService.deleteComment(commentId).subscribe(() => {
-      this.loadComments();
-    });
-  }
-
-  onClosePanel(): void {
-    this.isCommentsPanelOpen = false;
-  }
   toggleBug(bug: BugDetalsDto, event: MouseEvent): void {
     event.stopPropagation();
-
     if (this.selectedBug?.bugId === bug.bugId) {
       this.selectedBug = null;
       this.isCommentsPanelOpen = false;
@@ -248,7 +209,17 @@ export class AllBugsComponent implements OnInit {
       this.isCommentsPanelOpen = true;
     }
   }
-  // מאפיין לשמירת כיוון מיון לכל עמודה
+  openCommentsPanel(): void {
+    this.isCommentsPanelOpen = true;
+  }
+  onClosePanel(): void {
+    this.isCommentsPanelOpen = false;
+  }
+
+  openFilesPanel(bugId: number) {
+    this.isFilesPanelOpen = true;
+  }
+
 
   sort(column: string) {
     if (!this.allBugs.length) return;

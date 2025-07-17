@@ -69,8 +69,19 @@
 
   <div class="footer-row">
     <div class="bug-files">
-      <span><i class="fas fa-image"></i></span>
-      <span><i class="fas fa-video"></i></span>
+      <div class="attachments-toggle">
+        <button (click)="showAttachments = !showAttachments">הצג/הסתר קבצים</button>
+      </div>
+
+      <div *ngIf="showAttachments">
+        <app-inline-attachments [bugId]="bug.bugId" [isEditMode]="isEditMode" (filesChanged)="onFilesChanged($event)">
+        </app-inline-attachments>
+      </div>
+
+      <span *ngIf="!isEditMode"><i class="fas fa-video"></i></span>
+      <div *ngIf="isEditMode" class="attachments-section">
+        <!-- <app-file-uploader (filesChanged)="onFilesChanged($event)"></app-file-uploader> -->
+      </div>
     </div>
     <div class="bug-actions">
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>

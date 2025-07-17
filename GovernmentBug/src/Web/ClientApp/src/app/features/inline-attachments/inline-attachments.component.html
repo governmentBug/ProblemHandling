@@ -1,0 +1,40 @@
+<div class="attachments-wrapper">
+
+  <!-- העלאת קבצים -->
+  <div class="buttons-row" *ngIf="isEditMode">
+  <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
+  <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
+</div>
+<!-- תצוגת קבצים -->
+<div class="attachment-card" *ngFor="let f of files">
+  <button *ngIf="isEditMode && f.attachmentId !== 0"
+          class="delete-btn"
+          (click)="deleteAttachment(f.attachmentId)">✕</button>
+
+  <ng-container *ngIf="attachmentService.isImage(f.fileType); else showVideo">
+    <img class="preview-img" [src]="f.url" loading="lazy" (click)="openPopup(f)" />
+  </ng-container>
+
+  <ng-template #showVideo>
+    <video class="preview-video" [src]="f.url" controls (click)="openPopup(f)"></video>
+  </ng-template>
+
+  <div class="file-name">{{ f.fileName }}</div>
+</div>
+
+<!-- פופאפ להצגת קובץ נבחר -->
+<div class="popup-overlay" *ngIf="selectedFile" (click)="closePopup()">
+  <div class="popup-content" (click)="$event.stopPropagation()">
+    <button class="popup-close" (click)="closePopup()">✖</button>
+
+    <ng-container *ngIf="attachmentService.isImage(selectedFile.fileType); else popupVideo">
+      <img [src]="selectedFile.url" class="popup-image" />
+    </ng-container>
+
+    <ng-template #popupVideo>
+      <video [src]="selectedFile.url" class="popup-video" controls autoplay></video>
+    </ng-template>
+
+    <div class="popup-file-name">{{ selectedFile.fileName }}</div>
+  </div>
+</div>

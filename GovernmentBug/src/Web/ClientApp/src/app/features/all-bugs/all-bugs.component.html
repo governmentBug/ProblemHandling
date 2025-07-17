@@ -1,12 +1,11 @@
 <div class="bug-and-comments-wrapper">
   <!-- פאנל התגובות בצד שמאל -->
   <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
-    <app-comment-panel [comments]="comments" [isAuthorizedToComment]="isAuthorizedToComment"
-      (commentAdded)="onCommentAdded($event)" (commentDeleted)="onCommentDeleted($event)" (closePanel)="onClosePanel()">
+    <app-comment-panel [bugId]="selectedBug.bugId" [isAuthorizedToComment]="isAuthorizedToComment"
+      (closePanel)="onClosePanel()">
     </app-comment-panel>
   </div>
 
-  <!-- אזור הטבלה בימין -->
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
     <div class="dialog-content">
       <button (click)="addBug()">דיווח על באג ➕</button>
@@ -88,8 +87,12 @@
 
             <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
               <td colspan="8">
-                <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
-                  (bugChanged)="onBugChanged()">
+                <app-bug-detail 
+                [bug]="selectedBug" 
+                [AuthorizedUser]="isAuthorizedToComment"
+                (bugChanged)="onBugChanged()" 
+                (showFiles)="openFilesPanel($event)"
+                (isEditModeChanged)="IsEditMode = $event">
                 </app-bug-detail>
               </td>
             </tr>

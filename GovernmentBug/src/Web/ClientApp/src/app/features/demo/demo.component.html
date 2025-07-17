@@ -1,18 +1,8 @@
 <div class="demo-container">
-  <app-comment-panel 
-  [comments]="comments" 
-  [isAuthorizedToComment]="isAuthorizedToComment"
-  (commentAdded)="onCommentAdded($event)" 
-  (commentDeleted)="onCommentDeleted($event)"
-  (closePanel)="openCommentsPanel()">
-  </app-comment-panel>
-  <div class="main-panel">
-    <app-bug-detail 
-   (bugChanged)="onBugChanged()"
-    [bug]="selectedBug" 
-    [AuthorizedUser]="isAuthorizedToComment"
-    ></app-bug-detail>
-  </div>
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <input type="number" [(ngModel)]="bugId" name="bugId" placeholder="Bug ID" required />
 
-
+  <input type="file" (change)="onFileSelected($event)" multiple />
+  <button type="submit">שלח קבצים</button>
+</form>
 </div>

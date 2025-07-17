@@ -25,7 +25,7 @@ namespace GovernmentBug.Application.Bugs.Commands.UpdateBug
         private readonly IMapper _mapper;
         public readonly IBugHistoryService _bugHistoryService;
 
-        public UpdateBugCommandHandler(IApplicationDbContext context, IMapper mapper,IBugHistoryService bugHistoryService)
+        public UpdateBugCommandHandler(IApplicationDbContext context, IMapper mapper, IBugHistoryService bugHistoryService)
         {
             _context = context;
             _mapper = mapper;

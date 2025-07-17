@@ -20,7 +20,6 @@ public static class DependencyInjection
             builder.Configuration.GetSection("BugComparison"));
         builder.Services.AddScoped<IBugComparisonConfig, BugComparisonConfig>();
         builder.Services.AddScoped<IImageComparisonService, ImageComparisonService>();
-
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
