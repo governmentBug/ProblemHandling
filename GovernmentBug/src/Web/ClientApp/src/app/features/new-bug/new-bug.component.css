@@ -49,12 +49,6 @@
   resize: vertical;
 }
 
-/* label {
-  font-weight: bold;
-  margin-bottom: 5px;
-} */
-
-
 .bug-form-container {
   border: 1px solid #ccc;
   border-radius: 12px;
@@ -74,12 +68,6 @@
 .report-info, .report-infoR {
   font-weight: bold;
 }
-
-/* label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  text-align: right; 
-} */
 
 .right-col,
 .left-col {
@@ -202,11 +190,7 @@ label:after {
   gap: 15px;
 }
 
-@media (min-width: 1200px) {
-  .attachments-list {
-    grid-template-columns: repeat(4, 1fr); /* במסך ממש רחב - 4 */
-  }
-}
+
 
 @media (max-width: 600px) {
   .attachments-list {
