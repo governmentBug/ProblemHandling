@@ -238,3 +238,23 @@
 .toggle-arrow i.rotated {
   transform: rotate(-90deg);
 }
+
+.dialog-content {
+  display: flex;
+  justify-content: flex-start; /* מיקום הכפתור בצד שמאל */
+  margin-bottom: 1rem; /* ריווח מתחת לכפתור */
+}
+
+.dialog-content button {
+  background-color: #007bff; /* צבע רקע */
+  color: white; /* צבע טקסט */
+  border: none; /* ללא גבול */
+  padding: 10px 16px; /* ריווח פנימי */
+  border-radius: 6px; /* פינות מעוגלות */
+  cursor: pointer; /* סמן ידני */
+  transition: background-color 0.3s ease; /* אנימציה לשינוי צבע */
+}
+
+.dialog-content button:hover {
+  background-color: #0056b3; /* צבע רקע כשעוברים עם העכבר */
+}
