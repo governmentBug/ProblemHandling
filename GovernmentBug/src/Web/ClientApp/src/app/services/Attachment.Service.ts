@@ -17,7 +17,7 @@ export class AttachmentService {
     });
 
      this.http.post('/api/Attachments/create', formData).subscribe({
-      next: (r) => {alert('הקבצים הועלו בהצלחה!')
+      next: (r) => {
         console.log(r);
       },
       error: err => console.error('שגיאה בהעלאה', err)
