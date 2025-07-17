@@ -8,11 +8,13 @@ import { StateService } from 'src/app/services/state.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AttachmentService } from 'src/app/services/Attachment.Service';
+import { BugComparisonQuery } from 'src/app/web-api-client';
+import { SearchSameBugsComponent } from '../Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
 
 @Component({
   selector: 'app-new-bug',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SearchSameBugsComponent],
   templateUrl: './new-bug.component.html',
   styleUrls: ['./new-bug.component.css']
 })
@@ -31,6 +33,8 @@ export class NewBugComponent implements OnInit {
   allAttachment: Array<File> = [];
   mediaRecorder: MediaRecorder;
   public newDocument: AddAtachment = new AddAtachment();
+  showDuplicateCheck = false;
+  showSaveButton = true;
 
   constructor(private bugService: BugService, private stateService: StateService,
     private attachmentService: AttachmentService, private router: Router) { }
@@ -41,6 +45,25 @@ export class NewBugComponent implements OnInit {
     this.newBug.created = this.formattedDateToSave;
     this.newBug.createdByUserId = 1;
   }
+onCheckDuplicates() {
+  this.showDuplicateCheck = true;
+}
+changeShowSaveButton() {
+  this.showSaveButton = !this.showSaveButton;
+}
+onContinueAddBug() {
+  this.showDuplicateCheck = false;
+  this.addBug();
+}
+
+// פונקציה שמחזירה אובייקט BugComparisonQuery מהבאג החדש
+getBugComparisonQuery(): BugComparisonQuery {
+  return {
+    title: this.newBug.title,
+    description: this.newBug.description,
+    categoryId: this.newBug.categoryId
+  } as BugComparisonQuery;
+}
   async addBug() {
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
@@ -63,6 +86,23 @@ export class NewBugComponent implements OnInit {
       }
     }
   }
+  onCancel() {
+    // this.showDuplicateCheck = false;
+    Swal.fire({
+      title: 'בטוח שברצונך לבטל?',
+      text: 'כל השינויים לא יישמרו.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, בטל',
+      cancelButtonText: 'לא, השאר'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.router.navigate(['/']);
+      }
+    });
+
+  }
+
   loadAllCategory() {
     this.stateService.getAllCategories().subscribe({
       next: categories => this.allCategory = categories,

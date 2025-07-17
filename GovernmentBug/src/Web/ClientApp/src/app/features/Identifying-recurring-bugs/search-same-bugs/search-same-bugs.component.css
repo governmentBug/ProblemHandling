@@ -1,11 +1,4 @@
-/* הודעת זמן ממוצע לטיפול */
-.average-time-message {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 1.18rem;
-  color: #1976d2;
-  font-weight: bold;
-}
+/* הודעת זמן ממוצע לטיפול *
 /* כפתורי פעולה לבאגים דומים */
 .similar-bugs-actions {
   display: flex;
@@ -269,32 +262,4 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-.save-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #b2ffb2;
-  color: #fff;
-  border: 3px solid #6ec6ff;
-  border-radius: 14px;
-  padding: 0.5rem 1.7rem;
-  font-size: 1.5rem;
-  font-weight: bold;
-  box-shadow: 0 0 0 4px #e3f6ff;
-  cursor: pointer;
-  margin: 1.2rem auto 0.7rem auto;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-.save-btn:disabled {
-  background: #e0e0e0;
-  color: #bdbdbd;
-  border-color: #bdbdbd;
-  cursor: not-allowed;
-}
-.save-icon {
-  width: 28px;
-  height: 28px;
-  margin-right: 0.3rem;
-  vertical-align: middle;
 }

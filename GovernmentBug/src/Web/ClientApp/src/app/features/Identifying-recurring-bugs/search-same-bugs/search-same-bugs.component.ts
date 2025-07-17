@@ -1,11 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BugsClient, BugComparisonQuery, BugSummariesDto, BugDetalsDto } from 'src/app/web-api-client';
 import { ListBugsSummariesComponent } from '../list-bugs-summaries/list-bugs-summaries.component';
 import { BugDetailComponent } from 'src/app/features/bug-detail/BugDetailComponent';
-import { Router } from '@angular/router';
 import { StateService } from 'src/app/services/state.service';
-import { BugStatisticsClient } from 'src/app/web-api-client';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -15,19 +13,22 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './search-same-bugs.component.html',
   styleUrl: './search-same-bugs.component.css'
 })
-export class SearchSameBugsComponent {
-// @Input() BugComparisonQuery: BugComparisonQuery = new BugComparisonQuery();
+export class SearchSameBugsComponent implements OnInit {
+@Input() 
 bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
   title: 'פרטי באג לא נקלט',
   description: 'string',
   categoryId: 1
 });
+@Output() continue = new EventEmitter<void>();
+@Output() cancel = new EventEmitter<void>();
+@Output() change = new EventEmitter<void>();
 
+// בקריאה להמשך:
 // Example field, replace with actual fields
   recurringBugs: BugSummariesDto[] = [];
   showDrawer = false;
   message = '';
-  avaragedTime: string = '';
   loading = false;
   selectedBug: BugDetalsDto | null = null;
   showBugPopup = false;
@@ -35,10 +36,11 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
 
   constructor(
     private bugsClient: BugsClient,
-    private router: Router,
     private stateService: StateService,
-    private bugStatisticsClient: BugStatisticsClient
   ) {}
+  ngOnInit(): void {
+    this.searchRecurringBugs();
+  }
 
  async searchRecurringBugs() {
   this.loading = true;
@@ -47,13 +49,16 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
     next: (result) => {
       this.loading = false;
       if (result && result.length > 0) {
+        this.change.emit();
         result.forEach(bug => {
           bug.statusName = this.stateService.getStatusById(bug.statusId);
         });
         this.recurringBugs = result;
         this.message = `יתכן שכבר קיים באג דומה במערכת`;
         this.showDrawer = true;
-      } else {
+      }
+       else {
+        this.continue.emit();
         this.message = '';
         this.showDrawer = false;
       }
@@ -69,28 +74,13 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
     this.showDrawer = false;
   }
   cancelOpenBug() {
-    this.showDrawer = false;
-
-    this.router.navigate(['']);
+    // this.showDrawer = false;
+    this.cancel.emit();
   }
   async continueOpenBug() {
     this.message = '';
     this.showDrawer = false;
-    // נשתמש ב-priorityId ו-categoryId מתוך הבאג שנבחר או מתוך הבאג להשוואה
-    const priorityId = this.selectedBug?.priorityId || 1;
-    const categoryId = this.selectedBug?.categoryId || this.bugComparisonQuery.categoryId || 1;
-    const created = this.selectedBug?.createdDate ? new Date(this.selectedBug.createdDate) : new Date();
-    try {
-      const avgTime = await firstValueFrom(this.bugStatisticsClient.averageTreatmentTime(priorityId, categoryId, created));
-      if(avgTime==-1) {
-              this.avaragedTime = '.אין מספיק נתונים כדי לחשב זמן ממוצע לטיפול בבאג';
-      } else {
-          this.avaragedTime = `זמן ממוצע לטיפול בבאג מסוג זה: ${this.formatDuration(avgTime)}`;
-      }
-      console.log('זמן ממוצע לטיפול בבאג:', this.avaragedTime);
-    } catch {
-      this.avaragedTime = 'לא ניתן לחשב זמן ממוצע לטיפול בבאג.';
-    }
+    this.continue.emit();
   }
 
   formatDuration(minutes: number): string {

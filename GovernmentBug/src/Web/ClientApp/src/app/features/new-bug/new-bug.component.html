@@ -8,7 +8,7 @@
     </p>
   </div>
 
-  <form (ngSubmit)="addBug()" #bugForm="ngForm" class="bug-form-grid">
+  <form (ngSubmit)="onCheckDuplicates()" #bugForm="ngForm" class="bug-form-grid">
 
     <div class="bug-form">
       <div class="row-full">
@@ -50,9 +50,17 @@
     </div>
 
     <!-- כפתור שמירה -->
+     @if(showSaveButton) {
     <button type="submit" class="save-btn" [disabled]="!bugForm.valid">save 📄</button>
+     }
   </form>
-
+<app-search-same-bugs
+  *ngIf="showDuplicateCheck"
+  [bugComparisonQuery]="getBugComparisonQuery()"
+  (continue)="onContinueAddBug()"
+  (cancel)="onCancel()"
+  (change)="changeShowSaveButton()">
+</app-search-same-bugs>
 
   <div *ngIf="showAttachments" class="attachments-container">
     <h3>📎 קבצים מצורפים</h3>
