@@ -12,18 +12,17 @@
 
     <!-- עמודה ימנית -->
     <div class="right-col">
-      <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
-        class="input-field" id="nameB" />
-
+      <label for="categoryId">קטגוריה:</label>
       <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
-        <option value="0" disabled>קטגוריה</option>
+        <option value="0" disabled selected>קטגוריה</option>
         <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
           {{ category.categoryName }}
         </option>
       </select>
 
+      <label for="priorityId">עדיפות:</label>
       <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
-        <option value="0" disabled>עדיפות</option>
+        <option value="0" disabled selected>עדיפות</option>
         <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
           {{ priority.priorityName }}
         </option>
@@ -31,21 +30,36 @@
     </div>
 
     <!-- עמודה שמאלית -->
+
+
     <div class="left-col">
+      <label for="nameB">שם/תקציר הבאג:</label>
+      <input type="text" [(ngModel)]="newBug.title" name="title" required placeholder="שם/תקציר הבאג"
+        class="input-field" id="nameB" />
+        
+      <label for="description">תיאור הבאג:</label>
       <textarea [(ngModel)]="newBug.description" name="description" placeholder="תיאור הבאג" class="textarea-field"
         required></textarea>
     </div>
 
     <!-- שורת כפתורים -->
     <div class="buttons-row">
-
       <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
       <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
-
+      <button type="button" class="screen-btn red" (click)="allAttachments()">לצפיה במסמכים</button>
     </div>
 
     <!-- כפתור שמירה -->
-    <button type="submit" class="save-btn">save 📄</button>
-
+    <button type="submit" class="save-btn" [disabled]="!bugForm.valid">save 📄</button>
   </form>
+
+  <!-- <div *ngIf="attachedFiles.length > 0">
+  <h3>הקלטות:</h3>
+  <video *ngFor="let file of attachedFiles" 
+         [src]="getVideoUrl(file.file)" 
+         controls 
+         width="400">
+  </video>
+</div> -->
+
 </div>

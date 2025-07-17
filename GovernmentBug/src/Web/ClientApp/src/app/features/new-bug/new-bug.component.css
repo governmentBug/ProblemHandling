@@ -26,14 +26,12 @@
   align-items: start;
 }
 
-.right-col {
+.right-col,
+.left-col {
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
-
-.left-col {
-  width: 100%;
+  text-align: right; /* מיקום התוכן בצד ימין */
 }
 
 .input-field,
@@ -78,14 +76,44 @@
 }
 
 /* כפתור שמירה */
-.save-btn {
+.save-btn,
+.btn {
   grid-column: 1 / span 2;
-  background-color: #a0f5aa;
-  border: 2px solid #60e66b;
   border-radius: 10px;
   padding: 10px 20px;
   font-size: 18px;
   cursor: pointer;
   margin: 20px auto 0;
   display: block;
+}
+
+.save-btn {
+  background-color: #a0f5aa;
+  border: 2px solid #60e66b;
+}
+
+.btn {
+  background-color: #e78155;
+  border: 2px solid #e78155;
+}
+
+.input-field.ng-invalid.ng-touched,
+.select-field.ng-invalid.ng-touched,
+.textarea-field.ng-invalid.ng-touched {
+  border: 1px solid red; /* גבול אדום לשדות לא תקינים */
+}
+
+label {
+  color: #333; /* צבע רגיל */
+  margin-bottom: -15px; /* ריווח מתחת לתווית */
+  font-weight: bold; /* להפוך את התוויות לבולטות */
+}
+
+label:after {
+  content: " *"; /* כוכבית */
+  color: red; /* צבע אדום לכוכבית */
+}
+
+.red {
+  background-color: rgb(211, 246, 147); /* שים את הצבע הרצוי */
 }
