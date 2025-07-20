@@ -1,155 +1,85 @@
-/* inline-attachments.component.css */
 
-.inline-attachments-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
+.attachments-container {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
 }
 
-/* קו‑רוחב עם גלילת X */
-.attachments-list {
-  display: flex;
-  overflow-x: auto;
-  gap: 12px;
-  padding-bottom: 4px;             /* מקום ל‑scrollbar */
+.attachments-container h3 {
+  margin-bottom: 10px;
+  color: #444;
+  font-size: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
-.attachment {
-  position: relative;
-  flex: 0 0 90px;                  /* רוחב קבוע 90px */
+ .attachments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* תמיד 3 */
+  gap: 15px;
 }
 
-.thumbnail {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
+
+
+@media (max-width: 600px) {
+  .attachments-list {
+    grid-template-columns: repeat(2, 1fr); /* במסכים צרים - 2 */
+  }
+}
+
+.attachment-item {
+  background: #fafafa;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 1px 3px #0002;
-  pointer-events: none;            /* שלא יחסום את הכפתור */
-}
-
-.remove-btn {
-  position: absolute;
-  top: -6px; right: -6px;
-  width: 20px; height: 20px;
-  font: 14px/18px sans-serif;
-  background: #fff;
-  border: 1px solid #e33;
-  border-radius: 50%;
-  color: #e33;
-  cursor: pointer;
-}
-
-.upload-box input { margin-top: .5rem; }
-
-
-/* Lightbox */
-.lightbox {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.8);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 1000;
-}
-.lightbox img, .lightbox video {
-  max-width: 90vw; max-height: 90vh;
-  border-radius: 8px;
-}
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
   position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transition: box-shadow 0.3s ease;
 }
 
-.popup-image, .popup-video {
+.attachment-item:hover {
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.attachment-preview {
   max-width: 100%;
-  max-height: 80vh;
-  border-radius: 8px;
+  max-height: 150px;
+  margin-bottom: 10px;
+  border-radius: 4px;
 }
 
-.popup-close {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.popup-file-name {
-  margin-top: 0.5rem;
-  font-weight: bold;
-}
-.preview-img,
-.preview-video {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+.attachment-actions {
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 1000;
+  gap: 10px;
 }
 
-.popup-content {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.popup-image, .popup-video {
-  max-width: 100%;
-  max-height: 80vh;
-  border-radius: 8px;
-}
-
-.popup-close {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: none;
+.attachment-actions button {
   border: none;
-  font-size: 1.5rem;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 14px;
   cursor: pointer;
+  background-color: #f0f0f0;
+  transition: background-color 0.2s ease;
 }
 
-.popup-file-name {
-  margin-top: 0.5rem;
+.attachment-actions button:hover {
+  background-color: #ddd;
+}
+
+.attachment-link {
+  display: block;
   font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #0077cc;
+  word-break: break-all;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
 }

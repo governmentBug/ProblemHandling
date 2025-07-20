@@ -15,7 +15,6 @@
   align-items: start;
 }
 
-/* שורת עליונה עם תאריך וסטטוס */
 .top-bar.full {
   display: flex;
   justify-content: space-between;
@@ -23,7 +22,7 @@
   margin-bottom: 12px;
 }
 
-/* שמאל: נוצר ע"י */
+
 .report-date {
   direction: ltr;
   font-size: 12px;
@@ -315,3 +314,4 @@ textarea.edit-inline {
   display: flex;
   justify-content: flex-end;
 }
+
