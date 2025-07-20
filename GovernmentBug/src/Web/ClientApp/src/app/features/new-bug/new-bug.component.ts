@@ -25,6 +25,7 @@ export class NewBugComponent implements OnInit {
   public newBug: AbbBug = new AbbBug();
   allCategory: any[] = [];
   allPriority: any[] = [];
+  fileUrls: string[] = [];
   bugId: number = 0;
   numDocuments: number = 0;
   numFilm: number = 0;
@@ -45,25 +46,26 @@ export class NewBugComponent implements OnInit {
     this.newBug.created = this.formattedDateToSave;
     this.newBug.createdByUserId = 1;
   }
-onCheckDuplicates() {
-  this.showDuplicateCheck = true;
-}
-changeShowSaveButton() {
-  this.showSaveButton = !this.showSaveButton;
-}
-onContinueAddBug() {
-  this.showDuplicateCheck = false;
-  this.addBug();
-}
-
-// פונקציה שמחזירה אובייקט BugComparisonQuery מהבאג החדש
-getBugComparisonQuery(): BugComparisonQuery {
-  return {
-    title: this.newBug.title,
-    description: this.newBug.description,
-    categoryId: this.newBug.categoryId
-  } as BugComparisonQuery;
-}
+  onCheckDuplicates() {
+    this.showDuplicateCheck = true;
+  }
+  changeShowSaveButton() {
+    this.showSaveButton = !this.showSaveButton;
+  }
+  onContinueAddBug() {
+    this.showDuplicateCheck = false;
+    if (!this.hasEnoughInfo()) {         
+      return;
+    }
+    this.addBug();
+  }
+  getBugComparisonQuery(): BugComparisonQuery {
+    return {
+      title: this.newBug.title,
+      description: this.newBug.description,
+      categoryId: this.newBug.categoryId
+    } as BugComparisonQuery;
+  }
   async addBug() {
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
@@ -102,7 +104,6 @@ getBugComparisonQuery(): BugComparisonQuery {
     });
 
   }
-
   loadAllCategory() {
     this.stateService.getAllCategories().subscribe({
       next: categories => this.allCategory = categories,
@@ -138,9 +139,14 @@ getBugComparisonQuery(): BugComparisonQuery {
 
       this.numDocuments++;
       canvas.toBlob((blob) => {
+        // if (blob) {
+        //   const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+        //   this.allAttachment.push(file);
+        // }
         if (blob) {
           const file = new File([blob], 'screenshot.png', { type: 'image/png' });
           this.allAttachment.push(file);
+          this.fileUrls.push(this.getFileUrl(file)); // שמירת ה-URL
         }
         track.stop();
       }, 'image/png');
@@ -177,8 +183,11 @@ getBugComparisonQuery(): BugComparisonQuery {
       this.numFilm++;
       this.mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
+        // const videoFile = new File([blob], 'recording.webm', { type: 'video/webm' });
+        // this.allAttachment.push(videoFile);
         const videoFile = new File([blob], 'recording.webm', { type: 'video/webm' });
         this.allAttachment.push(videoFile);
+        this.fileUrls.push(this.getFileUrl(videoFile)); // שמירת ה-URL
       };
 
       this.mediaRecorder.start();
@@ -200,16 +209,16 @@ getBugComparisonQuery(): BugComparisonQuery {
     return URL.createObjectURL(file);
   }
   removeFileByIndex(index: number) {
-  const file = this.allAttachment[index];
-  this.allAttachment.splice(index, 1);
-  
-  // עדכון מספר הקבצים
-  if (file.type.startsWith('video/')) {
-    this.numFilm--; // אם הקובץ הוא וידאו
-  } else {
-    this.numDocuments--; // אם הקובץ הוא מסמך
+    const file = this.allAttachment[index];
+    this.allAttachment.splice(index, 1);
+
+    // עדכון מספר הקבצים
+    if (file.type.startsWith('video/')) {
+      this.numFilm--; // אם הקובץ הוא וידאו
+    } else {
+      this.numDocuments--; // אם הקובץ הוא מסמך
+    }
   }
-}
 
   renameFile(index: number) {
     const newName = prompt("הכנס שם חדש לקובץ:", this.allAttachment[index].name);
@@ -219,5 +228,31 @@ getBugComparisonQuery(): BugComparisonQuery {
       const renamedFile = new File([file], newName, { type: file.type });
       this.allAttachment[index] = renamedFile;
     }
+  }
+
+  hasEnoughInfo(): boolean {
+    // בודקים שדות חובה
+    if (!this.newBug.title || this.newBug.title.trim().length < 5) {
+      Swal.fire('חסר מידע', 'נא למלא כותרת של לפחות 5 תווים', 'warning');
+      return false;
+    }
+
+    if (!this.newBug.description || this.newBug.description.trim().length < 10) {
+      Swal.fire('חסר מידע', 'נא למלא תיאור של לפחות 10 תווים', 'warning');
+      return false;
+    }
+
+    if (!this.newBug.categoryId) {
+      Swal.fire('חסר מידע', 'נא לבחור קטגוריה', 'warning');
+      return false;
+    }
+
+    if (this.allAttachment.length === 0) {
+      Swal.fire('חסר מידע', 'נא לצרף לפחות קובץ אחד (צילום מסך או סרטון)', 'warning');
+      return false;
+    }
+
+    // אם הכל תקין
+    return true;
   }
 }
