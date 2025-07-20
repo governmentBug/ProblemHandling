@@ -1,23 +1,39 @@
 <div class="by-status-container">
-  <div class="by-status-header">
-    סך הכל באגים במערכת: <span class="total-count">{{ byStatus.totalBugs }}</span>
-  </div>
   <div class="by-status-grid">
-    <div class="status-box open">
-      <div class="status-title">פתוחים</div>
-      <div class="status-count">{{ byStatus.openBugs }}</div>
-    </div>
-    <div class="status-box active">
-      <div class="status-title">בטיפול</div>
-      <div class="status-count">{{ byStatus.activeBugs }}</div>
-    </div>
-    <div class="status-box cancelled">
-      <div class="status-title">בוטלו</div>
-      <div class="status-count">{{ byStatus.cancelledBugs }}</div>
-    </div>
-    <div class="status-box closed">
-      <div class="status-title">נסגרו</div>
-      <div class="status-count">{{ byStatus.closedBugs }}</div>
+<div class="donut-chart-container">
+  <canvas
+    baseChart
+    [data]="pieChartData"
+    [type]="'doughnut'"
+    [options]="pieChartOptions"
+    style="position: relative; z-index: 1;"
+  ></canvas>
+  <div class="donut-center-text">
+    <span class="total-count">{{ byStatus.totalBugs }}</span>
+    <span class="center-label">באגים במערכת</span>
+  </div>
+</div>
+    <div class="status-boxes">
+      <div class="status-row">
+        <div class="status-box open">
+          <div class="status-title">פתוחים</div>
+          <div class="status-count">{{ byStatus.openBugs }}</div>
+        </div>
+        <div class="status-box active">
+          <div class="status-title">בטיפול</div>
+          <div class="status-count">{{ byStatus.activeBugs }}</div>
+        </div>
+      </div>
+      <div class="status-row">
+        <div class="status-box closed">
+          <div class="status-title">נסגרו</div>
+          <div class="status-count">{{ byStatus.closedBugs }}</div>
+        </div>
+        <div class="status-box cancelled">
+          <div class="status-title">בוטלו</div>
+          <div class="status-count">{{ byStatus.cancelledBugs }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

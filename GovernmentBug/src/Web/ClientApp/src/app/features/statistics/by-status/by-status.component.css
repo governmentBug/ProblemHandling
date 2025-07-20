@@ -1,96 +1,141 @@
-/* עיצוב כללי */
 .by-status-container {
+  background: #fff;
+  border-radius: 18px;
+  padding: 2.2rem 1.5rem 1.5rem 1.5rem;
   max-width: 600px;
   margin: 2rem auto;
-  background: #f5f5f5;
-  border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  padding: 1.5rem 1.2rem;
-}
-
-.by-status-header {
-  font-size: 1.35rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #1976d2;
-}
-
-.total-count {
-  font-size: 1.5em;
-  color: #1976d2;
-  font-weight: bold;
+  color: #222;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .by-status-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.status-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.status-row {
+  display: flex;
   gap: 1.2rem;
 }
 
 .status-box {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-  padding: 1.1rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 0.7rem 1.1rem;
   text-align: center;
+  font-size: 1.05rem;
+  min-width: 90px;
+  font-weight: 500;
+  color: #222;
+  flex: 1;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.status-box.open { border-right: 6px solid #ff5252; }
+.status-box.active { border-right: 6px solid #2196f3; }
+.status-box.closed { border-right: 6px solid #4caf50; }
+.status-box.cancelled { border-right: 6px solid #9c27b0; }
+
+.status-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.status-count {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.donut-chart-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-chart-container canvas {
+  width: 220px !important;
+  height: 220px !important;
+}
+.donut-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-.status-title {
-  font-size: 1.1em;
-  font-weight: bold;
-  margin-bottom: 0.5em;
-}
-.status-count {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 0.2em;
-}
-.status-box.open {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-.status-box.active {
-  background: #fff3cd;
-  color: #856404;
-}
-.status-box.cancelled {
-  background: #f8d7da;
-  color: #721c24;
-}
-.status-box.closed {
-  background: #d4edda;
-  color: #155724;
+  font-size: 1.2rem;
 }
 
+.total-count {
+  font-size: 3rem !important  ;
+color: #111 !important;
+font-weight: 900 !important;
+  margin-bottom: 0.1em;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  font-family: 'Rubik', 'Arial', sans-serif;
+}
+
+.center-label {
+  font-size: 1.15rem;
+  color: #222;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: 0.2em;
+}
+
+.donut-center-text span {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #222;
+}
+
+/* רספונסיביות */
 @media (max-width: 700px) {
   .by-status-grid {
-    grid-template-columns: 1fr 1fr;
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
+  .donut-chart-container {
+    margin-bottom: 1.5rem;
+  }
+  .status-row {
     gap: 0.7rem;
   }
-}
-
-@media (max-width: 480px) {
-  .by-status-container {
-    padding: 0.7rem 0.2rem;
-  }
-  .by-status-header {
-    font-size: 1.05rem;
-  }
-  .by-status-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
   .status-box {
-    padding: 0.7rem 0.2rem;
+    min-width: 70px;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
   }
-  .status-title {
-    font-size: 1em;
+  .donut-chart-container,
+  .donut-chart-container canvas {
+    width: 160px !important;
+    height: 160px !important;
   }
-  .status-count {
-    font-size: 1.3em;
+  .donut-center-text {
+    font-size: 1.3rem;
   }
 }

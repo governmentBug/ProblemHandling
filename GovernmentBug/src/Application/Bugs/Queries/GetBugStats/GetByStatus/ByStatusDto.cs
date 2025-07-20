@@ -13,12 +13,14 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus
         public ByPriorityDto CloseBugs { get; set; }
         public ByPriorityDto ActiveBugs { get; set; }
         public ByPriorityDto CancelledBugs { get; set; }
+        public ByPriorityDto CloseWithoutOpeningBugs { get; set; }
         public ByStatusDto()
         {
             OpenBugs = new ByPriorityDto();
             CloseBugs = new ByPriorityDto();
             ActiveBugs = new ByPriorityDto();
             CancelledBugs = new ByPriorityDto();
+            CloseWithoutOpeningBugs = new ByPriorityDto();
         }
     }
 }

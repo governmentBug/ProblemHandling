@@ -1630,6 +1630,9 @@
           },
           "cancelledBugs": {
             "$ref": "#/components/schemas/ByPriorityDto"
+          },
+          "closeWithoutOpeningBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
           }
         }
       },

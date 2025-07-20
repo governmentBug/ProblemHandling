@@ -3033,6 +3033,7 @@ export class ByStatusDto implements IByStatusDto {
     closeBugs?: ByPriorityDto;
     activeBugs?: ByPriorityDto;
     cancelledBugs?: ByPriorityDto;
+    closeWithoutOpeningBugs?: ByPriorityDto;
 
     constructor(data?: IByStatusDto) {
         if (data) {
@@ -3050,6 +3051,7 @@ export class ByStatusDto implements IByStatusDto {
             this.closeBugs = _data["closeBugs"] ? ByPriorityDto.fromJS(_data["closeBugs"]) : <any>undefined;
             this.activeBugs = _data["activeBugs"] ? ByPriorityDto.fromJS(_data["activeBugs"]) : <any>undefined;
             this.cancelledBugs = _data["cancelledBugs"] ? ByPriorityDto.fromJS(_data["cancelledBugs"]) : <any>undefined;
+            this.closeWithoutOpeningBugs = _data["closeWithoutOpeningBugs"] ? ByPriorityDto.fromJS(_data["closeWithoutOpeningBugs"]) : <any>undefined;
         }
     }
 
@@ -3067,6 +3069,7 @@ export class ByStatusDto implements IByStatusDto {
         data["closeBugs"] = this.closeBugs ? this.closeBugs.toJSON() : <any>undefined;
         data["activeBugs"] = this.activeBugs ? this.activeBugs.toJSON() : <any>undefined;
         data["cancelledBugs"] = this.cancelledBugs ? this.cancelledBugs.toJSON() : <any>undefined;
+        data["closeWithoutOpeningBugs"] = this.closeWithoutOpeningBugs ? this.closeWithoutOpeningBugs.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -3077,6 +3080,7 @@ export interface IByStatusDto {
     closeBugs?: ByPriorityDto;
     activeBugs?: ByPriorityDto;
     cancelledBugs?: ByPriorityDto;
+    closeWithoutOpeningBugs?: ByPriorityDto;
 }
 
 export class ByPriorityDto implements IByPriorityDto {
