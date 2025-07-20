@@ -50,22 +50,35 @@
     </div>
 
     <!-- כפתור שמירה -->
-     @if(showSaveButton) {
+    @if(showSaveButton) {
     <button type="submit" class="save-btn" [disabled]="!bugForm.valid">save 📄</button>
-     }
+    }
   </form>
-<app-search-same-bugs
-  *ngIf="showDuplicateCheck"
-  [bugComparisonQuery]="getBugComparisonQuery()"
-  (continue)="onContinueAddBug()"
-  (cancel)="onCancel()"
-  (change)="changeShowSaveButton()">
-</app-search-same-bugs>
+  <app-search-same-bugs *ngIf="showDuplicateCheck" [bugComparisonQuery]="getBugComparisonQuery()"
+    (continue)="onContinueAddBug()" (cancel)="onCancel()" (change)="changeShowSaveButton()">
+  </app-search-same-bugs>
 
   <div *ngIf="showAttachments" class="attachments-container">
     <h3>📎 קבצים מצורפים</h3>
     <ul class="attachments-list">
       <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
+        <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ file.name }}</a>
+
+        <ng-container *ngIf="file.type.startsWith('image')">
+          <img [src]="fileUrls[i]" alt="{{file.name}}" class="attachment-preview" />
+        </ng-container>
+
+        <ng-container *ngIf="file.type.startsWith('video')">
+          <video [src]="fileUrls[i]" controls class="attachment-preview"></video>
+        </ng-container>
+
+        <div class="attachment-actions">
+          <button (click)="renameFile(i)">✏️ שנה שם</button>
+          <button (click)="removeFileByIndex(i)">🗑️ מחק</button>
+        </div>
+      </li>
+
+      <!-- <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
         <a [href]="getFileUrl(file)" target="_blank" class="attachment-link">{{ file.name }}</a>
 
         <ng-container *ngIf="file.type.startsWith('image')">
@@ -80,7 +93,7 @@
           <button (click)="renameFile(i)">✏️ שנה שם</button>
           <button (click)="removeFileByIndex(i)">🗑️ מחק</button>
         </div>
-      </li>
+      </li> -->
     </ul>
   </div>
 
