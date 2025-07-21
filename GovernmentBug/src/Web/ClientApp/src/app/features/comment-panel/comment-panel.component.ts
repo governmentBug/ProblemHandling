@@ -25,8 +25,8 @@ export class CommentPanelComponent implements OnInit {
   newComment: string = '';
   userList: Array<UserDto> = []
   mentionUserIds = new Set<Number>
-  filteredUsers:  Array<UserDto> = []
-  mentions:  Array<UserDto> = []
+  filteredUsers: Array<UserDto> = []
+  mentions: Array<UserDto> = []
 
   showMentionList = false;
   caretPosition = 0;
@@ -34,7 +34,7 @@ export class CommentPanelComponent implements OnInit {
 
 
   onInput(eventK: Event) {
-    const event= eventK as KeyboardEvent;
+    const event = eventK as KeyboardEvent;
     const textarea = event.target as HTMLTextAreaElement;
     this.newComment = textarea.value;
     this.caretPosition = textarea.selectionStart || 0;
@@ -48,18 +48,16 @@ export class CommentPanelComponent implements OnInit {
         user.fullName.toLowerCase().includes(query.toLowerCase())
       );
       this.showMentionList = this.filteredUsers.length > 0;
-      this.selectedUserIndex = 0; // התחול מחדש בכל פעם
+      this.selectedUserIndex = 0;
     } else {
       this.showMentionList = false;
     }
   }
 
 
-  selectUser(user:UserDto) {
+  selectUser(user: UserDto) {
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
     const textAfterCaret = this.newComment.substring(this.caretPosition);
-
-    // חפש את המילה שמתחילה ב־@ אחרונה
     const mentionRegex = /@([\w\u0590-\u05FF]*)$/;
     const match = mentionRegex.exec(textUpToCaret);
 
@@ -69,13 +67,11 @@ export class CommentPanelComponent implements OnInit {
     const beforeMention = this.newComment.slice(0, mentionStartIndex);
     const afterMention = textAfterCaret;
 
-    // החלפת המילה המתוייגת במשתמש שנבחר
     this.newComment = `${beforeMention}@${user.fullName} ${afterMention}`.trim();
     this.caretPosition = (beforeMention + '@' + user.fullName + ' ').length;
     this.showMentionList = false;
-
-    if (!this.mentions.some(u => u.userId === user.userId)) {
-      this.mentions.push(user);
+    if (!this.mentionUserIds.has(user.userId)) {
+      this.mentionUserIds.add(user.userId);
     }
   }
   constructor(private stateService: StateService, private CommentService: CommentService) { }
@@ -159,28 +155,28 @@ export class CommentPanelComponent implements OnInit {
       this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
     } catch (err) { }
   }
-onKeyDown(event: KeyboardEvent) {
-  if (this.showMentionList) {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.selectedUserIndex = (this.selectedUserIndex + 1) % this.filteredUsers.length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.selectedUserIndex = (this.selectedUserIndex - 1 + this.filteredUsers.length) % this.filteredUsers.length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      const selectedUser = this.filteredUsers[this.selectedUserIndex];
-      if (selectedUser) {
-        this.selectUser(selectedUser);
+  onKeyDown(event: KeyboardEvent) {
+    if (this.showMentionList) {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        this.selectedUserIndex = (this.selectedUserIndex + 1) % this.filteredUsers.length;
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        this.selectedUserIndex = (this.selectedUserIndex - 1 + this.filteredUsers.length) % this.filteredUsers.length;
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        const selectedUser = this.filteredUsers[this.selectedUserIndex];
+        if (selectedUser) {
+          this.selectUser(selectedUser);
+        }
+      } else if (event.key === 'Escape') {
+        this.showMentionList = false;
       }
-    } else if (event.key === 'Escape') {
-      this.showMentionList = false;
+    } else if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.saveComment();
     }
-  } else if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    this.saveComment();
   }
-}
 
 
   handleEnter(event: KeyboardEvent) {

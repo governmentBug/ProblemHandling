@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,8 @@ public record CreateCommentCommand : IRequest<int>
 {
     public int BugID { get; init; }             
     public string CommentText { get; init; } = string.Empty; 
-    public int CommentedBy { get; init; }       
+    public int CommentedBy { get; init; }
+    public List<int> usersMentions=[] ;
 }
 
 public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
