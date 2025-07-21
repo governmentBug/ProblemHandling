@@ -20,14 +20,16 @@
 <div class="add-section">
   <ng-container *ngIf="isAuthorizedToComment">
     <div *ngIf="adding" class="add-form">
-      <textarea
-       class="comment-textarea"
-      focus 
-      #commentInput
-      [(ngModel)]="newComment" 
-      (keydown.enter)="handleEnter($event)"
-      placeholder="כתוב כאן הערה...">
-    </textarea>
+      <div class="mention-container">
+        <textarea class="comment-textarea" [(ngModel)]="newComment" (input)="onInput($event)"
+          placeholder="כתוב כאן הערה" rows="4" (keydown.enter)="handleEnter($event)" #commentInput></textarea>
+
+        <ul *ngIf="showMentionList" class="mention-list">
+          <li *ngFor="let user of filteredUsers" (click)="selectUser(user)">
+            <app-user-profile [user]="user"></app-user-profile>
+          </li>
+        </ul>
+      </div>
       <div class="actions">
         <button class="add-btn" (click)="saveComment()">
           <i class="fas fa-arrow-up"></i>
