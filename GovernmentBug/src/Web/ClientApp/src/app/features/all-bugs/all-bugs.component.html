@@ -8,7 +8,9 @@
 
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
     <div class="dialog-content">
-      <button (click)="addBug()">דיווח על באג ➕</button>
+      <button (click)="addBug()">
+        דיווח על באג<i class="fas fa-plus-circle icon-white"></i>
+      </button>
     </div>
 
     <div class="search-filter-bar">
@@ -87,12 +89,9 @@
 
             <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
               <td colspan="8">
-                <app-bug-detail 
-                [bug]="selectedBug" 
-                [AuthorizedUser]="isAuthorizedToComment"
-                (bugChanged)="onBugChanged()" 
-                (showFiles)="openFilesPanel($event)"
-                (isEditModeChanged)="IsEditMode = $event">
+                <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
+                  (bugChanged)="onBugChanged()" (showFiles)="openFilesPanel($event)"
+                  (isEditModeChanged)="IsEditMode = $event">
                 </app-bug-detail>
               </td>
             </tr>

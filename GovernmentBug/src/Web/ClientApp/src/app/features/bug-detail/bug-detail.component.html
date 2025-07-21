@@ -42,24 +42,25 @@
         </div>
       </div>
 
-      <div claשss="status-summary">
+      <div class="status-summary">
         <div class="status-line">
           סטטוס:
           <span *ngIf="!isEditMode" [ngClass]="{
-  'status-open': bug.statusName === 'פתוח',
-  'status-close': bug.statusName === 'סגור',
-  'status-active': bug.statusName === 'פעיל',
-  'status-cancelled': bug.statusName === 'בוטל',
-  'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
-}">
-            {{ bug.statusName }}
-          </span>
+            'status-open': bug.statusName === 'פתוח',
+            'status-close': bug.statusName === 'סגור',
+            'status-active': bug.statusName === 'פעיל',
+            'status-cancelled': bug.statusName === 'בוטל',
+            'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
+          }">{{ bug.statusName }}</span>
+
           <select *ngIf="isEditMode" [(ngModel)]="editedBug.statusId" class="edit-inline select-box">
             <option *ngFor="let s of statuses" [value]="s.statusId">{{ s.statusName }}</option>
           </select>
         </div>
-        <div class="assigned-to" *ngIf="bug.statusName==='Active'">
-          מטופל ע"י: {{ bug.createdByUserFullName }}
+
+        <div class="field" *ngIf="bug.statusName === 'פעיל'">
+          <div class="label">מטופל ע"י:</div>
+          <div class="value">{{ bug.createdByUserFullName }}</div>
         </div>
       </div>
     </div>
@@ -69,41 +70,44 @@
 
   <div class="footer-row">
     <div class="bug-files">
-      <div class="attachments-toggle">
-        <button (click)="showAttachments = !showAttachments">הצג/הסתר קבצים</button>
-      </div>
-
-      <div *ngIf="showAttachments">
-        <app-inline-attachments [bugId]="bug.bugId" [isEditMode]="isEditMode" (filesChanged)="onFilesChanged($event)">
-        </app-inline-attachments>
-      </div>
-
-      <span *ngIf="!isEditMode"><i class="fas fa-video"></i></span>
+      <span *ngIf="!isEditMode"><!-- איקון הוסר --></span>
       <div *ngIf="isEditMode" class="attachments-section">
         <!-- <app-file-uploader (filesChanged)="onFilesChanged($event)"></app-file-uploader> -->
       </div>
     </div>
+
     <div class="bug-actions">
-      <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">עריכה ✏️</button>
+      <!-- כפתור הצג/הסתר קבצים הכי קרוב לימין -->
+      <button class="toggle-attachments-btn" (click)="showAttachments = !showAttachments">
+        {{ showAttachments ? 'הסתר קבצים' : 'הצג קבצים' }}
+      </button>
+
+      <!-- כפתורי עריכה ושמירה באמצע -->
+      <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">עריכה</button>
       <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">שמור ✅</button>
       <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">ביטול</button>
+
+      <!-- כפתור מחיקה הכי פנימי (קרוב לשמאל) -->
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
-        מחיקה 🗑️
+        מחיקה
       </button>
     </div>
   </div>
+
+  <div *ngIf="showAttachments" class="attachments-wrapper">
+    <div class="divider"></div>
+    <app-inline-attachments [bugId]="bug.bugId" [isEditMode]="isEditMode" (filesChanged)="onFilesChanged($event)">
+    </app-inline-attachments>
+  </div>
+
 </div>
 
 <div class="popup-overlay" *ngIf="showPopup" (click)="onOverlayClick($event)">
   <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
     <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>
-
     <textarea [(ngModel)]="closeReason" rows="4" placeholder="נימוק/הערה לסגירת הבאג"></textarea>
-
     <div class="popup-actions">
-      <button class="delete-btn" (click)="submitClose()">
-        מחיקה 🗑️
-      </button>
+      <button class="delete-btn" (click)="submitClose()">מחיקה</button>
     </div>
   </div>
 </div>

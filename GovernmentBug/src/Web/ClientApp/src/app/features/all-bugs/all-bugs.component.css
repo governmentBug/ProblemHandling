@@ -23,9 +23,9 @@
   transition: width 0.3s ease;
 
   display: flex;
-  flex-direction: column; 
-  align-items: flex-start; 
-  direction: rtl; 
+  flex-direction: column;
+  align-items: flex-start;
+  direction: rtl;
 }
 
 .bug-table-container.narrow {
@@ -65,7 +65,7 @@
 .table-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  align-self: flex-start; 
+  align-self: flex-start;
 }
 
 .table-wrapper {
@@ -79,7 +79,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
-  direction: rtl; 
+  direction: rtl;
 }
 
 .bug-table th,
@@ -193,6 +193,7 @@
 }
 
 @media (max-width: 768px) {
+
   .bug-table th,
   .bug-table td {
     padding: 8px;
@@ -241,20 +242,30 @@
 
 .dialog-content {
   display: flex;
-  justify-content: flex-start; 
-  margin-bottom: 1rem; 
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 }
 
 .dialog-content button {
-  background-color: #007bff;
-  color: white; 
+  background-color: #FFC107;
+  color: white;
   border: none;
   padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer; 
-  transition: background-color 0.3s ease; 
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 .dialog-content button:hover {
-  background-color: #0056b3;
+  background-color: #e6ac00;
+}
+
+.icon-white {
+  color: white;
+  font-size: 20px;
 }
