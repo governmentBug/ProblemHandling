@@ -85,7 +85,7 @@
 .bug-table th,
 .bug-table td {
   padding: 12px;
-  text-align: center;
+  /* text-align: center; */
   border-bottom: 1px solid #eee;
 }
 
@@ -241,20 +241,20 @@
 
 .dialog-content {
   display: flex;
-  justify-content: flex-start; /* מיקום הכפתור בצד שמאל */
-  margin-bottom: 1rem; /* ריווח מתחת לכפתור */
+  justify-content: flex-start; 
+  margin-bottom: 1rem; 
 }
 
 .dialog-content button {
-  background-color: #007bff; /* צבע רקע */
-  color: white; /* צבע טקסט */
-  border: none; /* ללא גבול */
-  padding: 10px 16px; /* ריווח פנימי */
-  border-radius: 6px; /* פינות מעוגלות */
-  cursor: pointer; /* סמן ידני */
-  transition: background-color 0.3s ease; /* אנימציה לשינוי צבע */
+  background-color: #007bff;
+  color: white; 
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
 }
 
 .dialog-content button:hover {
-  background-color: #0056b3; /* צבע רקע כשעוברים עם העכבר */
+  background-color: #0056b3;
 }

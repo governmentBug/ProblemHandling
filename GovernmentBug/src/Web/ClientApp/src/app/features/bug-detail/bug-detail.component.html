@@ -23,7 +23,7 @@
     <div class="middle-section">
       <div class="priority-category-row">
         <div class="field">
-          <div class="label">PRIORITY</div>
+          <div class="label">עדיפות:</div>
           <div class="value">
             <ng-container *ngIf="!isEditMode">{{ bug.priorityName || 'לא צויין' }}</ng-container>
             <select *ngIf="isEditMode" [(ngModel)]="editedBug.priorityId" class="edit-inline select-box">
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="label">CATEGORY</div>
+          <div class="label">קטגוריה:</div>
           <div class="value">
             <ng-container *ngIf="!isEditMode">{{ bug.categoryName || 'לא צויין' }}</ng-container>
             <select *ngIf="isEditMode" [(ngModel)]="editedBug.categoryId" class="edit-inline select-box">
@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <div class="status-summary">
+      <div claשss="status-summary">
         <div class="status-line">
           סטטוס:
           <span *ngIf="!isEditMode" [ngClass]="{
@@ -84,11 +84,11 @@
       </div>
     </div>
     <div class="bug-actions">
-      <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">edit</button>
-      <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">Save</button>
-      <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">cancelEdit</button>
+      <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">עריכה ✏️</button>
+      <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">שמור ✅</button>
+      <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">ביטול</button>
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">
-        Delete <i class="fa fa-trash"></i>
+        מחיקה 🗑️
       </button>
     </div>
   </div>
@@ -102,7 +102,7 @@
 
     <div class="popup-actions">
       <button class="delete-btn" (click)="submitClose()">
-        Delete <i class="fa fa-trash"></i>
+        מחיקה 🗑️
       </button>
     </div>
   </div>
