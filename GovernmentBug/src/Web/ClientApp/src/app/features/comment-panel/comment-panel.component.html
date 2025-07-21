@@ -21,11 +21,17 @@
   <ng-container *ngIf="isAuthorizedToComment">
     <div *ngIf="adding" class="add-form">
       <div class="mention-container">
-        <textarea class="comment-textarea" [(ngModel)]="newComment" (input)="onInput($event)"
-          placeholder="כתוב כאן הערה" rows="4" (keydown.enter)="handleEnter($event)" #commentInput></textarea>
-
-        <ul *ngIf="showMentionList" class="mention-list">
-          <li *ngFor="let user of filteredUsers" (click)="selectUser(user)">
+<textarea
+  class="comment-textarea"
+  #commentInput
+  [(ngModel)]="newComment"
+  (input)="onInput($event)"
+  (keydown)="onKeyDown($event)"
+  placeholder="הוסף תגובה...">
+</textarea>
+   <ul *ngIf="showMentionList" class="mention-list">
+          <li *ngFor="let user of filteredUsers; let i = index" [class.active]="i === selectedUserIndex" 
+            (click)="selectUser(user)">
             <app-user-profile [user]="user"></app-user-profile>
           </li>
         </ul>

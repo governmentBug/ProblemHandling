@@ -30,11 +30,15 @@ export class CommentPanelComponent implements OnInit {
 
   showMentionList = false;
   caretPosition = 0;
+  selectedUserIndex: number = 0;
 
-  onInput(event: Event) {
-    const textarea = event.target as HTMLTextAreaElement
-    this.newComment = textarea.value
-    this.caretPosition = textarea.selectionStart || 0
+
+  onInput(eventK: Event) {
+    const event= eventK as KeyboardEvent;
+    const textarea = event.target as HTMLTextAreaElement;
+    this.newComment = textarea.value;
+    this.caretPosition = textarea.selectionStart || 0;
+
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
     const match = /@([\w\u0590-\u05FF]*)$/.exec(textUpToCaret);
 
@@ -44,11 +48,12 @@ export class CommentPanelComponent implements OnInit {
         user.fullName.toLowerCase().includes(query.toLowerCase())
       );
       this.showMentionList = this.filteredUsers.length > 0;
-    } 
-    else {
+      this.selectedUserIndex = 0; // התחול מחדש בכל פעם
+    } else {
       this.showMentionList = false;
     }
   }
+
 
   selectUser(user:UserDto) {
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
@@ -73,7 +78,6 @@ export class CommentPanelComponent implements OnInit {
       this.mentions.push(user);
     }
   }
-
   constructor(private stateService: StateService, private CommentService: CommentService) { }
   ngOnInit(): void {
     this.loadComments()
@@ -155,12 +159,45 @@ export class CommentPanelComponent implements OnInit {
       this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
     } catch (err) { }
   }
+onKeyDown(event: KeyboardEvent) {
+  if (this.showMentionList) {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.selectedUserIndex = (this.selectedUserIndex + 1) % this.filteredUsers.length;
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.selectedUserIndex = (this.selectedUserIndex - 1 + this.filteredUsers.length) % this.filteredUsers.length;
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      const selectedUser = this.filteredUsers[this.selectedUserIndex];
+      if (selectedUser) {
+        this.selectUser(selectedUser);
+      }
+    } else if (event.key === 'Escape') {
+      this.showMentionList = false;
+    }
+  } else if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    this.saveComment();
+  }
+}
 
-  handleEnter(event) {
+
+  handleEnter(event: KeyboardEvent) {
+    if (this.showMentionList) {
+      event.preventDefault();
+      const selectedUser = this.filteredUsers[this.selectedUserIndex];
+      if (selectedUser) {
+        this.selectUser(selectedUser);
+      }
+      return;
+    }
+
     if (!event.shiftKey) {
       event.preventDefault();
       this.saveComment();
     }
   }
+
 
 }
