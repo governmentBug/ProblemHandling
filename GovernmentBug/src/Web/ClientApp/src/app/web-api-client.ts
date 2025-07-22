@@ -762,7 +762,7 @@ export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
-    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto>;
+    getBugsByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto>;
     getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
 }
 
@@ -1037,18 +1037,14 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getBugsByMonths(categoryId: number, userId: number, year: number): Observable<ByMonthsDto> {
+    getBugsByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto> {
         let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}?";
         if (year === undefined || year === null)
             throw new Error("The parameter 'year' must be defined.");
         url_ = url_.replace("{year}", encodeURIComponent("" + year));
-        if (categoryId === undefined || categoryId === null)
-            throw new Error("The parameter 'categoryId' must be defined and cannot be null.");
-        else
+        if (categoryId !== undefined && categoryId !== null)
             url_ += "categoryId=" + encodeURIComponent("" + categoryId) + "&";
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined and cannot be null.");
-        else
+        if (userId !== undefined && userId !== null)
             url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3448,6 +3444,7 @@ export class ByStatusDto implements IByStatusDto {
     closeBugs?: ByPriorityDto;
     activeBugs?: ByPriorityDto;
     cancelledBugs?: ByPriorityDto;
+    closeWithoutOpeningBugs?: ByPriorityDto;
 
     constructor(data?: IByStatusDto) {
         if (data) {
@@ -3465,6 +3462,7 @@ export class ByStatusDto implements IByStatusDto {
             this.closeBugs = _data["closeBugs"] ? ByPriorityDto.fromJS(_data["closeBugs"]) : <any>undefined;
             this.activeBugs = _data["activeBugs"] ? ByPriorityDto.fromJS(_data["activeBugs"]) : <any>undefined;
             this.cancelledBugs = _data["cancelledBugs"] ? ByPriorityDto.fromJS(_data["cancelledBugs"]) : <any>undefined;
+            this.closeWithoutOpeningBugs = _data["closeWithoutOpeningBugs"] ? ByPriorityDto.fromJS(_data["closeWithoutOpeningBugs"]) : <any>undefined;
         }
     }
 
@@ -3482,6 +3480,7 @@ export class ByStatusDto implements IByStatusDto {
         data["closeBugs"] = this.closeBugs ? this.closeBugs.toJSON() : <any>undefined;
         data["activeBugs"] = this.activeBugs ? this.activeBugs.toJSON() : <any>undefined;
         data["cancelledBugs"] = this.cancelledBugs ? this.cancelledBugs.toJSON() : <any>undefined;
+        data["closeWithoutOpeningBugs"] = this.closeWithoutOpeningBugs ? this.closeWithoutOpeningBugs.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -3492,6 +3491,7 @@ export interface IByStatusDto {
     closeBugs?: ByPriorityDto;
     activeBugs?: ByPriorityDto;
     cancelledBugs?: ByPriorityDto;
+    closeWithoutOpeningBugs?: ByPriorityDto;
 }
 
 export class ByPriorityDto implements IByPriorityDto {
@@ -3595,7 +3595,7 @@ export interface IOpenBugsByPriorityDto {
 }
 
 export class ByMonthsDto implements IByMonthsDto {
-    byMonth?: { [key: string]: number; };
+    byMonth?: number[];
 
     constructor(data?: IByMonthsDto) {
         if (data) {
@@ -3608,12 +3608,10 @@ export class ByMonthsDto implements IByMonthsDto {
 
     init(_data?: any) {
         if (_data) {
-            if (_data["byMonth"]) {
-                this.byMonth = {} as any;
-                for (let key in _data["byMonth"]) {
-                    if (_data["byMonth"].hasOwnProperty(key))
-                        (<any>this.byMonth)![key] = _data["byMonth"][key];
-                }
+            if (Array.isArray(_data["byMonth"])) {
+                this.byMonth = [] as any;
+                for (let item of _data["byMonth"])
+                    this.byMonth!.push(item);
             }
         }
     }
@@ -3627,19 +3625,17 @@ export class ByMonthsDto implements IByMonthsDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (this.byMonth) {
-            data["byMonth"] = {};
-            for (let key in this.byMonth) {
-                if (this.byMonth.hasOwnProperty(key))
-                    (<any>data["byMonth"])[key] = (<any>this.byMonth)[key];
-            }
+        if (Array.isArray(this.byMonth)) {
+            data["byMonth"] = [];
+            for (let item of this.byMonth)
+                data["byMonth"].push(item);
         }
         return data;
     }
 }
 
 export interface IByMonthsDto {
-    byMonth?: { [key: string]: number; };
+    byMonth?: number[];
 }
 
 export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {

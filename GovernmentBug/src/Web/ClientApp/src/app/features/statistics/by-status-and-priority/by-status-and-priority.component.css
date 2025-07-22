@@ -1,19 +1,127 @@
+.by-status-container,
 .chart-container {
   width: 100%;
-  max-width: 700px;
+  max-width: 500px;
+  min-width: 220px;
   margin: 0 auto;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  background: #fff;
 }
 
-#statusPriorityChart {
-  width: 100% !important;
-  height: 400px !important;
-  max-width: 100%;
+canvas {
+  min-width: 320px;
+  max-width: 480px;
+  height: 260px !important;
   display: block;
-  margin: 0 auto;
 }
 
+/* שורת תוויות סטטוס */
+.status-labels-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  width: calc(100% - 25px); /* פחות ה-padding של המספרים */
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+  transform: translateX(25px); /* מזיז ימינה */
+}
+.status-label {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 3px 0;
+  border-radius: 8px;
+  background: #f8f8f8;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border: none;
+  margin: 0 1px;
+  white-space: nowrap;
+  min-width: 0;
+  /* overflow: hidden; */
+}
+
+/* רספונסיביות */
 @media (max-width: 600px) {
-  #statusPriorityChart {
-    height: 260px !important;
+  .status-labels-row {
+    margin-top: 4px;
+    margin-bottom: 6px;
   }
+  .status-label {
+    font-size: 0.65rem;
+    padding: 2px 0;
+    border-radius: 6px;
+  }
+}
+
+.status-open {
+  background-color: #FDEDED;
+  color: #D32F2F;
+
+}
+
+.status-close {
+  background-color: #E8F5E9;
+  color: #388E3C;
+}
+
+.status-active {
+  background-color: #E3F2FD;
+  color: #1565C0;
+}
+
+.status-cancelled {
+  background-color: #F3E5F5;
+  color: #7B1FA2;
+}
+
+.status-close-without-opening {
+  background-color: #FFF3E0;
+  color: #F57C00;
+  padding: 1px 1px 1px 1px;
+  border-radius: 8px;
+  font-size: 0.6rem;
+}
+.custom-legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+.legend-box {
+  display: inline-block;
+  width: 26px;
+  height: 18px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: background 0.7s;
+}
+.legend-label {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-left: 10px;
+}
+.chart-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #222;
+  margin: 18px 0 10px 0;
+}
+
+.legend-section {
+  margin-top: 18px;
+  text-align: center;
+}
+.legend-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 6px;
 }

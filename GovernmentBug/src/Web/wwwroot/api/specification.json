@@ -558,20 +558,20 @@
           {
             "name": "categoryId",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "nullable": true
             },
             "x-position": 1
           },
           {
             "name": "userId",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "nullable": true
             },
             "x-position": 2
           },
@@ -1835,6 +1835,9 @@
           },
           "cancelledBugs": {
             "$ref": "#/components/schemas/ByPriorityDto"
+          },
+          "closeWithoutOpeningBugs": {
+            "$ref": "#/components/schemas/ByPriorityDto"
           }
         }
       },
@@ -1882,8 +1885,8 @@
         "additionalProperties": false,
         "properties": {
           "byMonth": {
-            "type": "object",
-            "additionalProperties": {
+            "type": "array",
+            "items": {
               "type": "integer",
               "format": "int32"
             }

@@ -62,6 +62,16 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus
             byStatusDto.CancelledBugs.Critical = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("בוטל")
             && b.Priority.PriorityName.Equals("קריטי"), cancellationToken);
 
+            byStatusDto.CloseWithoutOpeningBugs.Total = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("נסגר מבלי להיפתח"), cancellationToken);
+            byStatusDto.CloseWithoutOpeningBugs.Low = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("הסגר מבלי להיפתח")
+            && b.Priority.PriorityName.Equals("נמוך"), cancellationToken);
+            byStatusDto.CloseWithoutOpeningBugs.Medium = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("נסגר מבלי להיפתח")
+            && b.Priority.PriorityName.Equals("בינוני"), cancellationToken);
+            byStatusDto.CloseWithoutOpeningBugs.High = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("נסגר מבלי להיפתח")
+            && b.Priority.PriorityName.Equals("גבוה"), cancellationToken);
+            byStatusDto.CloseWithoutOpeningBugs.Critical = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("נסגר מבלי להיפתח")
+            && b.Priority.PriorityName.Equals("קריטי"), cancellationToken);
+
             return byStatusDto;
         }
     }
