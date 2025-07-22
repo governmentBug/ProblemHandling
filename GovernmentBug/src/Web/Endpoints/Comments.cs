@@ -22,9 +22,7 @@ public class Comments: EndpointGroupBase
             .MapDelete(DeleteComment, "{id}");
             
     }
-
-
-
+  
     public async Task<Created<int>> CreateComment(ISender sender, CreateCommentCommand command)
     {
         var id = await sender.Send(command);

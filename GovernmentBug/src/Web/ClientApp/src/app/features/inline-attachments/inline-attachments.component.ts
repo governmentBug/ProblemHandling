@@ -102,7 +102,8 @@ async onRecordVideo() {
       const reader = new FileReader();
       reader.onload = () => {
         const preview = reader.result as string;
-        const a = new AttachmentBugDto();
+        const a = new AttachmentBugDto();7
+        a.attachmentId=0
         a.bugId = this.bugId;
         a.fileName = file.name;
         a.fileType = file.type;
@@ -177,5 +178,12 @@ openPopup(file: AttachmentBugDto) {
 
 closePopup() {
   this.selectedFile = null;
+}
+  renameFile(index: number) {
+  const newName = prompt("הכנס שם חדש לקובץ:", this.files[index].fileName);
+  if (newName) {
+    this.files[index].fileName = newName;
+    this.emitChanges();
+  }
 }
 }

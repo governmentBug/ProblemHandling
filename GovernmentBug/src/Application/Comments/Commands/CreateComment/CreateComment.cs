@@ -14,18 +14,20 @@ namespace GovernmentBug.Application.Comments.Commands.CreateComment;
 
 public record CreateCommentCommand : IRequest<int>
 {
-    public int BugID { get; init; }             
-    public string CommentText { get; init; } = string.Empty; 
+    public int BugID { get; init; }
+    public string CommentText { get; init; } = string.Empty;
     public int CommentedBy { get; init; }
-    public List<int> usersMentions=[] ;
+    public List<int> usersMentions { get; set; } =new();
 }
 
 public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
 {
     private readonly IApplicationDbContext _context;
-    public CreateCommentCommandHandler(IApplicationDbContext context)
+    private readonly IMentionService _mentionService;
+    public CreateCommentCommandHandler(IApplicationDbContext context,IMentionService mentionService)
     {
         _context = context;
+        _mentionService = mentionService;
     }
 
     public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -47,7 +49,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 
         _context.Comments.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
-
+        await _mentionService.SendMentionEmailsAsync(request.usersMentions, request.CommentText, request.BugID);
         return entity.CommentID;
     }
 

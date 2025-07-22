@@ -5,22 +5,27 @@
   <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
   <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
 </div>
-<!-- תצוגת קבצים -->
-<div class="attachment-card" *ngFor="let f of files">
-  <button *ngIf="isEditMode && f.attachmentId !== 0"
-          class="delete-btn"
-          (click)="deleteAttachment(f.attachmentId)">✕</button>
+  <div  class="attachments-container">
+    <ul class="attachments-list">
+      <li *ngFor="let file of files; let i = index" class="attachment-item">
+        <a [href]="file.url" target="_blank" class="attachment-link">{{ file.fileName }}</a>
 
-  <ng-container *ngIf="attachmentService.isImage(f.fileType); else showVideo">
-    <img class="preview-img" [src]="f.url" loading="lazy" (click)="openPopup(f)" />
-  </ng-container>
+        <ng-container *ngIf="attachmentService.isImage(file.fileType)">
+          <img [src]="file.url" alt="{{file.fileName}}" class="attachment-preview" />
+        </ng-container>
 
-  <ng-template #showVideo>
-    <video class="preview-video" [src]="f.url" controls (click)="openPopup(f)"></video>
-  </ng-template>
+        <ng-container *ngIf="attachmentService.isVideo(file.fileType)">
+          <video [src]="file.url" controls class="attachment-preview"></video>
+        </ng-container>
 
-  <div class="file-name">{{ f.fileName }}</div>
-</div>
+        <div class="attachment-actions">
+          <button (click)="renameFile(i)">✏️ שנה שם</button>
+          <button (click)="deleteAttachment(file.attachmentId)">🗑️ מחק</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
 
 <!-- פופאפ להצגת קובץ נבחר -->
 <div class="popup-overlay" *ngIf="selectedFile" (click)="closePopup()">

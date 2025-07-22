@@ -24,7 +24,7 @@ export class CommentPanelComponent implements OnInit {
   adding = false;
   newComment: string = '';
   userList: Array<UserDto> = []
-  mentionUserIds = new Set<Number>
+  mentionUserIds = new Set<number>
   filteredUsers: Array<UserDto> = []
   mentions: Array<UserDto> = []
 
@@ -100,7 +100,8 @@ export class CommentPanelComponent implements OnInit {
       },
       error: (err) => console.error('שגיאה בשליפת תגובות', err)
     });
-  } loadUsers(): void {
+  } 
+  loadUsers(): void {
     this.stateService.getAllUsers().subscribe({
       next: (users) => {
         this.userList = users;
@@ -110,15 +111,17 @@ export class CommentPanelComponent implements OnInit {
         console.error('שגיאה בטעינת משתמשים:', err);
       }
     });
-  } saveComment() {
+  }
+   saveComment() {
     const trimmed = this.newComment.trim();
+    const mentionedIds = Array.from(this.mentionUserIds);
     if (trimmed) {
-      this.CommentService.addComment(this.bugId, trimmed).subscribe({
+      this.CommentService.addComment(this.bugId, trimmed,mentionedIds).subscribe({
         next: () => {
           this.loadComments()
           this.newComment = '';
           this.adding = false;
-          console.log(this.mentionUserIds);
+          this.mentionUserIds.clear();
         },
         error: (err) => console.error('שגיאה בהוספת תגובה', err)
       });
