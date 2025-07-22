@@ -31,6 +31,8 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<IBugHistoryService, BugHistoryService>();
         builder.Services.AddScoped<IAttachmentConverter, AttachmentConverter>();
+
+        builder.Services.AddScoped<IMentionService, MentionService>();
         builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
