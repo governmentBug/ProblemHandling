@@ -1,24 +1,26 @@
-<div class="chart-container">
-  <h2 class="chart-title">התפלגות באגים לפי סטטוס ועדיפות</h2>
-  <canvas
-    baseChart
-    [datasets]="barChartData"
-    [labels]="barChartLabels"
-    [options]="barChartOptions"
-  ></canvas>
-  <div class="status-labels-row">
-    <span class="status-label status-open">פתוחים</span>
-    <span class="status-label status-active">בטיפול</span>
-    <span class="status-label status-close">נסגרו</span>
-    <span class="status-label status-cancelled">בוטלו</span>
-    <span class="status-label status-close-without-opening">נסגרו <br/>מבלי להיפתח</span>
-  </div>
-  <div class="legend-section">
-    <div class="legend-title">עדיפויות</div>
-    <div class="custom-legend">
-      @for(priorityLabel of priorityLabels;track priorityLabel; let index = $index)
-      {
-        <span [ngStyle]="{'color': legendColors[index]}" class="legend-label">{{ priorityLabel }}</span>
-      }
+<div class="chart-responsive-wrapper">
+  <div class="chart-container">
+    <h2 class="chart-title">התפלגות באגים לפי סטטוס ועדיפות</h2>
+    <canvas
+      baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+    ></canvas>
+    <div class="status-labels-row">
+      <span class="status-label status-open">פתוחים</span>
+      <span class="status-label status-active">בטיפול</span>
+      <span class="status-label status-close">נסגרו</span>
+      <span class="status-label status-cancelled">בוטלו</span>
+      <span class="status-label status-close-without-opening">נסגרו <br/>מבלי להיפתח</span>
+    </div>
+    <div class="legend-section">
+      <div class="legend-title">עדיפויות</div>
+      <div class="custom-legend">
+        @for(priorityLabel of priorityLabels;track priorityLabel; let index = $index)
+        {
+          <span [ngStyle]="{'color': legendColors[index]}" class="legend-label">{{ priorityLabel }}</span>
+        }
+    </div>
   </div>
 </div>

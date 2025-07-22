@@ -3,10 +3,11 @@ import { ByStatus } from 'src/app/models/byStatus.model';
 import { BugStatisticsClient, ByStatusDto } from 'src/app/web-api-client';
 import { ByStatusComponent } from "../by-status/by-status.component";
 import { ByStatusAndPriorityComponent } from "../by-status-and-priority/by-status-and-priority.component";
+import { MonthlyTrendsComponent } from "../monthly-trends/monthly-trends.component";
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ByStatusComponent, ByStatusAndPriorityComponent],
+  imports: [ByStatusComponent, ByStatusAndPriorityComponent, MonthlyTrendsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -23,7 +24,8 @@ export class DashboardComponent implements OnInit {
         data.openBugs.total,
         data.closeBugs.total,
         data.activeBugs.total,
-        data.cancelledBugs.total
+        data.cancelledBugs.total,
+        data.closeWithoutOpeningBugs.total
       );
     });
   }

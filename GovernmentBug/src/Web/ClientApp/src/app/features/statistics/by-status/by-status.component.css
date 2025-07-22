@@ -19,18 +19,63 @@
   gap: 2rem;
   width: 100%;
 }
-
+/* ריווח בין השורות */
 .status-boxes {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  width: 100%;
 }
 
+/* ריווח בין הקופסאות בכל שורה */
 .status-row {
   display: flex;
   gap: 1.2rem;
 }
 
+/* שורה אחרונה שטוחה */
+.status-row.full-width-row {
+  margin-top: 1.2rem;
+}
+
+.status-row.full-width-row .status-box {
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  height: 50px; /* גובה קטן */
+  padding: 0.3rem 0.8rem; /* פחות גובה */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* עיצוב שטוח וצבע */
+.status-box.close-without-opening {
+  border-right: 6px solid #F57C00;
+  font-weight: bold;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  box-shadow: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-box.close-without-opening .status-title,
+.status-box.close-without-opening .status-count {
+  font-size: 1.05rem;
+  font-weight: bold;
+  margin: 0 0.5em 0 0.5em;
+  padding: 0;
+  /* line-height: 1; */
+}
+
+/* ...existing code... */
 .status-box {
   background: #f5f5f5;
   border-radius: 10px;
@@ -42,23 +87,82 @@
   color: #222;
   flex: 1;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0.2, 0.2, 1),
+    box-shadow 0.25s,
+    border-right-color 0.25s,
+    border-right-width 0.25s;
+  will-change: transform, box-shadow, border-right-color, border-right-width;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 0 !important; /* אפס ריווח בין הילדים */
+  gap: 0 !important;     /* אפס ריווח כללי */
 }
 
 .status-box.open { border-right: 6px solid #ff5252; }
 .status-box.active { border-right: 6px solid #2196f3; }
 .status-box.closed { border-right: 6px solid #4caf50; }
 .status-box.cancelled { border-right: 6px solid #9c27b0; }
-
-.status-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.3em;
+.status-box.close-without-opening { border-right: 6px solid #F57C00; }
+.status-row.full-width-row {
+  width: 100%;
+  display: flex;
+  /* הוסף את זה: */
+  justify-content: stretch;
 }
 
+.status-row.full-width-row .status-box {
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  /* הוסף את זה: */
+  height: auto;
+}
+
+.status-box.close-without-opening {
+  border-right: 6px solid #F57C00;;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 0.7rem 1.1rem;
+  text-align: center;
+  font-size: 1.05rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .status-count {
   font-size: 1.3rem;
   font-weight: bold;
   color: #222;
+  order: 0;
+  margin-bottom: 0; /* אין רווח בכלל */
+}
+
+.status-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0; /* אין רווח בכלל */
+  order: 1;
+  margin-top: 0;    /* אין רווח בכלל */
+}
+
+.status-percent {
+  display: block;
+  font-size: 0.85em;
+  color: #888;
+  margin-top: 0; /* פחות רווח מעל האחוז */
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  order: 2;
 }
 
 .donut-chart-container {
@@ -112,8 +216,6 @@ font-weight: 900 !important;
   font-weight: 400;
   color: #222;
 }
-
-/* רספונסיביות */
 @media (max-width: 700px) {
   .by-status-grid {
     flex-direction: column-reverse;
@@ -124,9 +226,14 @@ font-weight: 900 !important;
   }
   .status-row {
     gap: 0.7rem;
+    flex-direction: row;
   }
   .status-box {
     min-width: 70px;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .status-row.full-width-row .status-box {
     font-size: 0.95rem;
     padding: 0.5rem 0.7rem;
   }

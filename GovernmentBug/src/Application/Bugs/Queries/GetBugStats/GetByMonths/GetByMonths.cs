@@ -17,16 +17,16 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
 
         public Task<ByMonthsDto> Handle(GetByMonthsQuery request, CancellationToken cancellationToken)
         {
-            var lastYear = DateTime.Now.AddMonths(-12*(request.Year+1));
-            var bugs = _context.Bugs
-                .Where(b => b.CreatedDate >= lastYear)
-                .Where(b => !request.CategoryId.HasValue || b.CategoryId == request.CategoryId)
-                .Where(b => !request.UserId.HasValue || b.CreatedByUserId == request.UserId);
             var byMonthsDto = new ByMonthsDto();
+            var maxDate = DateTime.Now.AddMonths(-12*(request.Year));
+            var minDate = DateTime.Now.AddMonths(-12*(request.Year+1));
+            var bugs = _context.Bugs
+                .Where(b => b.Created >= minDate && b.Created < maxDate)
+                .Where(b => !request.CategoryId.HasValue || b.CategoryId == request.CategoryId)
+                .Where(b => !request.UserId.HasValue || b.CreatedByUserId == request.UserId).GroupBy(b => b.Created.Month);
             foreach (var b in bugs)
             {
-                var month = b.CreatedDate.ToString("MMMM", new System.Globalization.CultureInfo("he-IL"));
-                byMonthsDto.Add(month, 1);
+                byMonthsDto.Add(b.Key, b.Count());
             }
             return Task.FromResult(byMonthsDto);
         }

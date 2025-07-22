@@ -3,7 +3,6 @@ import { ByStatusDto } from 'src/app/web-api-client';
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { NgStyle } from '@angular/common';
-import { calculateBorderBoxPath } from 'html2canvas/dist/types/render/bound-curves';
 
 @Component({
   selector: 'app-by-status-and-priority',
@@ -21,9 +20,9 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
   public barChartLabels: string[] = ['פתוחים', 'בטיפול', 'נסגרו', 'בוטלו','נסגרו מבלי להיפתח'];
   public barChartData: ChartData<'bar'>['datasets'] = [];
   private statusMainColors = [
-    '#D32F2F', // פתוחים
-    '#1565C0', // בטיפול
-    '#388E3C', // נסגרו
+    '#D32F2F',
+    '#1565C0', 
+    '#388E3C', 
     '#7B1FA2' , 
     '#F57C00'
   ];
@@ -41,16 +40,22 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
   public barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
         titleColor: '#222',
         bodyColor: '#fff',
         borderColor: '#fff',
-        borderWidth: 1
+        borderWidth: 1,
+        mode: 'index',
+        intersect: false,
       }
     },
-  elements: {
+    elements: {
       bar: {
         borderRadius: 10,
       }
@@ -58,8 +63,7 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
     scales: {
       x: {
         grid: { display: false },
-        ticks: { display: false },
-        // <-- אפשר גם להוסיף כאן
+        ticks: { display: false }
       },
       y: {
         beginAtZero: true,
@@ -67,6 +71,7 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
         ticks: {
           color: '#222',
           font: { size: 14 },
+          stepSize: 5
         }
       }
     }
@@ -101,7 +106,11 @@ updateChartData() {
     this.barChartData = priorities.map((priority, i) => ({
       label: this.priorityLabels[i],
       backgroundColor: this.statusMainColors.map(color => this.withAlpha(color, priorityAlphas[i])),
-      data: statusKeys.map(status => this.byStatusAndPriority[status]?.[priority] ?? 0)
+      borderColor: this.statusMainColors.map(color => this.withAlpha(color, priorityAlphas[i])),
+      data: statusKeys.map(status => this.byStatusAndPriority[status]?.[priority] ?? 0),
+      hoverBackgroundColor: this.statusMainColors.map(color => this.withAlpha(color, 1)),
+      hoverBorderColor:'#fff',
+      hoverBorderWidth: 1
     }));
 
     if (this.firstLoad) {
@@ -113,10 +122,10 @@ updateChartData() {
     } else {
       this.barChartOptions = {
         ...this.barChartOptions,
-        animation: false
+        animation: { duration: 500 }
       };
     }
-  }, 50); // השהייה קצרה כדי להכריח רענון
+  }, 50);
 }
 
 setLegendColors() {
