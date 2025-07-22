@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CommentsClient, CreateCommentCommand, CommentsBugDto } from '../web-api-client';
+import { SafeHtml } from '@angular/platform-browser';
 
+export class ViewComment  {
+  comment:CommentsBugDto
+  renderedText: SafeHtml;
+}
 @Injectable({
   providedIn: 'root'
 })
+
 export class CommentService {
 
 constructor(private commentServer: CommentsClient) { }
@@ -23,7 +29,6 @@ constructor(private commentServer: CommentsClient) { }
   }
 
   getCurrentUserPermissions(): boolean {
-    // בינתיים סתם מוחזר true
     return true;
   }
   deleteComment(commentId: number): Observable<any> {

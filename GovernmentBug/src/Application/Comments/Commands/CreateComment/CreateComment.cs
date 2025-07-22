@@ -49,7 +49,7 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 
         _context.Comments.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
-        await _mentionService.SendMentionEmailsAsync(request.usersMentions, request.CommentText, request.BugID);
+        //await _mentionService.SendMentionEmailsAsync(request.usersMentions, request.CommentText, request.BugID);
         return entity.CommentID;
     }
 

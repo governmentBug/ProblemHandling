@@ -54,13 +54,11 @@ export class CommentPanelComponent implements OnInit {
     }
   }
 
-
   selectUser(user: UserDto) {
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
     const textAfterCaret = this.newComment.substring(this.caretPosition);
     const mentionRegex = /@([\w\u0590-\u05FF]*)$/;
     const match = mentionRegex.exec(textUpToCaret);
-
     if (!match) return;
 
     const mentionStartIndex = match.index;
@@ -70,48 +68,9 @@ export class CommentPanelComponent implements OnInit {
     this.newComment = `${beforeMention}@${user.fullName} ${afterMention}`.trim();
     this.caretPosition = (beforeMention + '@' + user.fullName + ' ').length;
     this.showMentionList = false;
-    if (!this.mentionUserIds.has(user.userId)) {
       this.mentionUserIds.add(user.userId);
     }
-  }
-  constructor(private stateService: StateService, private CommentService: CommentService) { }
-  ngOnInit(): void {
-    this.loadComments()
-    this.loadUsers()
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isEditMode'] && this.bugId)
-      this.loadComments()
-    if (changes['bugId'] && this.bugId) {
-      this.loadComments();
-    }
-  }
-  onMentionSelect(user: any) {
-    this.mentionUserIds.add(user.id)
-    console.log(user);
 
-  }
-  loadComments(): void {
-    this.CommentService.getCommentsByBugId(this.bugId).subscribe({
-      next: (res) => {
-        this.comments = res
-        console.log(res);
-
-      },
-      error: (err) => console.error('שגיאה בשליפת תגובות', err)
-    });
-  } 
-  loadUsers(): void {
-    this.stateService.getAllUsers().subscribe({
-      next: (users) => {
-        this.userList = users;
-        console.log('משתמשים נטענו:', this.userList);
-      },
-      error: (err) => {
-        console.error('שגיאה בטעינת משתמשים:', err);
-      }
-    });
-  }
    saveComment() {
     const trimmed = this.newComment.trim();
     const mentionedIds = Array.from(this.mentionUserIds);
@@ -180,23 +139,4 @@ export class CommentPanelComponent implements OnInit {
       this.saveComment();
     }
   }
-
-
-  handleEnter(event: KeyboardEvent) {
-    if (this.showMentionList) {
-      event.preventDefault();
-      const selectedUser = this.filteredUsers[this.selectedUserIndex];
-      if (selectedUser) {
-        this.selectUser(selectedUser);
-      }
-      return;
-    }
-
-    if (!event.shiftKey) {
-      event.preventDefault();
-      this.saveComment();
-    }
-  }
-
-
 }

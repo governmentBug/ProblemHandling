@@ -147,3 +147,26 @@
   background-color: #f0f0f0;
   font-weight: bold;
 }
+/* .mention {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.mention:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+} */
+.mention {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.mention:hover {
+  background-color: #e6f0ff;
+}
+
