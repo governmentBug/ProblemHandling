@@ -58,7 +58,7 @@ export class MonthlyTrendsComponent implements OnInit {
   // טוען שנה אחורה (12 חודשים אחורה מהשנה הנוכחית פחות currentYearBack)
   loadYear() {
     this.loading = true;
-    this.bugStatisticsClient.getBugsByMonths(null, null, this.currentYearBack)
+    this.bugStatisticsClient.getByMonths(null, null, this.currentYearBack)
       .subscribe(data => {
         const monthNames = [
           'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
