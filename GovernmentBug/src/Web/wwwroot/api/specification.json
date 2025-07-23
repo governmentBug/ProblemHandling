@@ -405,7 +405,7 @@
         "tags": [
           "BugStatistics"
         ],
-        "operationId": "GetBugsByMonths",
+        "operationId": "GetByMonths",
         "parameters": [
           {
             "name": "categoryId",
@@ -452,41 +452,19 @@
         }
       }
     },
-    "/api/BugStatistics/openbugsstatus/{month}/{year}": {
+    "/api/BugStatistics/bycategory": {
       "get": {
         "tags": [
           "BugStatistics"
         ],
-        "operationId": "GetBugStatusByMonths",
-        "parameters": [
-          {
-            "name": "month",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "year",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
+        "operationId": "GetByCategory",
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BugStatusByMonthsDTO"
+                  "$ref": "#/components/schemas/ByCategoryDto"
                 }
               }
             }
@@ -1688,11 +1666,11 @@
           }
         }
       },
-      "BugStatusByMonthsDTO": {
+      "ByCategoryDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "countByStatuses": {
+          "byCategory": {
             "type": "object",
             "additionalProperties": {
               "type": "integer",

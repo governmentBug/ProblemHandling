@@ -491,8 +491,8 @@ export interface IBugStatisticsClient {
     getBugs(): Observable<BugSummariesDto[]>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
-    getBugsByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto>;
-    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO>;
+    getByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto>;
+    getByCategory(): Observable<ByCategoryDto>;
 }
 
 @Injectable({
@@ -766,7 +766,7 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getBugsByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto> {
+    getByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto> {
         let url_ = this.baseUrl + "/api/BugStatistics/bymonth/{year}?";
         if (year === undefined || year === null)
             throw new Error("The parameter 'year' must be defined.");
@@ -786,11 +786,11 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetBugsByMonths(response_);
+            return this.processGetByMonths(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBugsByMonths(response_ as any);
+                    return this.processGetByMonths(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ByMonthsDto>;
                 }
@@ -799,7 +799,7 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         }));
     }
 
-    protected processGetBugsByMonths(response: HttpResponseBase): Observable<ByMonthsDto> {
+    protected processGetByMonths(response: HttpResponseBase): Observable<ByMonthsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -821,14 +821,8 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         return _observableOf(null as any);
     }
 
-    getBugStatusByMonths(month: number, year: number): Observable<BugStatusByMonthsDTO> {
-        let url_ = this.baseUrl + "/api/BugStatistics/openbugsstatus/{month}/{year}";
-        if (month === undefined || month === null)
-            throw new Error("The parameter 'month' must be defined.");
-        url_ = url_.replace("{month}", encodeURIComponent("" + month));
-        if (year === undefined || year === null)
-            throw new Error("The parameter 'year' must be defined.");
-        url_ = url_.replace("{year}", encodeURIComponent("" + year));
+    getByCategory(): Observable<ByCategoryDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/bycategory";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -840,20 +834,20 @@ export class BugStatisticsClient implements IBugStatisticsClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetBugStatusByMonths(response_);
+            return this.processGetByCategory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetBugStatusByMonths(response_ as any);
+                    return this.processGetByCategory(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BugStatusByMonthsDTO>;
+                    return _observableThrow(e) as any as Observable<ByCategoryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BugStatusByMonthsDTO>;
+                return _observableThrow(response_) as any as Observable<ByCategoryDto>;
         }));
     }
 
-    protected processGetBugStatusByMonths(response: HttpResponseBase): Observable<BugStatusByMonthsDTO> {
+    protected processGetByCategory(response: HttpResponseBase): Observable<ByCategoryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -864,7 +858,7 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BugStatusByMonthsDTO.fromJS(resultData200);
+            result200 = ByCategoryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3223,10 +3217,10 @@ export interface IByMonthsDto {
     byMonth?: number[];
 }
 
-export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
-    countByStatuses?: { [key: string]: number; };
+export class ByCategoryDto implements IByCategoryDto {
+    byCategory?: { [key: string]: number; };
 
-    constructor(data?: IBugStatusByMonthsDTO) {
+    constructor(data?: IByCategoryDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3237,38 +3231,38 @@ export class BugStatusByMonthsDTO implements IBugStatusByMonthsDTO {
 
     init(_data?: any) {
         if (_data) {
-            if (_data["countByStatuses"]) {
-                this.countByStatuses = {} as any;
-                for (let key in _data["countByStatuses"]) {
-                    if (_data["countByStatuses"].hasOwnProperty(key))
-                        (<any>this.countByStatuses)![key] = _data["countByStatuses"][key];
+            if (_data["byCategory"]) {
+                this.byCategory = {} as any;
+                for (let key in _data["byCategory"]) {
+                    if (_data["byCategory"].hasOwnProperty(key))
+                        (<any>this.byCategory)![key] = _data["byCategory"][key];
                 }
             }
         }
     }
 
-    static fromJS(data: any): BugStatusByMonthsDTO {
+    static fromJS(data: any): ByCategoryDto {
         data = typeof data === 'object' ? data : {};
-        let result = new BugStatusByMonthsDTO();
+        let result = new ByCategoryDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (this.countByStatuses) {
-            data["countByStatuses"] = {};
-            for (let key in this.countByStatuses) {
-                if (this.countByStatuses.hasOwnProperty(key))
-                    (<any>data["countByStatuses"])[key] = (<any>this.countByStatuses)[key];
+        if (this.byCategory) {
+            data["byCategory"] = {};
+            for (let key in this.byCategory) {
+                if (this.byCategory.hasOwnProperty(key))
+                    (<any>data["byCategory"])[key] = (<any>this.byCategory)[key];
             }
         }
         return data;
     }
 }
 
-export interface IBugStatusByMonthsDTO {
-    countByStatuses?: { [key: string]: number; };
+export interface IByCategoryDto {
+    byCategory?: { [key: string]: number; };
 }
 
 export class CategoryDto implements ICategoryDto {
