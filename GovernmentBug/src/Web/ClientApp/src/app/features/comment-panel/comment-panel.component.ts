@@ -2,16 +2,17 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnInit, 
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CommentsBugDto, UserDto } from 'src/app/web-api-client';
-import { CommentService, ViewComment } from 'src/app/services/Comment.service';
+import { CommentService } from 'src/app/services/Comment.service';
 import { MentionModule } from 'angular-mentions';
 import { StateService } from 'src/app/services/state.service';
 import { UserProfileComponent } from "../user-profile/user-profile.component";
+import { MentionDisplayComponent } from "../demo/demoo/mention-display/mention-display.component";
 import { MentionService } from 'src/app/services/Mention.Service';
 
 @Component({
   selector: 'app-comment-panel',
   standalone: true,
-  imports: [FormsModule, CommonModule, MentionModule, UserProfileComponent],
+  imports: [FormsModule, CommonModule, MentionModule, UserProfileComponent, MentionDisplayComponent],
   templateUrl: './comment-panel.component.html',
   styleUrl: './comment-panel.component.css'
 })
@@ -26,21 +27,20 @@ export class CommentPanelComponent implements OnInit {
 
   adding = false;
   newComment: string = '';
-  userList: Array<UserDto> = [];
+  userList: UserDto[] = [];
   mentionUserIds = new Set<number>();
   filteredUsers: Array<UserDto> = [];
   showMentionList = false;
   caretPosition = 0;
   selectedUserIndex: number = 0;
-  viewComments: Array<ViewComment>
   constructor(
     private stateService: StateService,
     private commentService: CommentService,
     private mentionService: MentionService
-  ) {}
+  ) { }
+
 
   ngOnInit(): void {
-    this.loadComments();
     this.loadUsers();
   }
 
@@ -49,39 +49,16 @@ export class CommentPanelComponent implements OnInit {
       this.loadComments();
     }
   }
-
-  loadComments(): void {
-    this.commentService.getCommentsByBugId(this.bugId).subscribe({
-      next: (res) => {
-        this.viewComments = res.map(c => ({
-          comment:c,
-          renderedText: this.mentionService.processTextWithMentions(c.commentText, this.userList || [])
-        }));
-      },
-      error: (err) => console.error('שגיאה בשליפת תגובות', err)
-    });
-  }
-
-  loadUsers(): void {
-    this.stateService.getAllUsers().subscribe({
-      next: (users) => this.userList = users,
-      error: (err) => console.error('שגיאה בטעינת משתמשים:', err)
-    });
-  }
-
-  onInput(eventK: Event) {
-    const event = eventK as KeyboardEvent;
-    const textarea = event.target as HTMLTextAreaElement;
-    this.newComment = textarea.value;
-    this.caretPosition = textarea.selectionStart || 0;
-
+  onTextChanged(value: string): void {
+    this.newComment = value;
+    this.caretPosition = this.commentInput?.nativeElement?.selectionStart || 0;
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
-    const match = /@([\w֐-׿]*)$/.exec(textUpToCaret);
+    const mentionMatch = /@([\w֐-׿]*)$/.exec(textUpToCaret);
 
-    if (match) {
-      const query = match[1];
+    if (mentionMatch) {
+      const query = mentionMatch[1].toLowerCase();
       this.filteredUsers = this.userList.filter(user =>
-        user.fullName.toLowerCase().includes(query.toLowerCase())
+        user.fullName.toLowerCase().includes(query)
       );
       this.showMentionList = this.filteredUsers.length > 0;
       this.selectedUserIndex = 0;
@@ -90,7 +67,42 @@ export class CommentPanelComponent implements OnInit {
     }
   }
 
-  selectUser(user: UserDto) {
+  saveComment(): void {
+    const trimmed = this.newComment.trim();
+    if (!trimmed) return;
+
+    const mentionedIds = this.mentionService.extractMentionedUserIds(this.newComment, this.userList);
+
+    this.commentService.addComment(this.bugId, trimmed, mentionedIds).subscribe({
+      next: () => {
+        this.loadComments();
+        this.newComment = '';
+        this.adding = false;
+      },
+      error: (err) => console.error('שגיאה בהוספת תגובה', err)
+    });
+  }
+  loadComments(): void {
+    this.commentService.getCommentsByBugId(this.bugId).subscribe({
+      next: (res) => this.comments = res,
+      error: (err) => console.error('שגיאה בשליפת תגובות', err)
+    });
+  }
+
+  loadUsers(): void {
+    this.stateService.getAllUsers().subscribe({
+      next: (users) => {
+        this.userList = users;
+        this.loadComments();
+      },
+      error: (err) => console.error('שגיאה בטעינת משתמשים:', err)
+    });
+  }
+  deleteComment(id: number): void {
+    this.commentService.deleteComment(id).subscribe(() => this.loadComments());
+  }
+
+  selectUser(user: UserDto): void {
     const textUpToCaret = this.newComment.substring(0, this.caretPosition);
     const textAfterCaret = this.newComment.substring(this.caretPosition);
     const mentionRegex = /@([\w֐-׿]*)$/;
@@ -107,55 +119,34 @@ export class CommentPanelComponent implements OnInit {
     this.mentionUserIds.add(user.userId);
   }
 
-  saveComment() {
-    const trimmed = this.newComment.trim();
-    const mentionedIds = Array.from(this.mentionUserIds);
-    if (trimmed) {
-      this.commentService.addComment(this.bugId, trimmed, mentionedIds).subscribe({
-        next: () => {
-          this.loadComments();
-          this.newComment = '';
-          this.adding = false;
-          this.mentionUserIds.clear();
-        },
-        error: (err) => console.error('שגיאה בהוספת תגובה', err)
-      });
-    }
-  }
 
-  deleteComment(id: number) {
-    this.commentService.deleteComment(id).subscribe(() => {
-      this.loadComments();
-    });
-  }
-
-  openAdd() {
+  openAdd(): void {
     this.adding = true;
     setTimeout(() => {
       this.commentInput?.nativeElement?.focus();
     });
   }
 
-  cancelAdd() {
+  cancelAdd(): void {
     this.adding = false;
     this.newComment = '';
   }
 
-  close() {
+  close(): void {
     this.closePanel.emit();
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(): void {
     this.scrollToBottom();
   }
 
   scrollToBottom(): void {
     try {
       this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    } catch (err) { }
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent): void {
     if (this.showMentionList) {
       if (event.key === 'ArrowDown') {
         event.preventDefault();
@@ -177,4 +168,5 @@ export class CommentPanelComponent implements OnInit {
       this.saveComment();
     }
   }
+
 }

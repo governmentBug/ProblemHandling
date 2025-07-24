@@ -1,0 +1,40 @@
+.mention-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.mention {
+  color: #1976d2;
+  font-weight: bold;
+  background: #e3f2fd;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 2px;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+/* .mention-popup {
+  position: fixed;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+} */
+
+.popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  white-space: nowrap;
+  direction: rtl;
+}

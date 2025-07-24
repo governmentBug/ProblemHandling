@@ -4,20 +4,46 @@ import { UserDto } from '../web-api-client';
 
 @Injectable({ providedIn: 'root' })
 export class MentionService {
-  constructor(private sanitizer: DomSanitizer) {}
+  
+  getMentionsFromText(text: string, users: UserDto[]) {
+  const mentionRegex = /@([\w\u0590-\u05FF\s]+?)(?=\s|$)/g;
+  const parts: { text: string; isMention: boolean; user?: UserDto }[] = [];
+  let lastIndex = 0;
 
-  processTextWithMentions(text: string, mentionedUsers: Array<UserDto>): SafeHtml {
-    let html = text;
-    mentionedUsers.forEach(user => {
-      const escapedName = this.escapeRegExp(user.fullName);
-      const mentionText = new RegExp(`@${escapedName}\\b`, 'g'); 
-      const mentionHtml = `<span class="mention" title="${user.email || ''}" data-user-id="${user.userId}">@${user.fullName}</span>`;
-      html = html.replace(mentionText, mentionHtml);
+  text.replace(mentionRegex, (match, mention, offset) => {
+    if (lastIndex < offset) {
+      parts.push({ text: text.slice(lastIndex, offset), isMention: false });
+    }
+
+    const fullName = mention.trim();
+    const matchedUser = users.find(
+      u => u.fullName.toLowerCase() === fullName.toLowerCase()
+    );
+
+    parts.push({ 
+      text: fullName, 
+      isMention: !!matchedUser,
+      user: matchedUser 
     });
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+
+    lastIndex = offset + match.length;
+    return match;
+  });
+
+  if (lastIndex < text.length) {
+    parts.push({ text: text.slice(lastIndex), isMention: false });
   }
 
-  private escapeRegExp(text: string): string {
-    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return parts;
+}
+
+
+  extractMentionedUserIds(text: string, users: UserDto[]): number[] {
+    const mentions = this.getMentionsFromText(text, users);
+    const mentionedNames = mentions.filter(p => p.isMention).map(p => p.text.toLowerCase());
+
+    return users
+      .filter(u => mentionedNames.includes(u.fullName.toLowerCase()))
+      .map(u => u.userId);
   }
 }
