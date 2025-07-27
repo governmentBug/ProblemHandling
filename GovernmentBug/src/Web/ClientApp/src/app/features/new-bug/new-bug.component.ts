@@ -113,6 +113,8 @@ export class NewBugComponent implements OnInit {
       await this.attachmentService.createAttachments(this.allAttachment, this.bugId);
 
       Swal.fire({ title: 'הבאג נשמר!', text: 'הבאג נוסף בהצלחה.', icon: 'success', confirmButtonText: 'אוקי' });
+
+      this.AddBug.loadAllBugs(); // <--- הוספת השורה הזו
       this.AddBug.closePopup();
     } catch (error) {
       console.error('Error creating bug:', error);
@@ -276,7 +278,7 @@ export class NewBugComponent implements OnInit {
     return true;
   }
   calculateQualityScore(): void {
-    let score = 0;  
+    let score = 0;
     if (this.newBug.description != undefined) {
       const charCount = this.newBug.description.length;
       score += Math.min(Math.floor(charCount / 10) * 3, 30);
@@ -297,7 +299,7 @@ export class NewBugComponent implements OnInit {
     if (video > 0) score += 20;
     if (image > 0) score += 20;
 
-    if (this.newBug.title!=undefined && this.newBug.title.length >= 10) score += 15; console.log("5 " + score);
+    if (this.newBug.title != undefined && this.newBug.title.length >= 10) score += 15; console.log("5 " + score);
 
     this.qualityScore = score;
     this.setQualityMessage();
@@ -316,9 +318,9 @@ export class NewBugComponent implements OnInit {
     this.calculateQualityScore();
   }
   closeQualityScore(): void {
-  if (this.showQualityScore)
-    this.showQualityScore = false;
-  if(this.showAttachments)
-    this.showAttachments = false;
+    if (this.showQualityScore)
+      this.showQualityScore = false;
+    if (this.showAttachments)
+      this.showAttachments = false;
   }
 }
