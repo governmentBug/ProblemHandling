@@ -29,7 +29,9 @@
       </ng-container>
 
       <ng-template #showVideo>
-        <video class="preview-video" [src]="f.url" controls (click)="openPopup(f)"></video>
+        <div (click)="openPopup(f)">
+          <video class="preview-video" [src]="f.url" muted loop></video>
+        </div>
       </ng-template>
 
       <div class="file-name">{{ f.fileName }}</div>
@@ -39,7 +41,12 @@
   <!-- פופאפ לצפייה מוגדלת -->
   <div class="popup-overlay" *ngIf="selectedFile" (click)="closePopup()">
     <div class="popup-content" (click)="$event.stopPropagation()">
-      <button class="popup-close" (click)="closePopup()">✖</button>
+      <button class="popup-close" (click)="closePopup(); $event.stopPropagation()">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
 
       <ng-container *ngIf="attachmentService.isImage(selectedFile.fileType); else popupVideo">
         <img [src]="selectedFile.url" class="popup-image" />
