@@ -1,12 +1,12 @@
 .bug-form-container {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   border-radius: 12px;
   padding: 20px;
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 30px auto;
   background-color: #fefefe;
   font-family: Arial, sans-serif;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
 }
 
 .bug-form {
@@ -24,13 +24,16 @@
   gap: 20px;
 }
 
-.left-col, .right-col {
+.left-col,
+.right-col {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.input-field, .select-field, .textarea-field {
+.input-field,
+.select-field,
+.textarea-field {
   width: 100%;
   padding: 12px;
   font-size: 16px;
@@ -40,7 +43,9 @@
   transition: border-color 0.3s;
 }
 
-.input-field:focus, .select-field:focus, .textarea-field:focus {
+.input-field:focus,
+.select-field:focus,
+.textarea-field:focus {
   border-color: #0077cc;
   outline: none;
 }
@@ -66,16 +71,45 @@
   transition: background-color 0.3s;
 }
 
-.screen-btn.red { background-color: #ffcccc; }
-.screen-btn.red:hover { background-color: #ff9999; }
-.screen-btn.yellow { background-color: #fff4cc; }
-.screen-btn.yellow:hover { background-color: #ffe699; }
-.screen-btn.blue { background-color: #cceeff; }
-.screen-btn.blue:hover { background-color: #99d6ff; }
-.screen-btn.green { background-color: #ccffd9; }
-.screen-btn.green:hover { background-color: #99ffd8; }
-.screen-btn.purple { background-color: #cfa6fd; }
-.screen-btn.purple:hover { background-color: #bd99ff; }
+.screen-btn.red {
+  background-color: #ffcccc;
+}
+
+.screen-btn.red:hover {
+  background-color: #ff9999;
+}
+
+.screen-btn.yellow {
+  background-color: #fff4cc;
+}
+
+.screen-btn.yellow:hover {
+  background-color: #ffe699;
+}
+
+.screen-btn.blue {
+  background-color: #cceeff;
+}
+
+.screen-btn.blue:hover {
+  background-color: #99d6ff;
+}
+
+.screen-btn.green {
+  background-color: #ccffd9;
+}
+
+.screen-btn.green:hover {
+  background-color: #99ffd8;
+}
+
+.screen-btn.purple {
+  background-color: #cfa6fd;
+}
+
+.screen-btn.purple:hover {
+  background-color: #bd99ff;
+}
 
 .save-btn {
   border-radius: 10px;
@@ -111,63 +145,98 @@ label:after {
 }
 
 .attachments-container {
-  margin-top: 20px;
-  border-top: 1px solid #ddd;
-  padding-top: 15px;
+  margin-top: 30px;
+  border-top: 2px solid #ddd;
+  padding-top: 20px;
 }
 
 .attachments-list {
-  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  list-style: none;
 }
 
 @media (max-width: 600px) {
   .attachments-list {
     grid-template-columns: repeat(2, 1fr);
   }
+
 }
 
 .attachment-item {
-  background: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  width: 240px;
+  height: 300px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.3s;
   text-align: center;
-  transition: box-shadow 0.3s ease;
 }
 
 .attachment-item:hover {
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .attachment-preview {
-  max-width: 100%;
-  max-height: 150px;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
   margin-bottom: 10px;
-  border-radius: 4px;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.attachment-link {
+  font-weight: 600;
+  color: #3366cc;
+  text-align: center;
+  word-break: break-word;
+  white-space: normal;
+  margin-bottom: 10px;
+  padding: 0 5px;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
 }
 
 .attachment-actions {
   display: flex;
   justify-content: center;
   gap: 10px;
+  width: 100%;
 }
 
-.attachment-link {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  text-decoration: none;
-  color: #0077cc;
-  word-break: break-all;
+.attachment-actions button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: white;
 }
 
-.attachment-link:hover {
-  text-decoration: underline;
+.attachment-actions button:hover {
+  opacity: 0.85;
+}
+
+.attachment-actions button:first-child {
+  background-color: #66bb6a;
+}
+
+.attachment-actions button:last-child {
+  background-color: #ef5350;
 }
 
 .progress-bar {
@@ -179,6 +248,14 @@ label:after {
   height: 20px;
 }
 
-.low .progress { background-color: red; }
-.medium .progress { background-color: yellow; }
-.high .progress { background-color: green; }
+.low .progress {
+  background-color: red;
+}
+
+.medium .progress {
+  background-color: yellow;
+}
+
+.high .progress {
+  background-color: green;
+}
