@@ -21,7 +21,7 @@ public class GetOpenBugsByPriorityQueryHandler : IRequestHandler<GetOpenBugsByPr
         {
             var properties = _context.Priorities.Include(p => p.Bugs);
             var openStatus = await _context.Statuses
-                .Where(s => s.StatusName.Equals("Open"))
+                .Where(s => s.StatusName.Equals("סגור"))
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (openStatus == null)
