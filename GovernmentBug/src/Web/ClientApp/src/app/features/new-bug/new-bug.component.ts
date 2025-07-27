@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbbBug } from 'src/app/models/addBug.model';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
@@ -10,15 +10,17 @@ import { AttachmentService } from 'src/app/services/Attachment.Service';
 import { BugComparisonQuery } from 'src/app/web-api-client';
 import { SearchSameBugsComponent } from '../Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
 import { AllBugsComponent } from '../all-bugs/all-bugs.component';
+// import { BbbComponent } from '../bbb/bbb.component';
 
 @Component({
   selector: 'app-new-bug',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchSameBugsComponent],
+  imports: [CommonModule, FormsModule, SearchSameBugsComponent],//, BbbComponent],
   templateUrl: './new-bug.component.html',
   styleUrls: ['./new-bug.component.css']
 })
 export class NewBugComponent implements OnInit {
+  // @ViewChild(BbbComponent) bbbComponent!: BbbComponent; // הוספת הפניה לרכיב ה-BBB
   createdDate: Date = new Date();
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
@@ -37,7 +39,11 @@ export class NewBugComponent implements OnInit {
   showSaveButton = true;
   qualityScore: number = 0;
   qualityMessage: string = '';
-  showQualityScore: boolean = false;
+  donTitel: boolean = false;
+  umountDiscripsion: number = 0;
+  donDiscripsion: boolean = false;
+  oneVidio: boolean = false;
+  oneAttachment: boolean = false;
 
   constructor(private bugService: BugService, private stateService: StateService,
     private attachmentService: AttachmentService, private router: Router, private AddBug: AllBugsComponent) { }
@@ -48,8 +54,10 @@ export class NewBugComponent implements OnInit {
     this.newBug.statusId = 3;
     this.newBug.created = this.formattedDateToSave;
     this.newBug.createdByUserId = 2;
-    // this.newBug.description = " ";
-    // this.newBug.title = " ";
+  }
+  updateUI() {
+
+    console.log('UI has been updated');
   }
   onCheckDuplicates() {
     this.showDuplicateCheck = true;
@@ -59,7 +67,7 @@ export class NewBugComponent implements OnInit {
   }
   onContinueAddBug() {
     this.showDuplicateCheck = false;
-    this.calculateQualityScore();
+    this.setQualityMessage();
 
     if (!this.hasEnoughInfo()) return;
 
@@ -147,6 +155,10 @@ export class NewBugComponent implements OnInit {
     if (this.showAttachments === true) this.allAttachments();
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      if (this.oneAttachment === false) {
+        this.qualityScore += 20;
+        this.oneAttachment = true;
+      }
       const track = stream.getVideoTracks()[0];
       const video = document.createElement('video');
       video.srcObject = stream;
@@ -169,11 +181,16 @@ export class NewBugComponent implements OnInit {
     } catch (err) {
       console.error('שגיאה בצילום מסך', err);
     }
+    this.setQualityMessage()
   }
   async onRecordVideo() {
     if (this.showAttachments === true) this.allAttachments();
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      if (this.oneVidio === false) {
+        this.qualityScore += 20;
+        this.oneVidio = true;
+      }
       const audioTracks = stream.getAudioTracks();
       if (audioTracks.length === 0 && !confirm("השמע לא דלוק. האם אתה רוצה להמשיך בהקלטה בלי שמע?")) {
         stream.getTracks().forEach(track => track.stop());
@@ -187,8 +204,6 @@ export class NewBugComponent implements OnInit {
       this.mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
         const videoFile = new File([blob], 'recording.webm', { type: 'video/webm' });
-        console.log(videoFile);
-
         this.allAttachment.push(videoFile);
         this.fileUrls.push(this.getFileUrl(videoFile));
         this.numFilm++;
@@ -199,6 +214,7 @@ export class NewBugComponent implements OnInit {
     } catch (err) {
       console.error('שגיאה בהקלטת וידאו', err);
     }
+    this.setQualityMessage();
   }
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
@@ -225,11 +241,20 @@ export class NewBugComponent implements OnInit {
         this.fileUrls.push(this.getFileUrl(file));
         if (file.type.startsWith('video/')) {
           this.numFilm++;
+          if (this.oneVidio === false) {
+            this.qualityScore += 20;
+            this.oneVidio = true;
+          }
         } else {
           this.numDocuments++;
+          if (this.oneAttachment === false) {
+            this.qualityScore += 20;
+            this.oneAttachment = true;
+          }
         }
       }
     }
+    this.setQualityMessage();
   }
   onUploadClick(fileInput: HTMLInputElement) {
     if (this.showAttachments === true) this.allAttachments();
@@ -240,13 +265,26 @@ export class NewBugComponent implements OnInit {
   }
   removeFileByIndex(index: number) {
     const file = this.allAttachment[index];
-    this.allAttachment.splice(index, 1);
-    this.fileUrls.splice(index, 1);
     if (file.type.startsWith('video/')) {
       this.numFilm--;
+      if (this.numFilm === 0) {
+        this.qualityScore -= 20;
+        this.oneVidio = false;
+      }
     } else {
       this.numDocuments--;
+      if (this.numDocuments === 0) {
+        this.qualityScore -= 20;
+        this.oneAttachment = false;
+      }
     }
+    console.log(this.numDocuments);
+
+    console.log(this.qualityScore);
+
+    this.allAttachment.splice(index, 1);
+    this.fileUrls.splice(index, 1);
+    this.setQualityMessage();
   }
   renameFile(index: number) {
     const newName = prompt("הכנס שם חדש לקובץ:", this.allAttachment[index].name);
@@ -275,31 +313,41 @@ export class NewBugComponent implements OnInit {
     }
     return true;
   }
-  calculateQualityScore(): void {
-    let score = 0;  
+  addPointTitle(): void {
+    if (this.newBug.title != undefined && this.newBug.title.length >= 10 && this.donTitel === false) {
+      this.donTitel = true;
+      this.qualityScore += 15;
+    }
+    if (this.newBug.title != undefined && this.newBug.title.length < 10 && this.donTitel === true) {
+      this.donTitel = false
+      this.qualityScore -= 15;
+    }
+    this.setQualityMessage();
+  }
+  addPointDescription(): void {
+    let nowUmount = 0;
     if (this.newBug.description != undefined) {
       const charCount = this.newBug.description.length;
-      score += Math.min(Math.floor(charCount / 10) * 3, 30);
+      nowUmount += Math.min(Math.floor(charCount / 10) * 3, 30);
     }
-    console.log("1 " + score);
+    if (this.umountDiscripsion < nowUmount) {
+      this.qualityScore += Math.abs(nowUmount - this.umountDiscripsion);
+      this.umountDiscripsion = nowUmount;
+    }
+    if (this.umountDiscripsion > nowUmount) {
+      this.qualityScore -= Math.abs(nowUmount - this.umountDiscripsion);
+      this.umountDiscripsion = nowUmount;
+    }
+
     const keywords = /לדוגמא|כאשר|תמיד/;
-    if (keywords.test(this.newBug.description)) score += 15;
-    console.log("2 " + score);
-
-    let image = 0, video = 0;
-
-    for (let i = 0; i < this.allAttachment.length; i++) {
-      const file = this.allAttachment[i];
-      const fileType = file.type;
-      if (fileType.startsWith('video/')) video++;
-      else image++;
+    if (keywords.test(this.newBug.description) && this.donDiscripsion === false) {
+      this.qualityScore += 15;
+      this.donDiscripsion = true;
     }
-    if (video > 0) score += 20;
-    if (image > 0) score += 20;
-
-    if (this.newBug.title!=undefined && this.newBug.title.length >= 10) score += 15; console.log("5 " + score);
-
-    this.qualityScore = score;
+    if (keywords.test(this.newBug.description) === false && this.donDiscripsion === true) {
+      this.qualityScore -= 15;
+      this.donDiscripsion = false;
+    }
     this.setQualityMessage();
   }
   setQualityMessage(): void {
@@ -311,14 +359,5 @@ export class NewBugComponent implements OnInit {
       this.qualityMessage = 'דיווח מפורט וברור. תודה!';
     }
   }
-  toggleQualityScore() {
-    this.showQualityScore = !this.showQualityScore;
-    this.calculateQualityScore();
-  }
-  closeQualityScore(): void {
-  if (this.showQualityScore)
-    this.showQualityScore = false;
-  if(this.showAttachments)
-    this.showAttachments = false;
-  }
+
 }
