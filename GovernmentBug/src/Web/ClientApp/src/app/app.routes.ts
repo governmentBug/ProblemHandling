@@ -5,7 +5,6 @@ import { NewBugComponent } from './features/new-bug/new-bug.component';
 import { SearchSameBugsComponent } from './features/Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
 import { DashboardComponent } from './features/statistics/dashboard/dashboard.component';
 
-
 export const routes: Routes = [
   { path: '', component: AllBugsComponent },
   { path: 'allBug', component: AllBugsComponent },
