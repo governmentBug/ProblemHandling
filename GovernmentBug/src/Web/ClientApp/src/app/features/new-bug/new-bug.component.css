@@ -1,53 +1,4 @@
-.bug-form {
-  max-width: 800px;
-  margin: 30px auto;
-  font-family: Arial, sans-serif;
-}
-
-.row-full {
-  margin-bottom: 20px;
-}
-
-.row-full input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-.row-split {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 20px;
-}
-
-.left-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.right-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.select-field,
-.textarea-field {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-.textarea-field {
-  min-height: 150px;
-  resize: vertical;
-}
+@import "primeicons/primeicons.css";
 
 .bug-form-container {
   border: 1px solid #ccc;
@@ -57,48 +8,51 @@
   margin: 30px auto;
   background-color: #fefefe;
   font-family: Arial, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.report-container {
-  display: flex;
-  justify-content: space-between; /* מפזר את האלמנטים בין הקצוות */
-  margin-bottom: 20px; /* ריווח בין האלמנטים */
+.bug-form {
+  max-width: 800px;
 }
 
-.report-info, .report-infoR {
-  font-weight: bold;
+.row-full {
+  margin-bottom: 20px;
+  text-align: right;
 }
 
-.right-col,
-.left-col {
+.row-split {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+}
+
+.left-col, .right-col {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  text-align: right; /* מיקום התוכן בצד ימין */
-}
-.row-full{
-  text-align: right; /* מיקום התוכן בצד ימין */
+  gap: 10px;
 }
 
-.input-field,
-.select-field,
-.textarea-field {
+.input-field, .select-field, .textarea-field {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus, .select-field:focus, .textarea-field:focus {
+  border-color: #0077cc;
+  outline: none;
 }
 
 .textarea-field {
-  height: 150px;
+  min-height: 150px;
   resize: vertical;
 }
 
-/* שורת כפתורים */
 .buttons-row {
-  grid-column: 1 / span 2;
   display: flex;
   gap: 10px;
   margin-top: 20px;
@@ -106,66 +60,57 @@
 
 .screen-btn {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.screen-btn.yellow {
-  background-color: #ffe199;
-}
+.screen-btn.red { background-color: #ffcccc; }
+.screen-btn.red:hover { background-color: #ff9999; }
+.screen-btn.yellow { background-color: #fff4cc; }
+.screen-btn.yellow:hover { background-color: #ffe699; }
+.screen-btn.blue { background-color: #cceeff; }
+.screen-btn.blue:hover { background-color: #99d6ff; }
+.screen-btn.green { background-color: #ccffd9; }
+.screen-btn.green:hover { background-color: #99ffd8; }
+.screen-btn.purple { background-color: #cfa6fd; }
+.screen-btn.purple:hover { background-color: #bd99ff; }
 
-.screen-btn.blue {
-  background-color: #aef1f6;
-}
-
-/* כפתור שמירה */
-.save-btn,
-.btn {
-  grid-column: 1 / span 2;
+.save-btn {
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-size: 18px;
   cursor: pointer;
   margin: 20px auto 0;
   display: block;
-}
-
-.save-btn {
   background-color: #a0f5aa;
   border: 2px solid #60e66b;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.btn {
-  background-color: #e78155;
-  border: 2px solid #e78155;
+.save-btn:hover {
+  background-color: #90e09e;
+  transform: scale(1.02);
 }
 
 .input-field.ng-invalid.ng-touched,
 .select-field.ng-invalid.ng-touched,
 .textarea-field.ng-invalid.ng-touched {
-  border: 1px solid red; /* גבול אדום לשדות לא תקינים */
+  border: 1px solid red;
 }
 
 label {
-  color: #333; /* צבע רגיל */
-  margin-bottom: -10px; /* ריווח מתחת לתווית */
+  color: #333;
   font-weight: bold;
-  /* text-align: right; */
 }
 
 label:after {
-  content: " *"; /* כוכבית */
-  color: red; /* צבע אדום לכוכבית */
+  content: " *";
+  color: red;
 }
-
-.red {
-  background-color: rgb(211, 246, 147); /* שים את הצבע הרצוי */
-}
-
-
 
 .attachments-container {
   margin-top: 20px;
@@ -173,28 +118,18 @@ label:after {
   padding-top: 15px;
 }
 
-.attachments-container h3 {
-  margin-bottom: 10px;
-  color: #444;
-  font-size: 20px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 5px;
-}
-
- .attachments-list {
+.attachments-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* תמיד 3 */
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
 
-
-
 @media (max-width: 600px) {
   .attachments-list {
-    grid-template-columns: repeat(2, 1fr); /* במסכים צרים - 2 */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -204,7 +139,6 @@ label:after {
   border-radius: 8px;
   padding: 10px;
   text-align: center;
-  position: relative;
   transition: box-shadow 0.3s ease;
 }
 
@@ -225,20 +159,6 @@ label:after {
   gap: 10px;
 }
 
-.attachment-actions button {
-  border: none;
-  border-radius: 4px;
-  padding: 5px 8px;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  transition: background-color 0.2s ease;
-}
-
-.attachment-actions button:hover {
-  background-color: #ddd;
-}
-
 .attachment-link {
   display: block;
   font-weight: bold;
@@ -251,3 +171,16 @@ label:after {
 .attachment-link:hover {
   text-decoration: underline;
 }
+
+.progress-bar {
+  width: 100%;
+  background-color: #e0e0e0;
+}
+
+.progress {
+  height: 20px;
+}
+
+.low .progress { background-color: red; }
+.medium .progress { background-color: yellow; }
+.high .progress { background-color: green; }

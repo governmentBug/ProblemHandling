@@ -21,7 +21,7 @@ public record CreateBugCommand : IRequest<int>
     public int PriorityId { get; set; }
     public int CategoryId { get; set; }
     public int CreatedByUserId { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime CreatedDate { get; set; }
     public int StatusId { get; set; }
 
 }
@@ -45,7 +45,7 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             CategoryId = request.CategoryId,
             PriorityId = request.PriorityId,
             CreatedByUserId = request.CreatedByUserId,
-            Created = request.Created,
+            CreatedDate = request.CreatedDate,
             StatusId = request.StatusId
         };
 

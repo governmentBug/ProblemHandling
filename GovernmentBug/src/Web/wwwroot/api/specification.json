@@ -1614,7 +1614,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "created": {
+          "createdDate": {
             "type": "string",
             "format": "date-time"
           },

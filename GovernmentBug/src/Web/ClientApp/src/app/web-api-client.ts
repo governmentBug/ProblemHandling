@@ -3035,7 +3035,7 @@ export class CreateBugCommand implements ICreateBugCommand {
     priorityId?: number;
     categoryId?: number;
     createdByUserId?: number;
-    created?: Date;
+    createdDate?: Date;
     statusId?: number;
 
     constructor(data?: ICreateBugCommand) {
@@ -3055,7 +3055,7 @@ export class CreateBugCommand implements ICreateBugCommand {
             this.priorityId = _data["priorityId"];
             this.categoryId = _data["categoryId"];
             this.createdByUserId = _data["createdByUserId"];
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.statusId = _data["statusId"];
         }
     }
@@ -3075,7 +3075,7 @@ export class CreateBugCommand implements ICreateBugCommand {
         data["priorityId"] = this.priorityId;
         data["categoryId"] = this.categoryId;
         data["createdByUserId"] = this.createdByUserId;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["statusId"] = this.statusId;
         return data;
     }
@@ -3088,7 +3088,7 @@ export interface ICreateBugCommand {
     priorityId?: number;
     categoryId?: number;
     createdByUserId?: number;
-    created?: Date;
+    createdDate?: Date;
     statusId?: number;
 }
 

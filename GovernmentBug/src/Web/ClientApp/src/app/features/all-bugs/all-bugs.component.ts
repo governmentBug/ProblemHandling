@@ -9,11 +9,12 @@ import { BugDetalsDto, CommentsBugDto } from 'src/app/web-api-client';
 import { BugDetailComponent } from "../bug-detail/BugDetailComponent";
 import { StateService } from 'src/app/services/state.service';
 import { CommentPanelComponent } from '../comment-panel/comment-panel.component';
+import { NewBugComponent } from '../new-bug/new-bug.component';
 
 @Component({
   selector: 'app-all-bugs',
   standalone: true,
-  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent],
+  imports: [CommonModule, FormsModule, BugDetailComponent, CommentPanelComponent, NewBugComponent],
   templateUrl: './all-bugs.component.html',
   styleUrls: ['./all-bugs.component.css']
 })
@@ -33,7 +34,7 @@ export class AllBugsComponent implements OnInit {
   sortDirections: { [key: string]: 'desc' | 'asc' } = {};
 
   isFilesPanelOpen = false;
-  IsEditMode :boolean= false
+  IsEditMode: boolean = false
   readonly priorityOrder: Record<string, number> = {
     'נמוכה': 1,
     'בינונית': 2,
@@ -44,7 +45,7 @@ export class AllBugsComponent implements OnInit {
   constructor(private bugService: BugService, private stateService: StateService,
     public CommentService: CommentService, public route: ActivatedRoute,
     private router: Router) { }
-  ngOnInit(): void {
+  ngOnInit(): void {  
     this.loadAllBugs();
     this.loadFilterOptions();
   }
@@ -257,7 +258,15 @@ export class AllBugsComponent implements OnInit {
     this.applyFilterAndPage();
   }
 
-  addBug() {
-    this.router.navigate(['/addBug']);
+  // הצגת הפופאפ
+  showPopup: boolean = false;
+
+  openPopup() {
+    this.showPopup = true;
+    document.body.style.overflow = 'hidden';
+  }
+  closePopup() {
+    this.showPopup = false;
+    document.body.style.overflow = 'auto';
   }
 }
