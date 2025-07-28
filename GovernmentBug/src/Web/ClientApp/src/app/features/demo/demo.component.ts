@@ -1,14 +1,13 @@
 
   import { Component } from '@angular/core';
-import { MentionInputComponent } from './demoo/mention-input/mention-input.component';
-
+import { TextEditorComponent } from '../text-editore/text-editore.component';
 @Component({
   selector: 'app-demo',
   standalone: true,
-  imports: [MentionInputComponent],
+  imports: [ TextEditorComponent],
   template: `
     <h2>דמו תיוג עם זיהוי משתמשים קיימים</h2>
-    <app-mention-input />
+    <app-text-editor />
   `
 })
 export class DemoComponent {}

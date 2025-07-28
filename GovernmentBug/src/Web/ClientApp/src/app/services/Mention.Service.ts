@@ -6,7 +6,7 @@ import { UserDto } from '../web-api-client';
 export class MentionService {
   
   getMentionsFromText(text: string, users: UserDto[]) {
-  const mentionRegex = /@([\w\u0590-\u05FF\s]+?)(?=\s|$)/g;
+  const mentionRegex = /@([\u0590-\u05FFa-zA-Z\-']+(?:\s[\u0590-\u05FFa-zA-Z\-']+)*)/g;
   const parts: { text: string; isMention: boolean; user?: UserDto }[] = [];
   let lastIndex = 0;
 
@@ -14,14 +14,13 @@ export class MentionService {
     if (lastIndex < offset) {
       parts.push({ text: text.slice(lastIndex, offset), isMention: false });
     }
-
     const fullName = mention.trim();
     const matchedUser = users.find(
       u => u.fullName.toLowerCase() === fullName.toLowerCase()
     );
 
     parts.push({ 
-      text: fullName, 
+      text: match, // כולל הסימן @
       isMention: !!matchedUser,
       user: matchedUser 
     });

@@ -3,10 +3,10 @@
 <div class="comments-list" #scrollContainer *ngIf="userList.length > 0">
   <div class="comment" *ngFor="let c of comments">
     <div class="icon">
-      <img src="assets/user-icon.png" alt="user" />
+      <i class="fas fa-user-circle" style="font-size: 1.2rem; color: gray; border-radius: 50%; background-color: #eee; padding: 2px;"></i>
     </div>
     <div class="text">
-      <app-mention-display [text]="c.commentText" [users]="userList" />
+      <app-mention-display [html]="c.commentText" [users]="userList" />
       <small>
         נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
       </small>
@@ -20,25 +20,16 @@
 <div class="add-section">
   <ng-container *ngIf="isAuthorizedToComment">
     <div *ngIf="adding" class="add-form">
-      <div class="mention-container">
-        <textarea class="comment-textarea" #commentInput [(ngModel)]="newComment"
-          (ngModelChange)="onTextChanged($event)" (keydown)="onKeyDown($event)" placeholder="הוסף תגובה...">
-        </textarea>
-        <app-mention-display *ngIf="userList.length" [text]="newComment" [users]="userList">
-        </app-mention-display>
-
-        <ul *ngIf="showMentionList" class="mention-list">
-          <li *ngFor="let user of filteredUsers; let i = index" [class.active]="i === selectedUserIndex"
-            (click)="selectUser(user)">
-            <app-user-profile [user]="user"></app-user-profile>
-          </li>
-        </ul>
-      </div>
+        <app-text-editor
+        #textEditor
+        [users]="userList"
+        (contentChanged)="onTextChanged($event)"
+        (enterPressed)="saveComment()"
+      ></app-text-editor>
       <div class="actions">
         <button class="add-btn" (click)="saveComment()">
           <i class="fas fa-arrow-up"></i>
         </button>
-
       </div>
     </div>
     <button *ngIf="!adding" class="add-btn" (click)="openAdd()">+</button>

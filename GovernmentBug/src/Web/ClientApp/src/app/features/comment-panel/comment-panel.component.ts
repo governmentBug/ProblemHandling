@@ -1,18 +1,23 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component, Input, Output, EventEmitter, ViewChild, OnInit, SimpleChanges
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CommentsBugDto, UserDto } from 'src/app/web-api-client';
 import { CommentService } from 'src/app/services/Comment.service';
-import { MentionModule } from 'angular-mentions';
 import { StateService } from 'src/app/services/state.service';
 import { UserProfileComponent } from "../user-profile/user-profile.component";
-import { MentionDisplayComponent } from "../demo/demoo/mention-display/mention-display.component";
-import { MentionService } from 'src/app/services/Mention.Service';
-
+import { MentionDisplayComponent } from '../mention-display/mention-display.component';
+import { TextEditorComponent } from '../text-editore/text-editore.component';
 @Component({
   selector: 'app-comment-panel',
   standalone: true,
-  imports: [FormsModule, CommonModule, MentionModule, UserProfileComponent, MentionDisplayComponent],
+  imports: [
+    FormsModule,
+    CommonModule,
+    MentionDisplayComponent,
+    TextEditorComponent
+  ],
   templateUrl: './comment-panel.component.html',
   styleUrl: './comment-panel.component.css'
 })
@@ -22,23 +27,22 @@ export class CommentPanelComponent implements OnInit {
   @Input() isAuthorizedToComment: boolean = false;
   @Input() currentUserName: string = '';
   @Output() closePanel = new EventEmitter<void>();
-  @ViewChild('commentInput') commentInput!: ElementRef;
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
+  @ViewChild('scrollContainer') scrollContainer!: any;
+  @ViewChild('textEditor') textEditor!: TextEditorComponent;
 
   adding = false;
-  newComment: string = '';
   userList: UserDto[] = [];
-  mentionUserIds = new Set<number>();
   filteredUsers: Array<UserDto> = [];
   showMentionList = false;
-  caretPosition = 0;
   selectedUserIndex: number = 0;
+  caretPosition = 0;
+  lastContent: string = '';
+
   constructor(
     private stateService: StateService,
-    private commentService: CommentService,
-    private mentionService: MentionService
+    private commentService: CommentService
   ) { }
-
 
   ngOnInit(): void {
     this.loadUsers();
@@ -49,39 +53,37 @@ export class CommentPanelComponent implements OnInit {
       this.loadComments();
     }
   }
-  onTextChanged(value: string): void {
-    this.newComment = value;
-    this.caretPosition = this.commentInput?.nativeElement?.selectionStart || 0;
-    const textUpToCaret = this.newComment.substring(0, this.caretPosition);
-    const mentionMatch = /@([\w֐-׿]*)$/.exec(textUpToCaret);
 
-    if (mentionMatch) {
-      const query = mentionMatch[1].toLowerCase();
-      this.filteredUsers = this.userList.filter(user =>
-        user.fullName.toLowerCase().includes(query)
-      );
-      this.showMentionList = this.filteredUsers.length > 0;
-      this.selectedUserIndex = 0;
-    } else {
-      this.showMentionList = false;
-    }
+  onTextChanged(value: string): void {
+    this.lastContent = value;
   }
 
   saveComment(): void {
-    const trimmed = this.newComment.trim();
-    if (!trimmed) return;
+    const html = this.textEditor.getHtml().trim();
+    console.log(html);
+    
+    if (!html || html === '<p><br></p>') return;
 
-    const mentionedIds = this.mentionService.extractMentionedUserIds(this.newComment, this.userList);
+    const div = document.createElement('div');
+    div.innerHTML = html;
 
-    this.commentService.addComment(this.bugId, trimmed, mentionedIds).subscribe({
+    const mentionElements = div.querySelectorAll('.ql-mention[data-id]');
+    const mentionedIds = new Set<number>();
+    mentionElements.forEach(el => {
+      const id = el.getAttribute('data-id');
+      if (id) mentionedIds.add(Number(id));
+    });
+
+    this.commentService.addComment(this.bugId, html, Array.from(mentionedIds)).subscribe({
       next: () => {
         this.loadComments();
-        this.newComment = '';
         this.adding = false;
+        this.lastContent = '';
       },
       error: (err) => console.error('שגיאה בהוספת תגובה', err)
     });
   }
+
   loadComments(): void {
     this.commentService.getCommentsByBugId(this.bugId).subscribe({
       next: (res) => this.comments = res,
@@ -98,38 +100,18 @@ export class CommentPanelComponent implements OnInit {
       error: (err) => console.error('שגיאה בטעינת משתמשים:', err)
     });
   }
+
   deleteComment(id: number): void {
     this.commentService.deleteComment(id).subscribe(() => this.loadComments());
   }
 
-  selectUser(user: UserDto): void {
-    const textUpToCaret = this.newComment.substring(0, this.caretPosition);
-    const textAfterCaret = this.newComment.substring(this.caretPosition);
-    const mentionRegex = /@([\w֐-׿]*)$/;
-    const match = mentionRegex.exec(textUpToCaret);
-    if (!match) return;
-
-    const mentionStartIndex = match.index;
-    const beforeMention = this.newComment.slice(0, mentionStartIndex);
-    const afterMention = textAfterCaret;
-
-    this.newComment = `${beforeMention}@${user.fullName} ${afterMention}`.trim();
-    this.caretPosition = (beforeMention + '@' + user.fullName + ' ').length;
-    this.showMentionList = false;
-    this.mentionUserIds.add(user.userId);
-  }
-
-
   openAdd(): void {
     this.adding = true;
-    setTimeout(() => {
-      this.commentInput?.nativeElement?.focus();
-    });
   }
 
   cancelAdd(): void {
     this.adding = false;
-    this.newComment = '';
+    this.lastContent = '';
   }
 
   close(): void {
@@ -145,28 +127,4 @@ export class CommentPanelComponent implements OnInit {
       this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
     } catch (err) { }
   }
-
-  onKeyDown(event: KeyboardEvent): void {
-    if (this.showMentionList) {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        this.selectedUserIndex = (this.selectedUserIndex + 1) % this.filteredUsers.length;
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        this.selectedUserIndex = (this.selectedUserIndex - 1 + this.filteredUsers.length) % this.filteredUsers.length;
-      } else if (event.key === 'Enter') {
-        event.preventDefault();
-        const selectedUser = this.filteredUsers[this.selectedUserIndex];
-        if (selectedUser) {
-          this.selectUser(selectedUser);
-        }
-      } else if (event.key === 'Escape') {
-        this.showMentionList = false;
-      }
-    } else if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      this.saveComment();
-    }
-  }
-
 }
