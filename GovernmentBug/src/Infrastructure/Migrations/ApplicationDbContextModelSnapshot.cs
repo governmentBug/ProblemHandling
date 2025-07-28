@@ -22,7 +22,7 @@ namespace GovernmentBug.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GovernmentBug.Domain.Entities.Attachment", b =>
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Attachments", b =>
                 {
                     b.Property<int>("AttachmentId")
                         .ValueGeneratedOnAdd()
@@ -43,10 +43,9 @@ namespace GovernmentBug.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FilePath")
+                    b.Property<byte[]>("FilePath")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FileType")
                         .IsRequired()
@@ -248,6 +247,44 @@ namespace GovernmentBug.Infrastructure.Migrations
                     b.HasIndex("BugID");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.CommentMention", b =>
+                {
+                    b.Property<int>("CommentMentionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentMentionId"));
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentMentionId");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("CommentMentions");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Priority", b =>
@@ -623,10 +660,10 @@ namespace GovernmentBug.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("GovernmentBug.Domain.Entities.Attachment", b =>
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Attachments", b =>
                 {
                     b.HasOne("GovernmentBug.Domain.Entities.Bug", "Bug")
-                        .WithMany()
+                        .WithMany("Attachments")
                         .HasForeignKey("BugId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -637,7 +674,7 @@ namespace GovernmentBug.Infrastructure.Migrations
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Bug", b =>
                 {
                     b.HasOne("GovernmentBug.Domain.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Bugs")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -649,13 +686,13 @@ namespace GovernmentBug.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("GovernmentBug.Domain.Entities.Priority", "Priority")
-                        .WithMany()
+                        .WithMany("Bugs")
                         .HasForeignKey("PriorityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GovernmentBug.Domain.Entities.Status", "Status")
-                        .WithMany()
+                        .WithMany("Bugs")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -672,7 +709,7 @@ namespace GovernmentBug.Infrastructure.Migrations
             modelBuilder.Entity("GovernmentBug.Domain.Entities.BugHistory", b =>
                 {
                     b.HasOne("GovernmentBug.Domain.Entities.Bug", "Bug")
-                        .WithMany()
+                        .WithMany("BugHistories")
                         .HasForeignKey("BugID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -689,6 +726,25 @@ namespace GovernmentBug.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Bug");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.CommentMention", b =>
+                {
+                    b.HasOne("GovernmentBug.Domain.Entities.Comment", "Comment")
+                        .WithMany("Mentions")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GovernmentBug.Domain.Entities.Users", "user")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.TodoItem", b =>
@@ -778,7 +834,31 @@ namespace GovernmentBug.Infrastructure.Migrations
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.Bug", b =>
                 {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("BugHistories");
+
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Bugs");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Comment", b =>
+                {
+                    b.Navigation("Mentions");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Priority", b =>
+                {
+                    b.Navigation("Bugs");
+                });
+
+            modelBuilder.Entity("GovernmentBug.Domain.Entities.Status", b =>
+                {
+                    b.Navigation("Bugs");
                 });
 
             modelBuilder.Entity("GovernmentBug.Domain.Entities.TodoList", b =>
