@@ -24,10 +24,12 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 {
     private readonly IApplicationDbContext _context;
     private readonly IMentionService _mentionService;
-    public CreateCommentCommandHandler(IApplicationDbContext context,IMentionService mentionService)
+    private readonly IHtmlSanitizerService _htmlSanitizerService;
+    public CreateCommentCommandHandler(IApplicationDbContext context,IMentionService mentionService, IHtmlSanitizerService htmlSanitizerService)
     {
         _context = context;
         _mentionService = mentionService;
+        _htmlSanitizerService = htmlSanitizerService;
     }
 
     public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -36,11 +38,19 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
         Guard.Against.NotFound(request.BugID, bug);
         if (bug == null)
             throw new NotFoundException(nameof(Bug), request.BugID.ToString());
+        var validUsers = await _context.AppUsers
+            .Where(u => request.usersMentions.Contains(u.Id))
+            .Select(u => u.Id)
+            .ToListAsync(cancellationToken);
 
+        var invalidUserIds = request.usersMentions.Except(validUsers).ToList();
+        if (invalidUserIds.Any())
+            throw new ValidationException($"המשתמשים הבאים לא קיימים: {string.Join(", ", invalidUserIds)}");
+        var commentText = _htmlSanitizerService.Sanitize(request.CommentText);
         var entity = new Comment
         {
             BugID = request.BugID,
-            CommentText = request.CommentText,
+            CommentText = commentText,
             CommentedBy = request.CommentedBy,
             CommentDate = DateTime.Now,
         };
@@ -48,6 +58,14 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
         entity.AddDomainEvent(new TodoCommentCreated(entity));
 
         _context.Comments.Add(entity);
+
+       var mentions = request.usersMentions
+          .Distinct()                      
+          .Select(userId => new CommentMention
+          {
+            CommentId= entity.CommentID,  
+            UserID = userId             
+          }).ToList();
         await _context.SaveChangesAsync(cancellationToken);
         //await _mentionService.SendMentionEmailsAsync(request.usersMentions, request.CommentText, request.BugID);
         return entity.CommentID;
