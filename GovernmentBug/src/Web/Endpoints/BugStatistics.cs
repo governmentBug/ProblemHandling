@@ -2,11 +2,11 @@
 using GovernmentBug.Application.Bugs.Queries.GetBugsList;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetBugStatusByMonths;
-using Microsoft.AspNetCore.Http.HttpResults;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetTotalOpenBugs;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
 using GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.getByCategory;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -20,8 +20,8 @@ public class BugStatistics : EndpointGroupBase
          .MapGet(GetBugs)
          .MapGet(AverageTreatmentTime, "averagetreatmenttime/{priorityId}/{categoryId}/{created}")
          .MapGet(GetOpenBugsByPriority, "openbugsbypriority")
-         .MapGet(GetBugsByMonths, "bymonth/{year}")
-         .MapGet(GetBugStatusByMonths, "openbugsstatus/{month}/{year}");
+         .MapGet(GetByMonths, "bymonth/{year}")
+         .MapGet(GetByCategory, "bycategory");
 
     }
     public async Task<ByStatusDto> GetByStatus(ISender sender)
@@ -29,12 +29,17 @@ public class BugStatistics : EndpointGroupBase
         var result = await sender.Send(new GetByStatusQuery());
         return result;
     }
+    public async Task<ByCategoryDto> GetByCategory(ISender sender)
+    {
+        var result = await sender.Send(new GetByCategoryQuery());
+        return result;
+    }
     public async Task<int> TotalOpenBugs(ISender sender)
     {
         var result = await sender.Send(new GetTotalOpenBugsQuery());
         return result;
     }
-    public async Task<ByMonthsDto> GetBugsByMonths(ISender sender, int categoryId,int userId, int year)
+    public async Task<ByMonthsDto> GetByMonths(ISender sender, int? categoryId,int? userId, int year)
     {
         var result = await sender.Send(new GetByMonthsQuery(year,categoryId,userId));
         return result;

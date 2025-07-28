@@ -13,13 +13,15 @@
     <div class="bug-form">
       <div class="row-full">
         <label for="nameB">:שם/תקציר הבאג</label>
-        <input type="text" [(ngModel)]="newBug.title" name="title" required class="input-field" id="nameB" />
+        <input type="text" [(ngModel)]="newBug.title" name="title" required class="input-field" id="nameB"
+          (click)="closeQualityScore()" />
       </div>
 
       <div class="row-split">
         <div class="left-col">
           <label for="categoryId">:קטגוריה</label>
-          <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
+          <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required
+            (click)="closeQualityScore()">
             <option value="0" disabled selected>קטגוריה</option>
             <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
               {{ category.categoryName }}
@@ -27,7 +29,8 @@
           </select>
 
           <label for="priorityId">:עדיפות</label>
-          <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
+          <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required
+            (click)="closeQualityScore()">
             <option value="0" disabled selected>עדיפות</option>
             <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
               {{ priority.priorityName }}
@@ -37,21 +40,38 @@
 
         <div class="right-col">
           <label for="description">:תיאור הבאג</label>
-          <textarea [(ngModel)]="newBug.description" name="description" class="textarea-field" required></textarea>
+          <textarea [(ngModel)]="newBug.description" name="description" class="textarea-field" required
+            (click)="closeQualityScore()"></textarea>
         </div>
       </div>
     </div>
 
     <!-- שורת כפתורים -->
     <div class="buttons-row">
-      <button type="button" class="screen-btn red" (click)="allAttachments()">לצפיה במסמכים</button>
-      <button type="button" class="screen-btn yellow" (click)="onScreenshot()">📎 צילום מסך</button>
-      <button type="button" class="screen-btn blue" (click)="onRecordVideo()">🎥 הקלטת מסך</button>
+      <button type="button" class="screen-btn purple" (click)="toggleQualityScore()">
+        <i class="fas fa-check-circle"></i> {{ showQualityScore ? 'הסתר ציון איכות' : 'הצג ציון איכות' }}
+      </button>
+      <button type="button" class="screen-btn red" (click)="allAttachments()">
+        <i class="fas fa-folder-open"></i> {{ showAttachments ? 'הסתר מסמכים' : 'הצג מסמכים' }}
+      </button>
+      <button type="button" class="screen-btn yellow" (click)="onScreenshot(); closeQualityScore()">
+        <i class="fas fa-camera"></i> צילום מסך
+      </button>
+      <button type="button" class="screen-btn blue" (click)="onRecordVideo(); closeQualityScore()">
+        <i class="fas fa-video"></i> הקלטת מסך
+      </button>
+      <input type="file" #fileInput hidden (change)="onFileSelected($event); closeQualityScore()" multiple>
+      <button type="button" class="screen-btn green" (click)="onUploadClick(fileInput); closeQualityScore()">
+        <i class="fas fa-upload"></i> העלאת קובץ
+      </button>
     </div>
+
 
     <!-- כפתור שמירה -->
     @if(showSaveButton) {
-    <button type="submit" class="save-btn" [disabled]="!bugForm.valid">save 📄</button>
+    <button type="submit" class="save-btn" [disabled]="!bugForm.valid">
+      <i class="fas fa-save"></i> שמור
+    </button>
     }
   </form>
   <app-search-same-bugs *ngIf="showDuplicateCheck" [bugComparisonQuery]="getBugComparisonQuery()"
@@ -59,7 +79,7 @@
   </app-search-same-bugs>
 
   <div *ngIf="showAttachments" class="attachments-container">
-    <h3>📎 קבצים מצורפים</h3>
+    <h3><i class="fas fa-paperclip"></i> קבצים מצורפים</h3>
     <ul class="attachments-list">
       <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
         <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ file.name }}</a>
@@ -73,28 +93,20 @@
         </ng-container>
 
         <div class="attachment-actions">
-          <button (click)="renameFile(i)">✏️ שנה שם</button>
-          <button (click)="removeFileByIndex(i)">🗑️ מחק</button>
+          <button (click)="renameFile(i)"><i class="fas fa-pencil-alt"></i> שנה שם</button>
+          <button (click)="removeFileByIndex(i)"><i class="fas fa-trash"></i> מחק</button>
         </div>
       </li>
-
-      <!-- <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
-        <a [href]="getFileUrl(file)" target="_blank" class="attachment-link">{{ file.name }}</a>
-
-        <ng-container *ngIf="file.type.startsWith('image')">
-          <img [src]="getFileUrl(file)" alt="{{file.name}}" class="attachment-preview" />
-        </ng-container>
-
-        <ng-container *ngIf="file.type.startsWith('video')">
-          <video [src]="getFileUrl(file)" controls class="attachment-preview"></video>
-        </ng-container>
-
-        <div class="attachment-actions">
-          <button (click)="renameFile(i)">✏️ שנה שם</button>
-          <button (click)="removeFileByIndex(i)">🗑️ מחק</button>
-        </div>
-      </li> -->
     </ul>
   </div>
+  <div *ngIf="showQualityScore">
+    <h3>ציון איכות: {{ qualityScore }}</h3>
+    <div class="progress-bar"
+      [ngClass]="{'low': qualityScore < 50, 'medium': qualityScore >= 50 && qualityScore < 80, 'high': qualityScore >= 80}">
+      <div class="progress" [style.width.%]="qualityScore"></div>
+    </div>
+    <p>{{ qualityMessage }}</p>
+  </div>
+
 
 </div>

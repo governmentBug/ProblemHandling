@@ -1,5 +1,4 @@
 <div *ngIf="bug" class="bug-container">
-
   <div class="top-bar full">
     <div></div>
     <div class="report-date">
@@ -59,13 +58,7 @@
       <div class="status-summary">
         <div class="status-line">
           סטטוס:
-          <span *ngIf="!isEditMode" [ngClass]="{
-            'status-open': bug.statusName === 'פתוח',
-            'status-close': bug.statusName === 'סגור',
-            'status-active': bug.statusName === 'פעיל',
-            'status-cancelled': bug.statusName === 'בוטל',
-            'status-close-without-opening': bug.statusName === 'נסגר מבלי להיפתח'
-          }">
+          <span *ngIf="!isEditMode" [ngClass]="getStatusClassById(bug.statusId)">
             {{ bug.statusName }}
           </span>
 
@@ -76,7 +69,6 @@
           </select>
         </div>
 
-        <!-- מטופל ע"י -->
         <div class="field" *ngIf="bug.statusName === 'פעיל'">
           <div class="label">מטופל ע"י:</div>
           <div class="value">{{ bug.createdByUserFullName }}</div>
@@ -88,36 +80,32 @@
   <!-- כפתורים -->
   <div class="footer-row">
     <div class="bug-files">
-      <div *ngIf="isEditMode" class="attachments-section">
-        <!-- <app-file-uploader (filesChanged)="onFilesChanged($event)"></app-file-uploader> -->
+      <div *ngIf="attachmentsEditMode" class="attachments-section">
+        <!-- אזור עריכת קבצים -->
       </div>
     </div>
 
     <div class="bug-actions">
-      <!-- כפתור הצג/הסתר קבצים (פנימי) -->
       <button class="toggle-attachments-btn" (click)="showAttachments = !showAttachments">
         {{ showAttachments ? 'הסתר קבצים' : 'הצג קבצים' }}
       </button>
 
-      <!-- כפתורי עריכה ושמירה -->
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">עריכה</button>
       <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">שמור</button>
       <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">ביטול</button>
 
-      <!-- מחיקה (קצה שמאלי) -->
       <button class="delete-btn" (click)="openPopup()" *ngIf="AuthorizedUser">מחיקה</button>
     </div>
   </div>
 
-  <!-- קבצים מצורפים -->
   <div *ngIf="showAttachments" class="attachments-wrapper">
     <div class="divider"></div>
-    <app-inline-attachments [bugId]="bug.bugId" [isEditMode]="isEditMode" (filesChanged)="onFilesChanged($event)">
+    <app-inline-attachments [bugId]="bug.bugId" [isEditMode]="attachmentsEditMode"
+      (filesChanged)="onFilesChanged($event)">
     </app-inline-attachments>
   </div>
 </div>
 
-<!-- פופאפ מחיקה -->
 <div class="popup-overlay" *ngIf="showPopup" (click)="onOverlayClick($event)">
   <div class="popup-content delete-popup" (click)="$event.stopPropagation()">
     <h3 class="popup-title">?האם אתה בטוח שברצונך למחוק את הבאג</h3>

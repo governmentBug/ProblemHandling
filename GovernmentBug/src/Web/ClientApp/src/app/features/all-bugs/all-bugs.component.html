@@ -7,11 +7,26 @@
   </div>
 
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
+
     <div class="dialog-content">
-      <button (click)="addBug()">
-        דיווח על באג<i class="fas fa-plus-circle icon-white"></i>
+      <!-- כפתור פתיחה -->
+      <button (click)="openPopup()">
+        דיווח על באג <i class="fas fa-plus-circle icon-white"></i>
       </button>
+      <!-- שכבת רקע כהה -->
+      <div class="overlay" *ngIf="showPopup" (click)="closePopup()"></div>
+      <!-- הפופאפ -->
+       <span class="close-btn"  *ngIf="showPopup" (click)="closePopup()">×</span>
+      <div class="popup" *ngIf="showPopup">
+        <div class="popup-content">
+          <app-new-bug></app-new-bug>
+        </div>
+      </div>
     </div>
+
+
+    <div class="overlay" *ngIf="showPopup" (click)="closePopup()"></div>
+    <app-new-bug *ngIf="showPopup" class="popup"></app-new-bug>
 
     <div class="search-filter-bar">
       <input type="text" [(ngModel)]="searchText" (input)="applyFilterAndPage()"
