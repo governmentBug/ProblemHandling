@@ -1,14 +1,8 @@
-.panel {
-  position: relative;
-  left: 0;
-  top: 0;
-  width: 320px;
-  height: 100vh;
-  background: #f4f4f4;
+.comments-panel {
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  height: 100%;
+  direction: rtl;
 }
 
 .close-btn {
@@ -21,18 +15,11 @@
 }
 
 .comments-list {
-  flex-grow: 1;
-  padding: 0 10px;
-  direction: rtl;
-  max-height: auto; /* או כל גובה שאת צריכה */
+  flex: 1;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-
-}
-
-.comments-list::-webkit-scrollbar {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .comment {
@@ -41,34 +28,9 @@
   background: white;
   border-radius: 10px;
   padding: 8px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-top: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   gap: 8px;
-  
-}
-.comments-list,
-.panel,
-.comment {
-  overflow: visible !important;
-}
-
-
-.comment-textarea {
-  width: 100%;
-  min-height: 60px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  resize: none;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin-bottom: 8px;
-}
-
-.icon img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
 }
 
 .text {
@@ -84,29 +46,29 @@
 .delete-btn {
   background: none;
   border: none;
-  color: red;
+  color: rgb(55, 49, 49);
   cursor: pointer;
   align-self: flex-start;
 }
 
 .add-section {
+  background: white;
   padding: 10px;
+  margin-bottom: 3px;
 }
 
-.add-form textarea {
-  width: 100%;
-  min-height: 60px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px;
-  resize: none;
+.add-form {
+  display: flex;
+  flex-direction: column;
 }
 
 .actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 6px;
+  
 }
+
 
 .add-btn {
   width: 45px;
@@ -117,64 +79,8 @@
   font-size: 26px;
   border: none;
   cursor: pointer;
-  margin: 10px auto 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 10px auto 0 auto;
 }
-/* 
- */.mention-container {
-  position: relative;
-} 
-
-.mention-list {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  width: 300px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-height: 220px;
-  overflow-y: auto;
-  z-index: 999;
-  padding: 4px;
-}
-
-.mention-list li {
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.mention-list li.active {
-  background-color: #a2a5a9;
-  color: white;
-}
-.mention-list li.selected {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-/* .mention {
-  color: #1976d2;
-  text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.mention:hover {
-  color: #0d47a1;
-  text-decoration: underline;
-} */
-.mention {
-  color: #007bff;
-  cursor: pointer;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.mention:hover {
-  background-color: #e6f0ff;
-}
-

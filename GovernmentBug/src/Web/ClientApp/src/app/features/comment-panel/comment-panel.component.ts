@@ -27,7 +27,7 @@ export class CommentPanelComponent implements OnInit {
   @Input() isAuthorizedToComment: boolean = false;
   @Input() currentUserName: string = '';
   @Output() closePanel = new EventEmitter<void>();
-
+  @Output() openPanel = new EventEmitter<void>();
   @ViewChild('scrollContainer') scrollContainer!: any;
   @ViewChild('textEditor') textEditor!: TextEditorComponent;
 
@@ -60,8 +60,6 @@ export class CommentPanelComponent implements OnInit {
 
   saveComment(): void {
     const html = this.textEditor.getHtml().trim();
-    console.log(html);
-    
     if (!html || html === '<p><br></p>') return;
 
     const div = document.createElement('div');
@@ -86,7 +84,10 @@ export class CommentPanelComponent implements OnInit {
 
   loadComments(): void {
     this.commentService.getCommentsByBugId(this.bugId).subscribe({
-      next: (res) => this.comments = res,
+      next: (res) => {
+        this.comments = res;
+        setTimeout(() => this.scrollToBottom(), 0);
+      },
       error: (err) => console.error('שגיאה בשליפת תגובות', err)
     });
   }
@@ -117,14 +118,14 @@ export class CommentPanelComponent implements OnInit {
   close(): void {
     this.closePanel.emit();
   }
-
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom(): void {
+  private scrollToBottom(): void {
     try {
-      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) { }
+      const container = this.scrollContainer.nativeElement;
+      container.scrollTop = container.scrollHeight;
+    } catch (err) {
+      console.error('גלילה נכשלה', err);
+    }
   }
+
+
 }
