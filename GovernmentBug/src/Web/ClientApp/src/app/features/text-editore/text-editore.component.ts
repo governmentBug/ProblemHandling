@@ -54,17 +54,14 @@ export class TextEditorComponent implements AfterViewInit {
           onSelect: (item: any, insertItem: Function) => {
             this.forMention = true;
             insertItem(item);
-            setTimeout(() => {
-              const mentions = this.editorRef.nativeElement.querySelectorAll('.ql-mention');
-              const lastMention = mentions[mentions.length - 1];
-              if (lastMention) {
-                lastMention.setAttribute('data-id', item.id);
-                lastMention.classList.add('mention');
-              }
-
-              this.forMention = false;
+              setTimeout(() => {
+                const mentions = this.editorRef.nativeElement.querySelectorAll('.ql-mention');
+                const lastMention = mentions[mentions.length - 1];
+                if (lastMention) {
+                  lastMention.setAttribute('data-id', item.id);
+                  lastMention.classList.add('mention');
+                }
             }, 100);
-
           },
           renderItem: (item: any) => {
             return `
@@ -105,14 +102,19 @@ export class TextEditorComponent implements AfterViewInit {
     this.quillInstance.root.addEventListener('mouseout', () => {
       this.destroyTooltip();
     });
-    this.quillInstance.root.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && !event.shiftKey && !event.defaultPrevented) {
-        if (!this.forMention) {
-          event.preventDefault();
-          this.enterPressed.emit();
-        }
-      }
-    });
+this.quillInstance.root.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    if (this.forMention) {
+      event.preventDefault();
+      this.forMention = false;
+      return;
+    }
+
+    event.preventDefault();
+    this.enterPressed.emit();
+  }
+});
+
   }
 
   getHtml(): string {
