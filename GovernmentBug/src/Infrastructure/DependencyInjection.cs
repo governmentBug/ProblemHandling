@@ -25,7 +25,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
         builder.Services.AddScoped<IHtmlSanitizerService, HtmlSanitizerService>();
-        builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
@@ -50,29 +49,42 @@ public static class DependencyInjection
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
 
-        builder.Services.AddAuthorization(options =>
-            options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
-
-        builder.Services.AddSingleton<HtmlSanitizer>(provider =>
+        builder.Services.AddSingleton<IHtmlSanitizer>(provider =>
         {
             var sanitizer = new HtmlSanitizer();
 
+            // תגיות שמותרות
             sanitizer.AllowedTags.Add("p");
             sanitizer.AllowedTags.Add("span");
             sanitizer.AllowedTags.Add("a");
 
-            sanitizer.AllowedAttributes.Add("href");
+            // תכונות שמותרות
             sanitizer.AllowedAttributes.Add("class");
+            sanitizer.AllowedAttributes.Add("contenteditable");
+            sanitizer.AllowedAttributes.Add("href");
+            sanitizer.AllowedAttributes.Add("target");
+            sanitizer.AllowedAttributes.Add("rel");
+
             sanitizer.AllowedAttributes.Add("data-id");
             sanitizer.AllowedAttributes.Add("data-value");
             sanitizer.AllowedAttributes.Add("data-link");
             sanitizer.AllowedAttributes.Add("data-index");
-            sanitizer.AllowedAttributes.Add("data-denotation-char");
-            sanitizer.AllowedAttributes.Add("contenteditable");
-            sanitizer.AllowedAttributes.Add("target");
+            sanitizer.AllowedAttributes.Add("data-denotation-char"); // ← זה הנכון
+
+            // אם נדרש, גם סגנון פנימי
+            sanitizer.AllowedAttributes.Add("style");
+
+            // תוספות חשובות
+            sanitizer.AllowDataAttributes = true;
+            sanitizer.KeepChildNodes = true;
+
+            // הקלאס החשוב שלך
+            sanitizer.AllowedClasses.Add("mention");
 
             return sanitizer;
         });
+
+
 
     }
 }
