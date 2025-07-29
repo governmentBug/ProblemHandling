@@ -1,4 +1,3 @@
-// mention-html-viewer.component.ts
 import {
   Component, Input, ElementRef, ViewChild, AfterViewInit, ComponentRef, ViewContainerRef, Injector,
   SimpleChanges,
@@ -32,9 +31,9 @@ export class MentionDisplayComponent implements OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['html'] && this.html) {
+    if (changes['html'] && this.html) {     
       this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(this.html);
-      setTimeout(() => this.bindHoverEvents(), 0); // רק אחרי שהHTML מוצג
+      setTimeout(() => this.bindHoverEvents(), 0); 
     }
   }
 
