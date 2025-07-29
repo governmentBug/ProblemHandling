@@ -11,17 +11,22 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://localhost:44447") 
+            policy.WithOrigins("https://localhost:44447")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
+});
+
+// הוסף את ההגדרה של Kestrel כאן
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = null; // אין מגבלה על גודל הבקשה
 });
 
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
-
 
 var app = builder.Build();
 

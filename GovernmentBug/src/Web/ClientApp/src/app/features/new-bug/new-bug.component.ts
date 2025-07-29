@@ -10,6 +10,7 @@ import { AttachmentService } from 'src/app/services/Attachment.Service';
 import { BugComparisonQuery } from 'src/app/web-api-client';
 import { SearchSameBugsComponent } from '../Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
 import { AllBugsComponent } from '../all-bugs/all-bugs.component';
+import * as JSZip from 'jszip';
 // import { BbbComponent } from '../bbb/bbb.component';
 
 @Component({
@@ -225,37 +226,54 @@ export class NewBugComponent implements OnInit {
   allAttachments() {
     this.showAttachments = !this.showAttachments;
   }
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const files: FileList = input.files;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        console.log(file.size);
-        // 30191664
-        if (file.size > 27923020) {
-          alert(`הקובץ ${file.name} גדול מדי ואינו יכול להיכנס.`)
-          continue;
-        }
+
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const files: FileList = input.files;
+    const zip = new JSZip();
+    const zipFileName = 'attachments.zip'; // שם הקובץ ZIP
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size > 25 * 1024 * 1024) { // בדוק אם הקובץ גדול מ-25MB
+        zip.file(file.name, file); // הוסף את הקובץ ל-ZIP
+      } else {
         this.allAttachment.push(file);
         this.fileUrls.push(this.getFileUrl(file));
-        if (file.type.startsWith('video/')) {
-          this.numFilm++;
-          if (this.oneVidio === false) {
-            this.qualityScore += 20;
-            this.oneVidio = true;
-          }
-        } else {
-          this.numDocuments++;
-          if (this.oneAttachment === false) {
-            this.qualityScore += 20;
-            this.oneAttachment = true;
-          }
+      }
+
+      if (file.type.startsWith('video/')) {
+        this.numFilm++;
+        if (this.oneVidio === false) {
+          this.qualityScore += 20;
+          this.oneVidio = true;
+        }
+      } else {
+        this.numDocuments++;
+        if (this.oneAttachment === false) {
+          this.qualityScore += 20;
+          this.oneAttachment = true;
         }
       }
     }
-    this.setQualityMessage();
+
+    // שמור את ה-ZIP אם יש קבצים בו
+    zip.generateAsync({ type: 'blob' })
+      .then(content => {
+        // כאן תוכל לשמור את ה-ZIP או להעלות אותו
+        const zipBlobUrl = URL.createObjectURL(content);
+        // לדוגמה: הוסף את ה-ZIP ל-allAttachment או להעלות אותו
+        this.allAttachment.push(new File([content], zipFileName)); 
+        this.fileUrls.push(zipBlobUrl);
+      })
+      .catch(error => {
+        this.qualityScore -= 20;
+        alert('שגיאה ביצירת קובץ ה-ZIP: ' + error.message);
+      });
   }
+  this.setQualityMessage();
+}
   onUploadClick(fileInput: HTMLInputElement) {
     if (this.showAttachments === true) this.allAttachments();
     fileInput.click();
