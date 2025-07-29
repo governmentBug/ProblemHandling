@@ -23,6 +23,7 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.getByCategory
             var byCategory = new ByCategoryDto();
             foreach (var bugs in bugsByCategory)
             {
+                byCategory.TotalBugs += bugs.Count();
                 byCategory.ByCategory.Add(bugs.Key, bugs.Count());
             }
             return Task.FromResult(byCategory);

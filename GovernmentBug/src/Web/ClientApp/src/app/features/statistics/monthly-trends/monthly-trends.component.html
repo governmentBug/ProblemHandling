@@ -1,12 +1,23 @@
 <div class="trends-container">
-  <div class="chart-title" style="text-align: center; margin-bottom: 8px;">
-    <span style="font-weight: 500; font-size: 1.1rem;">
+  <div class ="header">
+  <div class="category-select-container">
+    <label for="categorySelect" class="category-label">בחר קטגוריה</label>
+    <select id="categorySelect" [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
+      @for(category of categories; track category.categoryId)
+      {
+        <option [value]="category.categoryId">{{ category.categoryName }}</option>
+      }
+    </select>
+  </div>
+  <!-- הוסף שדה אוטוקומפליט לבחירת קטגוריה -->
+  <div class="chart-title">
+    <span class="chart-title-text">
       מגמות חודשיות
     </span>
   </div>
-  <div class="chart-area" style="position: relative;">
-    <button class="arrow-btn left" (click)="loadPreviousMonths()"
-      style="position: absolute; top: 50%; left: -22px; transform: translateY(-50%); z-index: 2;">
+  </div>
+  <div class="chart-area">
+    <button class="arrow-btn left" (click)="loadPreviousMonths()">
       <!-- Left arrow SVG (שמאלה) -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -17,8 +28,7 @@
       [options]="lineChartOptions"
       [type]="'line'">
     </canvas>
-    <button class="arrow-btn right" (click)="loadNextMonths()" [disabled]="currentYearBack === 0"
-      style="position: absolute; top: 50%; right: -22px; transform: translateY(-50%); z-index: 2;">
+    <button class="arrow-btn right" (click)="loadNextMonths()" [disabled]="currentYearBack === 0">
       <!-- Right arrow SVG (ימינה) -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -26,3 +36,4 @@
     </button>
   </div>
 </div>
+

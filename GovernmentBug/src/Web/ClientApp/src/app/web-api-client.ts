@@ -3633,6 +3633,7 @@ export interface IByMonthsDto {
 }
 
 export class ByCategoryDto implements IByCategoryDto {
+    totalBugs?: number;
     byCategory?: { [key: string]: number; };
 
     constructor(data?: IByCategoryDto) {
@@ -3646,6 +3647,7 @@ export class ByCategoryDto implements IByCategoryDto {
 
     init(_data?: any) {
         if (_data) {
+            this.totalBugs = _data["totalBugs"];
             if (_data["byCategory"]) {
                 this.byCategory = {} as any;
                 for (let key in _data["byCategory"]) {
@@ -3665,6 +3667,7 @@ export class ByCategoryDto implements IByCategoryDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["totalBugs"] = this.totalBugs;
         if (this.byCategory) {
             data["byCategory"] = {};
             for (let key in this.byCategory) {
@@ -3677,6 +3680,7 @@ export class ByCategoryDto implements IByCategoryDto {
 }
 
 export interface IByCategoryDto {
+    totalBugs?: number;
     byCategory?: { [key: string]: number; };
 }
 

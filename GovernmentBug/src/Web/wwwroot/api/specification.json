@@ -1875,6 +1875,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
           "byCategory": {
             "type": "object",
             "additionalProperties": {

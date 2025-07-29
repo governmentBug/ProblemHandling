@@ -1,12 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
-import { BugStatisticsClient } from '../../../web-api-client'
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { BugStatisticsClient, CategoryDto } from '../../../web-api-client'
+import { StateService } from 'src/app/services/state.service';
 
 @Component({
   selector: 'app-monthly-trends',
   standalone: true,
-  imports: [NgChartsModule],
+  imports: [NgChartsModule, ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './monthly-trends.component.html',
   styleUrl: './monthly-trends.component.css'
 })
@@ -15,8 +20,9 @@ export class MonthlyTrendsComponent implements OnInit {
   months: string[] = [];
   bugCounts: number[] = [];
   loading = false;
-  currentYearBack: number = 0; // 0 = שנה נוכחית, 1 = שנה אחת אחורה וכו'
-
+  currentYearBack: number = 0;
+  categories: CategoryDto[] = [];
+  selectedCategory: number = null;
   lineChartData: ChartData<'line'> = {
     labels: [],
     datasets: [
@@ -37,28 +43,31 @@ export class MonthlyTrendsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      datalabels: { display: false },
       legend: { display: false }
     },
     scales: {
       x: { title: { display: false} },
       y: { 
+    
         beginAtZero: true, 
         title: { display: true, text: 'כמות באגים', align: 'start' } // align למעלה
       }
     }
   };
-
-  constructor(private bugStatisticsClient: BugStatisticsClient) {}
+  constructor(private bugStatisticsClient: BugStatisticsClient,private stateService: StateService) {}
 
   ngOnInit() {
-    this.loadYear();
+    this.stateService.getAllCategories().subscribe(categories => {
+        this.categories = categories;
+    });
+      this.loadYear();
   }
 
 
-  // טוען שנה אחורה (12 חודשים אחורה מהשנה הנוכחית פחות currentYearBack)
   loadYear() {
     this.loading = true;
-    this.bugStatisticsClient.getByMonths(null, null, this.currentYearBack)
+    this.bugStatisticsClient.getByMonths(this.selectedCategory, null, this.currentYearBack)
       .subscribe(data => {
         const monthNames = [
           'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
@@ -101,6 +110,9 @@ export class MonthlyTrendsComponent implements OnInit {
     this.lineChartData.labels = [...this.months];
     this.lineChartData.datasets[0].data = [...this.bugCounts];
     this.chart?.update();
+  }
+  onCategoryChange() {
+    this.loadYear();
   }
 }
 
