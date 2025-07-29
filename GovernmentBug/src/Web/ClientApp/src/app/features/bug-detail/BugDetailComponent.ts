@@ -22,7 +22,9 @@ export class BugDetailComponent implements OnInit {
   @Output() bugChanged = new EventEmitter<any>();
   @Output() showFiles = new EventEmitter<number>();
   @Output() isEditModeChanged = new EventEmitter<boolean>()
-
+  @Output() closePanel = new EventEmitter<void>();
+  @Output() openPanel = new EventEmitter<void>();
+  @Input() isPannelOpen : boolean=true;
   showPopup = false;
   closeReason = '';
   isEditMode = false;
@@ -76,7 +78,7 @@ export class BugDetailComponent implements OnInit {
   cancelEdit() {
     this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     this.isEditMode = false;
-    this.attachmentsEditMode = false; // ביטול גם בקבצים
+    this.attachmentsEditMode = false;
     this.isEditModeChanged.emit(this.isEditMode);
   }
 
@@ -131,6 +133,9 @@ export class BugDetailComponent implements OnInit {
   onOverlayClick(event: MouseEvent): void {
     this.closePopup();
   }
+  togglePanel() {
+  this.isPannelOpen ? this.closePanel.emit() : this.openPanel.emit();
+}
 
   getStatusClassById(id: number): string {
     const status = this.statuses?.find(s => s.statusId === id);

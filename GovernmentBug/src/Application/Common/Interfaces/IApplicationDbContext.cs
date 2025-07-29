@@ -15,5 +15,6 @@ public interface IApplicationDbContext
     DbSet<Domain.Entities.Priority> Priorities { get; }
     DbSet<Domain.Entities.Status> Statuses { get; }
     DbSet<Domain.Entities.Category> Categories { get; }
+    DbSet<CommentMention> CommentMentions { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

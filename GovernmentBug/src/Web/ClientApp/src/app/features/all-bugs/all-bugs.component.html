@@ -2,21 +2,20 @@
   <!-- פאנל התגובות בצד שמאל -->
   <div class="comment-panel" *ngIf="isCommentsPanelOpen && selectedBug">
     <app-comment-panel [bugId]="selectedBug.bugId" [isAuthorizedToComment]="isAuthorizedToComment"
-      (closePanel)="onClosePanel()">
+  (closePanel)="onClosePanel()" (openPanel)="openCommentsPanel()">
     </app-comment-panel>
   </div>
 
   <div class="bug-table-container" [class.narrow]="isCommentsPanelOpen && selectedBug">
 
     <div class="dialog-content">
-      <!-- כפתור פתיחה -->
       <button (click)="openPopup()">
         דיווח על באג <i class="fas fa-plus-circle icon-white"></i>
       </button>
       <!-- שכבת רקע כהה -->
       <div class="overlay" *ngIf="showPopup" (click)="closePopup()"></div>
       <!-- הפופאפ -->
-       <span class="close-btn"  *ngIf="showPopup" (click)="closePopup()">×</span>
+      <span class="close-btn" *ngIf="showPopup" (click)="closePopup()">×</span>
       <div class="popup" *ngIf="showPopup">
         <div class="popup-content">
           <app-new-bug></app-new-bug>
@@ -105,8 +104,9 @@
             <tr *ngIf="selectedBug?.bugId === bug.bugId" class="bug-detail-row">
               <td colspan="8">
                 <app-bug-detail [bug]="selectedBug" [AuthorizedUser]="isAuthorizedToComment"
-                  (bugChanged)="onBugChanged()" (showFiles)="openFilesPanel($event)"
-                  (isEditModeChanged)="IsEditMode = $event">
+                     [isPannelOpen]="isCommentsPanelOpen"
+                  (bugChanged)="onBugChanged()" (showFiles)="openFilesPanel($event)" (closePanel)="onClosePanel()"
+                  (openPanel)="openCommentsPanel()" (isEditModeChanged)="IsEditMode = $event">
                 </app-bug-detail>
               </td>
             </tr>

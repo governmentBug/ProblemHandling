@@ -1924,6 +1924,13 @@
           "commentedBy": {
             "type": "integer",
             "format": "int32"
+          },
+          "usersMentions": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1949,8 +1956,162 @@
           "commentDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "usersMentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
           }
         }
+      },
+      "UserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "createdBugs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BugDto"
+            }
+          }
+        }
+      },
+      "BugDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "bugID": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "priortyId": {
+                "type": "string"
+              },
+              "statusId": {
+                "type": "string"
+              },
+              "createdByUserId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "createdByUserFullName": {
+                "type": "string"
+              },
+              "createdDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CommentDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CommentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "commentID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bugID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentText": {
+            "type": "string"
+          },
+          "commentedBy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BaseAuditableEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastModifiedBy": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseEntity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "domainEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaseEvent"
+            }
+          }
+        }
+      },
+      "BaseEvent": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
       },
       "UpdateCommentCommand": {
         "type": "object",
@@ -2240,154 +2401,6 @@
             "nullable": true
           }
         }
-      },
-      "UserDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fullName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "createdBugs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BugDto"
-            }
-          }
-        }
-      },
-      "BugDto": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "bugID": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "title": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "priortyId": {
-                "type": "string"
-              },
-              "statusId": {
-                "type": "string"
-              },
-              "createdByUserId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "createdByUserFullName": {
-                "type": "string"
-              },
-              "createdDate": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "comments": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/CommentDto"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "CommentDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "commentID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "bugID": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "commentText": {
-            "type": "string"
-          },
-          "commentedBy": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "commentDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "BaseAuditableEntity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseEntity"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false,
-            "properties": {
-              "created": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "createdBy": {
-                "type": "string",
-                "nullable": true
-              },
-              "lastModified": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "lastModifiedBy": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "BaseEntity": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "domainEvents": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BaseEvent"
-            }
-          }
-        }
-      },
-      "BaseEvent": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false
       },
       "CreateUserCommand": {
         "type": "object",

@@ -88,10 +88,12 @@
   z-index: 1000;
 }
 
-.popup-content {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
+.attachment-item {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
   position: relative;
   max-width: 90%;
   max-height: 90%;

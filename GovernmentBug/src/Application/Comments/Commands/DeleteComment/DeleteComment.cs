@@ -18,16 +18,22 @@ public record DeleteCommentCommand(int CommentId):IRequest;
             _context = context;
         }
 
-        public async Task Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Comments
-            .FirstOrDefaultAsync(c => c.CommentID == request.CommentId, cancellationToken);
+    public async Task Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
+    {
+        var entity = await _context.Comments.FindAsync(new object[] { request.CommentId }, cancellationToken);
+        Guard.Against.NotFound(request.CommentId, entity);
 
-            Guard.Against.NotFound(request.CommentId, entity);
-            _context.Comments.Remove(entity);
+        var mentionsToRemove = await _context.CommentMentions
+            .Where(m => m.CommentId == request.CommentId)
+            .ToListAsync(cancellationToken);
 
-            entity.AddDomainEvent(new ToDoDeletedCommentEvent(entity));
+        _context.CommentMentions.RemoveRange(mentionsToRemove);
 
-            await _context.SaveChangesAsync(cancellationToken);
-        }  
+        _context.Comments.Remove(entity);
+
+        entity.AddDomainEvent(new ToDoDeletedCommentEvent(entity));
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
 }

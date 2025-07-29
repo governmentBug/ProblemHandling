@@ -3764,6 +3764,7 @@ export class CreateCommentCommand implements ICreateCommentCommand {
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
+    usersMentions?: number[];
 
     constructor(data?: ICreateCommentCommand) {
         if (data) {
@@ -3779,6 +3780,11 @@ export class CreateCommentCommand implements ICreateCommentCommand {
             this.bugID = _data["bugID"];
             this.commentText = _data["commentText"];
             this.commentedBy = _data["commentedBy"];
+            if (Array.isArray(_data["usersMentions"])) {
+                this.usersMentions = [] as any;
+                for (let item of _data["usersMentions"])
+                    this.usersMentions!.push(item);
+            }
         }
     }
 
@@ -3794,6 +3800,11 @@ export class CreateCommentCommand implements ICreateCommentCommand {
         data["bugID"] = this.bugID;
         data["commentText"] = this.commentText;
         data["commentedBy"] = this.commentedBy;
+        if (Array.isArray(this.usersMentions)) {
+            data["usersMentions"] = [];
+            for (let item of this.usersMentions)
+                data["usersMentions"].push(item);
+        }
         return data;
     }
 }
@@ -3802,6 +3813,7 @@ export interface ICreateCommentCommand {
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
+    usersMentions?: number[];
 }
 
 export class CommentsBugDto implements ICommentsBugDto {
@@ -3810,8 +3822,294 @@ export class CommentsBugDto implements ICommentsBugDto {
     commentText?: string;
     commentedBy?: number;
     commentDate?: Date;
+    usersMentions?: UserDto[];
 
     constructor(data?: ICommentsBugDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.commentID = _data["commentID"];
+            this.bugID = _data["bugID"];
+            this.commentText = _data["commentText"];
+            this.commentedBy = _data["commentedBy"];
+            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["usersMentions"])) {
+                this.usersMentions = [] as any;
+                for (let item of _data["usersMentions"])
+                    this.usersMentions!.push(UserDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CommentsBugDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentsBugDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["commentID"] = this.commentID;
+        data["bugID"] = this.bugID;
+        data["commentText"] = this.commentText;
+        data["commentedBy"] = this.commentedBy;
+        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.usersMentions)) {
+            data["usersMentions"] = [];
+            for (let item of this.usersMentions)
+                data["usersMentions"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICommentsBugDto {
+    commentID?: number;
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+    usersMentions?: UserDto[];
+}
+
+export class UserDto implements IUserDto {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: BugDto[];
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.role = _data["role"];
+            if (Array.isArray(_data["createdBugs"])) {
+                this.createdBugs = [] as any;
+                for (let item of _data["createdBugs"])
+                    this.createdBugs!.push(BugDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["role"] = this.role;
+        if (Array.isArray(this.createdBugs)) {
+            data["createdBugs"] = [];
+            for (let item of this.createdBugs)
+                data["createdBugs"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUserDto {
+    userId?: number;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    createdBugs?: BugDto[];
+}
+
+export abstract class BaseEntity implements IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+
+    constructor(data?: IBaseEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["domainEvents"])) {
+                this.domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    this.domainEvents!.push(BaseEvent.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BaseEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEntity' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBaseEntity {
+    id?: number;
+    domainEvents?: BaseEvent[];
+}
+
+export abstract class BaseAuditableEntity extends BaseEntity implements IBaseAuditableEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+
+    constructor(data?: IBaseAuditableEntity) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+            this.lastModifiedBy = _data["lastModifiedBy"];
+        }
+    }
+
+    static override fromJS(data: any): BaseAuditableEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseAuditableEntity' cannot be instantiated.");
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        data["lastModifiedBy"] = this.lastModifiedBy;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBaseAuditableEntity extends IBaseEntity {
+    created?: Date;
+    createdBy?: string | undefined;
+    lastModified?: Date;
+    lastModifiedBy?: string | undefined;
+}
+
+export class BugDto extends BaseAuditableEntity implements IBugDto {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    statusId?: string;
+    createdByUserId?: number;
+    createdByUserFullName?: string;
+    createdDate?: Date;
+    comments?: CommentDto[];
+
+    constructor(data?: IBugDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.bugID = _data["bugID"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.priortyId = _data["priortyId"];
+            this.statusId = _data["statusId"];
+            this.createdByUserId = _data["createdByUserId"];
+            this.createdByUserFullName = _data["createdByUserFullName"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(CommentDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): BugDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BugDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bugID"] = this.bugID;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["priortyId"] = this.priortyId;
+        data["statusId"] = this.statusId;
+        data["createdByUserId"] = this.createdByUserId;
+        data["createdByUserFullName"] = this.createdByUserFullName;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IBugDto extends IBaseAuditableEntity {
+    bugID?: number;
+    title?: string;
+    description?: string;
+    priortyId?: string;
+    statusId?: string;
+    createdByUserId?: number;
+    createdByUserFullName?: string;
+    createdDate?: Date;
+    comments?: CommentDto[];
+}
+
+export class CommentDto implements ICommentDto {
+    commentID?: number;
+    bugID?: number;
+    commentText?: string;
+    commentedBy?: number;
+    commentDate?: Date;
+
+    constructor(data?: ICommentDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3830,9 +4128,9 @@ export class CommentsBugDto implements ICommentsBugDto {
         }
     }
 
-    static fromJS(data: any): CommentsBugDto {
+    static fromJS(data: any): CommentDto {
         data = typeof data === 'object' ? data : {};
-        let result = new CommentsBugDto();
+        let result = new CommentDto();
         result.init(data);
         return result;
     }
@@ -3848,12 +4146,40 @@ export class CommentsBugDto implements ICommentsBugDto {
     }
 }
 
-export interface ICommentsBugDto {
+export interface ICommentDto {
     commentID?: number;
     bugID?: number;
     commentText?: string;
     commentedBy?: number;
     commentDate?: Date;
+}
+
+export abstract class BaseEvent implements IBaseEvent {
+
+    constructor(data?: IBaseEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): BaseEvent {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'BaseEvent' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IBaseEvent {
 }
 
 export class UpdateCommentCommand implements IUpdateCommentCommand {
@@ -4585,308 +4911,6 @@ export class UpdateTodoListCommand implements IUpdateTodoListCommand {
 export interface IUpdateTodoListCommand {
     id?: number;
     title?: string | undefined;
-}
-
-export class UserDto implements IUserDto {
-    userId?: number;
-    fullName?: string;
-    email?: string;
-    role?: string;
-    createdBugs?: BugDto[];
-
-    constructor(data?: IUserDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.fullName = _data["fullName"];
-            this.email = _data["email"];
-            this.role = _data["role"];
-            if (Array.isArray(_data["createdBugs"])) {
-                this.createdBugs = [] as any;
-                for (let item of _data["createdBugs"])
-                    this.createdBugs!.push(BugDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UserDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["fullName"] = this.fullName;
-        data["email"] = this.email;
-        data["role"] = this.role;
-        if (Array.isArray(this.createdBugs)) {
-            data["createdBugs"] = [];
-            for (let item of this.createdBugs)
-                data["createdBugs"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUserDto {
-    userId?: number;
-    fullName?: string;
-    email?: string;
-    role?: string;
-    createdBugs?: BugDto[];
-}
-
-export abstract class BaseEntity implements IBaseEntity {
-    id?: number;
-    domainEvents?: BaseEvent[];
-
-    constructor(data?: IBaseEntity) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            if (Array.isArray(_data["domainEvents"])) {
-                this.domainEvents = [] as any;
-                for (let item of _data["domainEvents"])
-                    this.domainEvents!.push(BaseEvent.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): BaseEntity {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'BaseEntity' cannot be instantiated.");
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        if (Array.isArray(this.domainEvents)) {
-            data["domainEvents"] = [];
-            for (let item of this.domainEvents)
-                data["domainEvents"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IBaseEntity {
-    id?: number;
-    domainEvents?: BaseEvent[];
-}
-
-export abstract class BaseAuditableEntity extends BaseEntity implements IBaseAuditableEntity {
-    created?: Date;
-    createdBy?: string | undefined;
-    lastModified?: Date;
-    lastModifiedBy?: string | undefined;
-
-    constructor(data?: IBaseAuditableEntity) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-            this.lastModifiedBy = _data["lastModifiedBy"];
-        }
-    }
-
-    static override fromJS(data: any): BaseAuditableEntity {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'BaseAuditableEntity' cannot be instantiated.");
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        data["lastModifiedBy"] = this.lastModifiedBy;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IBaseAuditableEntity extends IBaseEntity {
-    created?: Date;
-    createdBy?: string | undefined;
-    lastModified?: Date;
-    lastModifiedBy?: string | undefined;
-}
-
-export class BugDto extends BaseAuditableEntity implements IBugDto {
-    bugID?: number;
-    title?: string;
-    description?: string;
-    priortyId?: string;
-    statusId?: string;
-    createdByUserId?: number;
-    createdByUserFullName?: string;
-    createdDate?: Date;
-    comments?: CommentDto[];
-
-    constructor(data?: IBugDto) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.bugID = _data["bugID"];
-            this.title = _data["title"];
-            this.description = _data["description"];
-            this.priortyId = _data["priortyId"];
-            this.statusId = _data["statusId"];
-            this.createdByUserId = _data["createdByUserId"];
-            this.createdByUserFullName = _data["createdByUserFullName"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            if (Array.isArray(_data["comments"])) {
-                this.comments = [] as any;
-                for (let item of _data["comments"])
-                    this.comments!.push(CommentDto.fromJS(item));
-            }
-        }
-    }
-
-    static override fromJS(data: any): BugDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new BugDto();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["bugID"] = this.bugID;
-        data["title"] = this.title;
-        data["description"] = this.description;
-        data["priortyId"] = this.priortyId;
-        data["statusId"] = this.statusId;
-        data["createdByUserId"] = this.createdByUserId;
-        data["createdByUserFullName"] = this.createdByUserFullName;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        if (Array.isArray(this.comments)) {
-            data["comments"] = [];
-            for (let item of this.comments)
-                data["comments"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IBugDto extends IBaseAuditableEntity {
-    bugID?: number;
-    title?: string;
-    description?: string;
-    priortyId?: string;
-    statusId?: string;
-    createdByUserId?: number;
-    createdByUserFullName?: string;
-    createdDate?: Date;
-    comments?: CommentDto[];
-}
-
-export class CommentDto implements ICommentDto {
-    commentID?: number;
-    bugID?: number;
-    commentText?: string;
-    commentedBy?: number;
-    commentDate?: Date;
-
-    constructor(data?: ICommentDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.commentID = _data["commentID"];
-            this.bugID = _data["bugID"];
-            this.commentText = _data["commentText"];
-            this.commentedBy = _data["commentedBy"];
-            this.commentDate = _data["commentDate"] ? new Date(_data["commentDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CommentDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CommentDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["commentID"] = this.commentID;
-        data["bugID"] = this.bugID;
-        data["commentText"] = this.commentText;
-        data["commentedBy"] = this.commentedBy;
-        data["commentDate"] = this.commentDate ? this.commentDate.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICommentDto {
-    commentID?: number;
-    bugID?: number;
-    commentText?: string;
-    commentedBy?: number;
-    commentDate?: Date;
-}
-
-export abstract class BaseEvent implements IBaseEvent {
-
-    constructor(data?: IBaseEvent) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): BaseEvent {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'BaseEvent' cannot be instantiated.");
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IBaseEvent {
 }
 
 export class CreateUserCommand implements ICreateUserCommand {

@@ -21,11 +21,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Domain.Entities.Priority> Priorities => Set<Domain.Entities.Priority>();
     public DbSet<Status> Statuses => Set<Status>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<CommentMention> CommentMentions => Set<CommentMention>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-    }
 
+        builder.Entity<CommentMention>()
+            .HasOne(cm => cm.Comment)
+            .WithMany(c => c.Mentions)
+            .HasForeignKey(cm => cm.CommentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+    }
 }

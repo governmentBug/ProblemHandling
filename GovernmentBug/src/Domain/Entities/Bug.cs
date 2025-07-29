@@ -15,7 +15,7 @@ namespace GovernmentBug.Domain.Entities
         public int BugID { get; set; }
         [StringLength(225)]
         public string Title { get; set; } = string.Empty;
-        [StringLength(50)]
+        [StringLength(1000)]
         public string Description { get; set; } = string.Empty;
         public int PriorityId { get; set; }
         public virtual Priority Priority  { get; set; } = null!;

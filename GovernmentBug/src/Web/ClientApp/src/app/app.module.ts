@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { routes } from './app.routes';
+import { NgxEditorModule } from 'ngx-editor';
+import { ReactiveFormsModule } from '@angular/forms';
+import { providePrimeNG } from 'primeng/config';
 
 @NgModule({
     imports: [
@@ -15,11 +18,16 @@ import { routes } from './app.routes';
         RouterModule.forRoot(routes),
         BrowserAnimationsModule,
         ModalModule.forRoot(),
+        NgxEditorModule,
+        ReactiveFormsModule,
+        
+    
     ],
     providers: [
         { provide: APP_ID, useValue: 'ng-cli-universal' },
         { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+         providePrimeNG({})
     ]
 })
 export class AppModule { }
