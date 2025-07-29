@@ -4,10 +4,11 @@ import { BugStatisticsClient, ByStatusDto } from 'src/app/web-api-client';
 import { ByStatusComponent } from "../by-status/by-status.component";
 import { ByStatusAndPriorityComponent } from "../by-status-and-priority/by-status-and-priority.component";
 import { MonthlyTrendsComponent } from "../monthly-trends/monthly-trends.component";
+import { ByCategoryComponent } from "../by-category/by-category.component";
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ByStatusComponent, ByStatusAndPriorityComponent, MonthlyTrendsComponent],
+  imports: [ByStatusComponent, ByStatusAndPriorityComponent, MonthlyTrendsComponent, ByCategoryComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

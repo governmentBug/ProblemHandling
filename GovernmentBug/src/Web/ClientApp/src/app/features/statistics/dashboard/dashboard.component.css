@@ -1,35 +1,25 @@
+body{
+  width: 100%;
+}
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 2rem;
-  width: 100%;
-  height: auto;
   box-sizing: border-box;
-  padding: 2rem;
+  overflow: hidden;
 }
 
 .dashboard-item {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-}
-
-.by-status-container,
-.chart-container {
-  width: 100%;
-  height: 100%;
-  max-width: none;
   min-width: 0;
   min-height: 0;
-  padding: 1rem;
-  box-sizing: border-box;
+  flex: 1 1 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
 }
+
 
 /* רספונסיביות: במסך קטן – עמודה אחת */
 @media (max-width: 900px) {
@@ -37,21 +27,12 @@
     grid-template-columns: 1fr;
     grid-template-rows: repeat(4, 1fr);
     height: auto;
-    padding: 1rem;
+    padding: 4px;
+    gap: 4px;
   }
   .dashboard-item {
     min-width: 0;
     min-height: 0;
     height: auto;
-  }
-  .by-status-container,
-  .chart-container {
-    padding: 0.5rem;
-    height: auto;
-  }
-  canvas {
-    min-width: 120px;
-    max-width: 100%;
-    height: 160px !important;
   }
 }
