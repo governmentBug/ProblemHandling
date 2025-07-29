@@ -1,0 +1,18 @@
+<div class="autocomplete-container">
+  <input
+    type="text"
+    [(ngModel)]="query"
+    (input)="onInputChange()"
+    placeholder="בחר פריט"
+  />
+
+  <div class="autocomplete-list" *ngIf="filteredItems.length > 0">
+    <div
+      class="autocomplete-item"
+      *ngFor="let item of filteredItems | slice:0:100"
+      (click)="selectItem(item)"
+    >
+      {{ item }}
+    </div>
+  </div>
+</div>
