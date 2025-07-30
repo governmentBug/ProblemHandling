@@ -23,7 +23,7 @@ public record CreateBugCommand : IRequest<int>
     public int CreatedByUserId { get; set; }
     public DateTime CreatedDate { get; set; }
     public int StatusId { get; set; }
-
+    public int QualityScore { get; set; }
 }
 
 public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
@@ -46,7 +46,8 @@ public class CreateBugCommandHandler : IRequestHandler<CreateBugCommand, int>
             PriorityId = request.PriorityId,
             CreatedByUserId = request.CreatedByUserId,
             CreatedDate = request.CreatedDate,
-            StatusId = request.StatusId
+            StatusId = request.StatusId,
+            QualityScore = request.QualityScore
         };
 
 

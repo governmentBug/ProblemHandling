@@ -1621,6 +1621,10 @@
           "statusId": {
             "type": "integer",
             "format": "int32"
+          },
+          "qualityScore": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -1678,6 +1682,11 @@
           },
           "reasonForClosure": {
             "type": "string",
+            "nullable": true
+          },
+          "qualityScore": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         }

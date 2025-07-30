@@ -64,6 +64,7 @@ export class NewBugComponent implements OnInit {
     this.showSaveButton = !this.showSaveButton;
   }
   onContinueAddBug() {
+    this.newBug.categoryId = this.categoryComponent.selectedCategoryId
     this.showDuplicateCheck = false;
     this.setQualityMessage();
 
@@ -113,6 +114,8 @@ export class NewBugComponent implements OnInit {
     } as BugComparisonQuery;
   }
   async addBug() {
+    this.newBug.qualityScore = this.qualityScore;
+
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       this.bugId = Number(response);

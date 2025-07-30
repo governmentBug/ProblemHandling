@@ -3037,6 +3037,7 @@ export class CreateBugCommand implements ICreateBugCommand {
     createdByUserId?: number;
     createdDate?: Date;
     statusId?: number;
+    qualityScore?: number;
 
     constructor(data?: ICreateBugCommand) {
         if (data) {
@@ -3057,6 +3058,7 @@ export class CreateBugCommand implements ICreateBugCommand {
             this.createdByUserId = _data["createdByUserId"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.statusId = _data["statusId"];
+            this.qualityScore = _data["qualityScore"];
         }
     }
 
@@ -3077,6 +3079,7 @@ export class CreateBugCommand implements ICreateBugCommand {
         data["createdByUserId"] = this.createdByUserId;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["statusId"] = this.statusId;
+        data["qualityScore"] = this.qualityScore;
         return data;
     }
 }
@@ -3090,6 +3093,7 @@ export interface ICreateBugCommand {
     createdByUserId?: number;
     createdDate?: Date;
     statusId?: number;
+    qualityScore?: number;
 }
 
 export class BugDetalsDto implements IBugDetalsDto {
@@ -3106,6 +3110,7 @@ export class BugDetalsDto implements IBugDetalsDto {
     createdByUserFullName?: string | undefined;
     createdDate?: Date;
     reasonForClosure?: string | undefined;
+    qualityScore?: number | undefined;
 
     constructor(data?: IBugDetalsDto) {
         if (data) {
@@ -3131,6 +3136,7 @@ export class BugDetalsDto implements IBugDetalsDto {
             this.createdByUserFullName = _data["createdByUserFullName"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.reasonForClosure = _data["reasonForClosure"];
+            this.qualityScore = _data["qualityScore"];
         }
     }
 
@@ -3156,6 +3162,7 @@ export class BugDetalsDto implements IBugDetalsDto {
         data["createdByUserFullName"] = this.createdByUserFullName;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["reasonForClosure"] = this.reasonForClosure;
+        data["qualityScore"] = this.qualityScore;
         return data;
     }
 }
@@ -3174,6 +3181,7 @@ export interface IBugDetalsDto {
     createdByUserFullName?: string | undefined;
     createdDate?: Date;
     reasonForClosure?: string | undefined;
+    qualityScore?: number | undefined;
 }
 
 export class UpdateBugCommand implements IUpdateBugCommand {

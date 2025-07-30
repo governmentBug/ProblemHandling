@@ -20,4 +20,5 @@ public class BugDetalsDto
     public string? CreatedByUserFullName { get; set; }
     public DateTime CreatedDate { get; set; }
     public string? ReasonForClosure {  get; set; }
+    public int? QualityScore { get; set; }
 }
