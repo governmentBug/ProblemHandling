@@ -259,3 +259,8 @@ label:after {
 .high .progress {
   background-color: green;
 }
+
+.attachment-preview {
+    border: none; /* מסיר את המסגרת */
+    outline: none; /* מסיר את הקו החיצוני */
+}

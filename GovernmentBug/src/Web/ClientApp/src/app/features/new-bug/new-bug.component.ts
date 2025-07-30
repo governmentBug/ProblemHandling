@@ -455,4 +455,9 @@ export class NewBugComponent implements OnInit {
       this.qualityMessage = 'דיווח מפורט וברור. תודה!';
     }
   }
+  isFileType(fileName: string, extensions: string[]): boolean {
+  const lowerCaseFileName = fileName.toLowerCase();
+  return extensions.some(extension => lowerCaseFileName.endsWith(extension));
+}
+
 }
