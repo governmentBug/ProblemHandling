@@ -19,12 +19,7 @@
       <div class="row-split">
         <div class="left-col">
           <label for="categoryId">:קטגוריה</label>
-          <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required>
-            <option value="0" disabled selected>קטגוריה</option>
-            <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
-              {{ category.categoryName }}
-            </option>
-          </select>
+          <app-category></app-category>
 
           <label for="priorityId">:עדיפות</label>
           <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
@@ -42,9 +37,6 @@
         </div>
       </div>
     </div>
-
-    <!-- הוספת רכיב ה-autocomplete כאן -->
-    <!-- <app-bbb></app-bbb> -->
 
     <!-- שורת כפתורים -->
     <div class="buttons-row">
@@ -72,32 +64,37 @@
     (continue)="onContinueAddBug()" (cancel)="onCancel()" (change)="changeShowSaveButton()">
   </app-search-same-bugs>
 
-  <div *ngIf="showAttachments" class="attachments-container">
-    <h3><i class="fas fa-paperclip"></i> קבצים מצורפים</h3>
-    <ul class="attachments-list">
-      <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
-        <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ file.name }}</a>
+<div *ngIf="showAttachments" class="attachments-container">
+  <h3><i class="fas fa-paperclip"></i> קבצים מצורפים</h3>
+  <ul class="attachments-list">
+    <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
+      <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ file.name }}</a>
 
-        <ng-container *ngIf="file.type.startsWith('image')">
-          <img [src]="fileUrls[i]" alt="{{file.name}}" class="attachment-preview" />
-        </ng-container>
+      <ng-container *ngIf="file.type.startsWith('image')">
+        <img [src]="fileUrls[i]" alt="{{file.name}}" class="attachment-preview" />
+      </ng-container>
 
-        <ng-container *ngIf="file.type.startsWith('video')">
-          <video [src]="fileUrls[i]" controls class="attachment-preview"></video>
-        </ng-container>
+      <ng-container *ngIf="file.type.startsWith('video')">
+        <video [src]="fileUrls[i]" controls class="attachment-preview"></video>
+      </ng-container>
 
-        <div class="attachment-actions">
-          <button (click)="renameFile(i)"><i class="fas fa-pencil-alt"></i> שנה שם</button>
-          <button (click)="removeFileByIndex(i)"><i class="fas fa-trash"></i> מחק</button>
-        </div>
-      </li>
-    </ul>
+      <div class="attachment-actions">
+        <button (click)="renameFile(i)"><i class="fas fa-pencil-alt"></i> שנה שם</button>
+        <button (click)="removeFileByIndex(i)"><i class="fas fa-trash"></i> מחק</button>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- שורה מפרידה -->
+  <hr style="margin: 20px 0;" />
+
+</div>
+
+<div>
+  <h3>ציון איכות: {{ qualityScore }}</h3>
+  <div class="progress-bar"
+    [ngClass]="{'low': qualityScore < 50, 'medium': qualityScore >= 50 && qualityScore < 80, 'high': qualityScore >= 80}">
+    <div class="progress" [style.width.%]="qualityScore"></div>
   </div>
-  <div>
-    <h3>ציון איכות: {{ qualityScore }}</h3>
-    <div class="progress-bar"
-      [ngClass]="{'low': qualityScore < 50, 'medium': qualityScore >= 50 && qualityScore < 80, 'high': qualityScore >= 80}">
-      <div class="progress" [style.width.%]="qualityScore"></div>
-    </div>
-    <p>{{ qualityMessage }}</p>
-  </div>
+  <p>{{ qualityMessage }}</p>
+</div>

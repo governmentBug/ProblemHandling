@@ -1,0 +1,38 @@
+<div class="autocomplete-container">
+  <input
+    type="text"
+    [(ngModel)]="query"
+    (input)="onInputChange()"
+    (click)="toggleDropdown()" 
+    (blur)="isDropdownOpen = false"
+    placeholder="בחר קטגוריה"
+  />
+
+  <div class="autocomplete-list" *ngIf="isDropdownOpen && filteredItems.length > 0">
+    <div
+      class="autocomplete-item"
+      *ngFor="let item of filteredItems | slice:0:100"
+      (mousedown)="selectItem(item)"
+    >
+      {{ item }} <!-- כאן תציג את שם הקטגוריה -->
+    </div>
+  </div>
+</div>
+
+
+<!-- <div>
+  <div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF Icon" />
+    <span>application/pdf</span>
+  </div>
+<div>
+  <div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/Audio-mp3.svg" alt="MP3 Icon" />
+    <span>audio/mpeg</span>
+  </div>
+  <div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Microsoft_Office_Word_%282019%E2%80%93present%29.svg" alt="Word Icon" />
+    <span>application/msword</span>
+  </div>
+</div>
+</div> -->
