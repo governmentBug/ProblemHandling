@@ -259,3 +259,17 @@ label:after {
 .high .progress {
   background-color: green;
 }
+
+.attachment-preview {
+    border: none; /* מסיר את המסגרת */
+    outline: none; /* מסיר את הקו החיצוני */
+}
+
+.left-align {
+  text-align: left;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+}

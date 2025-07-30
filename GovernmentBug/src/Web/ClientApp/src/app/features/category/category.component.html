@@ -1,0 +1,21 @@
+<div class="autocomplete-container">
+  <input
+    type="text"
+    [(ngModel)]="query"
+    (input)="onInputChange()"
+    (click)="toggleDropdown()" 
+    (blur)="isDropdownOpen = false"
+      />
+    <!-- placeholder="בחר קטגוריה" -->
+
+
+  <div class="autocomplete-list" *ngIf="isDropdownOpen && filteredItems.length > 0">
+    <div
+      class="autocomplete-item"
+      *ngFor="let item of filteredItems | slice:0:100"
+      (mousedown)="selectItem(item)"
+    >
+      {{ item.name }} <!-- כאן תציג את שם הקטגוריה -->
+    </div>
+  </div>
+</div>

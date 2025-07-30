@@ -8,5 +8,6 @@ export class AbbBug {
     public createdByUserId?: number,
     public created?: string,
     public statusId?: number,
+    public qualityScore?:number,
   ) {}
 }

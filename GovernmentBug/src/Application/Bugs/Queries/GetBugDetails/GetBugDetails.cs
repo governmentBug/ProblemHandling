@@ -46,6 +46,7 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugDetails
                         CreatedByUserFullName = b.CreatedByUser.FullName,
                         CreatedDate = b.CreatedDate,
                         ReasonForClosure = b.ReasonForClosure,
+                        QualityScore = b.QualityScore,
                     })
                    .FirstOrDefaultAsync(cancellationToken);
                 if (bug == null)
