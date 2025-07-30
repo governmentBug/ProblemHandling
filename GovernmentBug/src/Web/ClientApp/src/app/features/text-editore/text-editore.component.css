@@ -1,0 +1,147 @@
+/* מיכל העורך הכללי */
+.editor-container {
+  direction: rtl;
+  border: 1px solid #dcdcdc;
+  border-radius: 20px;
+  padding: 10px 16px;
+  background-color: #fafafa;
+  box-shadow: none;
+  max-height: 240px;
+  overflow-y: auto;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: visible; /* כדי לא לחתוך את ההצעות */
+  position: relative; /* רק אם צריך */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.editor-container:focus-within {
+  box-shadow: 0 0 0 2px #cce4ff;
+}
+
+/* גוף העורך */
+.quill-editor,
+.ql-editor {
+  min-height: 24px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  border: none;
+  background-color: transparent;
+}
+
+/* טקסט רמז */
+.ql-editor.ql-blank::before {
+  color: #999;
+  font-style: normal;
+}
+
+.ql-toolbar {
+  display: none !important;
+}
+
+
+.mention {
+  color: #0366d6;
+  background-color: #eaf4ff;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+/* תפריט הצעות תיוג */
+.ql-mention-list-container {
+  max-height: 200px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+   position: fixed !important; 
+  z-index: 999999 !important;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.mention-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.mention-item:hover {
+  background-color: #e0f0ff;
+}
+
+.mention-name {
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mention-email {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* תפריט פופ-אפים (פרופיל) */
+.ql-mention {
+  background-color: #e0f7fa;
+  color: #00796b;
+  cursor: pointer;
+}
+
+::ng-deep .ql-toolbar {
+  display: none !important;
+}
+
+::ng-deep .ql-container.ql-snow {
+  border-top: none !important;
+}
+
+::ng-deep .ql-editor {
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+::ng-deep .ql-mention-list-container {
+  transform: translate3d(0, 0, 0) !important;
+  position: fixed 
+}
+
+::ng-deep .ql-container {
+  overflow: visible !important;
+}
+
+::ng-deep .ql-editor {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+::ng-deep .ql-mention-list-container {
+  position: absolute !important;
+  z-index: 9999 !important;
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15);
+  border-radius: 4px;
+}

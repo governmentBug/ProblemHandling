@@ -1,14 +1,17 @@
 <div class="dashboard-grid">
-
   @if (byStatusDto) {
+      <div class="dashboard-item">
+    <app-by-status-and-priority [byStatusAndPriority]="byStatusDto"></app-by-status-and-priority>
+  </div>
       <div class="dashboard-item">
     <app-by-status [byStatus]="byStatus"></app-by-status>
   </div>
-  <div class="dashboard-item">
-    <app-by-status-and-priority [byStatusAndPriority]="byStatusDto"></app-by-status-and-priority>
-  </div>
+
 }
+  <div class="dashboard-item">
+    <app-by-category></app-by-category>
+</div>
 <div class="dashboard-item">
     <app-monthly-trends></app-monthly-trends>
   </div>
-</div>
+  </div>

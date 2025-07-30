@@ -22,62 +22,64 @@ export class BugDetailComponent implements OnInit {
   @Output() bugChanged = new EventEmitter<any>();
   @Output() showFiles = new EventEmitter<number>();
   @Output() isEditModeChanged = new EventEmitter<boolean>()
-
+  @Output() closePanel = new EventEmitter<void>();
+  @Output() openPanel = new EventEmitter<void>();
+  @Input() isPannelOpen : boolean=true;
   showPopup = false;
   closeReason = '';
   isEditMode = false;
+  attachmentsEditMode = false; // חדש!
   editedBug: BugDetalsDto = new UpdateBugCommand();
-  priorities: Array<PriorityDto>
-  categories: Array<CategoryDto>
-  statuses: Array<StatusDto>
+  priorities: Array<PriorityDto> = [];
+  categories: Array<CategoryDto> = [];
+  statuses: Array<StatusDto> = [];
   showAttachments = false;
   filesToAdd: File[] = [];
   filesToDelete: number[] = [];
+
   constructor(private bugService: BugService, public stateService: StateService, private attachmentService: AttachmentService) { }
 
   ngOnInit(): void {
-    this.initState()
+    this.initState();
   }
+
   initState() {
     this.stateService.getAllPriority().subscribe(
-      res => {
-        this.priorities = res
-      },
+      res => this.priorities = res,
       err => console.error(err)
-    )
+    );
     this.stateService.getAllCategories().subscribe(
-      res => {
-        this.categories = res
-      },
+      res => this.categories = res,
       err => console.error(err)
-    )
+    );
     this.stateService.getAllStatuses().subscribe(
-      res => {
-        this.statuses = res
-      },
+      res => this.statuses = res,
       err => console.error(err)
-    )
+    );
   }
-  // onFilesChanged(files: FileUpload[]) {
-  //   this.selectedFiles = files;
-  // }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bug'] && this.bug) {
       this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     }
   }
+
   onFilesChanged(data: { newFiles: File[], deletedFileIds: number[] }) {
-    this.filesToAdd = data.newFiles;
-    this.filesToDelete = data.deletedFileIds;
+    this.filesToAdd = [...this.filesToAdd, ...data.newFiles];
+    this.filesToDelete = [...this.filesToDelete, ...data.deletedFileIds];
   }
+
   toggleEdit() {
     this.isEditMode = true;
-    this.isEditModeChanged.emit(this.isEditMode)
+    this.attachmentsEditMode = true; // הצגת העלאת קבצים בזמן עריכה
+    this.isEditModeChanged.emit(this.isEditMode);
   }
+
   cancelEdit() {
     this.editedBug = Object.assign(new BugDetalsDto(), this.bug);
     this.isEditMode = false;
-    this.isEditModeChanged.emit(this.isEditMode)
+    this.attachmentsEditMode = false;
+    this.isEditModeChanged.emit(this.isEditMode);
   }
 
   saveChanges() {
@@ -88,21 +90,21 @@ export class BugDetailComponent implements OnInit {
       priorityId: this.editedBug.priorityId,
       statusId: this.editedBug.statusId
     };
-    this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe(
-      {
-        next: () => {
-          if(this.filesToAdd.length>0)
-            this.attachmentService.createAttachments(this.filesToAdd, this.bug.bugId)
-          for (const id of this.filesToDelete) {
-            this.attachmentService.deleteAttachment(id).subscribe();
-          }
-          this.bugChanged.emit();
-          this.isEditMode = false;
-          this.isEditModeChanged.emit(this.isEditMode);
-        },
-        error: err => console.error(err)
-      }
-    )
+    this.bugService.updateBug(this.bug.bugId, dtoToSend).subscribe({
+      next: () => {
+        if (this.filesToAdd.length > 0) {
+          this.attachmentService.createAttachments(this.filesToAdd, this.bug.bugId);
+        }
+        for (const id of this.filesToDelete) {
+          this.attachmentService.deleteAttachment(id).subscribe();
+        }
+        this.bugChanged.emit();
+        this.isEditMode = false;
+        this.isEditModeChanged.emit(this.isEditMode);
+        this.attachmentsEditMode = true; // ממשיכים לאפשר עריכת קבצים אחרי שמירה
+      },
+      error: err => console.error(err)
+    });
   }
 
   openPopup() {
@@ -128,15 +130,12 @@ export class BugDetailComponent implements OnInit {
     });
   }
 
-  checkPermissions(): void {
-    // this.bugService.getCurrentUserPermissions(this.bug.bugId).subscribe(res => {
-    //   this.isAuthorizedToComment = res.canComment;
-    // });
-  }
-
   onOverlayClick(event: MouseEvent): void {
     this.closePopup();
   }
+  togglePanel() {
+  this.isPannelOpen ? this.closePanel.emit() : this.openPanel.emit();
+}
 
   getStatusClassById(id: number): string {
     const status = this.statuses?.find(s => s.statusId === id);

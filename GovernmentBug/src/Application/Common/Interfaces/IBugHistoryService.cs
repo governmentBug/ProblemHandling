@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GovernmentBug.Domain.Entities;
 
-namespace GovernmentBug.Application.Common.Services;
+namespace GovernmentBug.Application.Common.Interfaces;
 public interface IBugHistoryService
 {
     List<BugHistory> CreateHistory(Bug original, Bug updated, int changedBy);

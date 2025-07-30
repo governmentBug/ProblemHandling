@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { display } from 'html2canvas/dist/types/css/property-descriptors/display';
 import { NgChartsModule } from 'ng2-charts';
 import { ByStatus } from 'src/app/models/byStatus.model';
 
@@ -27,7 +28,10 @@ export class ByStatusComponent implements OnChanges {
   pieChartOptions = {
     cutout: '70%',
     plugins: {
-      legend: { display: false }
+      legend: { display: false },
+      datalabels: {
+        display: false
+      }
     }
   };
 

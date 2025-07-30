@@ -1,5 +1,5 @@
 .bug-container {
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   padding: 16px;
   margin: 0 auto;
   background: #fff;
@@ -178,7 +178,7 @@ textarea.edit-inline {
 button {
   font-family: inherit;
 }
-
+.comment-btn,
 .save-btn,
 .cancelEdit,
 .edit-btn,
@@ -197,6 +197,10 @@ button {
 
 .save-btn {
   background-color: #00c853;
+  color: white;
+}
+.comment-btn {
+  background-color: #d8ce1c;
   color: white;
 }
 
@@ -257,7 +261,7 @@ button {
 
 .divider {
   height: 2px;
-  background-color: black;
+  background-color: rgb(151, 150, 150);
   margin: 10px 0;
   border-radius: 2px;
 }

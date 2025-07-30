@@ -21,7 +21,7 @@ import { CategoryComponent } from '../category/category.component';
   styleUrls: ['./new-bug.component.css']
 })
 export class NewBugComponent implements OnInit {
-  @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent; // הוספת הפניה לרכיב ה-BBB
+  @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent;
   createdDate: Date = new Date();
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();

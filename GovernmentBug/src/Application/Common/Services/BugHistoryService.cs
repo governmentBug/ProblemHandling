@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using GovernmentBug.Application.Common.Interfaces;
 using GovernmentBug.Domain.Entities;
 
 namespace GovernmentBug.Application.Common.Services;
