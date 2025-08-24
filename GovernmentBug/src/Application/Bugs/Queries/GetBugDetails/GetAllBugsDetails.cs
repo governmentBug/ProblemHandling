@@ -38,6 +38,7 @@ public class GetBugDetailsHandler : IRequestHandler<GetBugDetails, List<BugDetal
                 CreatedByUserFullName = b.CreatedByUser.FullName,
                 CreatedDate = b.CreatedDate,
                 ReasonForClosure=b.ReasonForClosure,
+                QualityScore = b.QualityScore,
 
             })
             .ToListAsync(cancellationToken);

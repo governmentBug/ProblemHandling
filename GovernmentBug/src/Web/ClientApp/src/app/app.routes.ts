@@ -7,6 +7,8 @@ import { StatisticsComponent } from './features/statistics/statistics/statistics
 import { PersonalStatisticsComponent } from './features/statistics/personal-statistics/personal-statistics.component';
 import { DashboardComponent } from './features/statistics/dashboard/dashboard.component';
 
+
+
 export const routes: Routes = [
   { path: '', component: AllBugsComponent },
   { path: 'allBug', component: AllBugsComponent },

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GovernmentBug.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangestatusIdtostatusinbugtable : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -324,7 +324,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                     BugId = table.Column<int>(type: "int", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    FilePath = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -398,6 +398,37 @@ namespace GovernmentBug.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CommentMentions",
+                columns: table => new
+                {
+                    CommentMentionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentMentions", x => x.CommentMentionId);
+                    table.ForeignKey(
+                        name: "FK_CommentMentions_AppUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AppUsers",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentMentions_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "CommentID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -468,6 +499,16 @@ namespace GovernmentBug.Infrastructure.Migrations
                 column: "BugID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CommentMentions_CommentId",
+                table: "CommentMentions",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentMentions_UserID",
+                table: "CommentMentions",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_BugID",
                 table: "Comments",
                 column: "BugID");
@@ -503,7 +544,7 @@ namespace GovernmentBug.Infrastructure.Migrations
                 name: "BugHistories");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "CommentMentions");
 
             migrationBuilder.DropTable(
                 name: "TodoItems");
@@ -515,10 +556,13 @@ namespace GovernmentBug.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Bug");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "TodoLists");
+
+            migrationBuilder.DropTable(
+                name: "Bug");
 
             migrationBuilder.DropTable(
                 name: "AppUsers");

@@ -6,7 +6,7 @@ import { UserDto } from 'src/app/web-api-client';
   standalone: true,
   imports: [],
   templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css'
+  styleUrls:[ './user-profile.component.css']
 })
 export class UserProfileComponent {
 @Input() user: UserDto;

@@ -1,48 +1,37 @@
-<button class="close-btn" (click)="close()">❮</button>
-
-<div class="comments-list" #scrollContainer>
-  <div class="comment" *ngFor="let c of comments">
-    <div class="icon">
-      <img src="assets/user-icon.png" alt="user" />
+<div class="comments-panel">
+  <button class="close-btn" (click)="close()">X</button>
+  <div class="comments-list" #scrollContainer *ngIf="userList.length > 0">
+    <div class="comment" *ngFor="let c of comments">
+      <div class="icon">
+        <i class="fas fa-user-circle"
+          style="font-size: 1.2rem; color: gray; border-radius: 50%; background-color: #eee; padding: 2px;"></i>
+      </div>
+      <div class="text">
+        <app-mention-display [html]="c.commentText" [users]="userList" />
+        <small>
+          נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
+        </small>
+      </div>
+      <button *ngIf="isAuthorizedToComment" class="delete-btn" (click)="deleteComment(c.commentID)">
+        <i class="fa fa-trash"></i>
+      </button>
     </div>
-    <div class="text">
-      <p>{{ c.commentText }}</p>
-      <small>
-        נכתב ע"י {{ currentUserName }} בתאריך {{ c.commentDate | date: 'dd/MM/yyyy HH:mm' }}
-      </small>
-    </div>
-    <button *ngIf="isAuthorizedToComment" class="delete-btn" (click)="deleteComment(c.commentID)">
-      <i class="fa fa-trash"></i>
-    </button>
   </div>
-</div>
 
-<div class="add-section">
-  <ng-container *ngIf="isAuthorizedToComment">
-    <div *ngIf="adding" class="add-form">
-      <div class="mention-container">
-<textarea
-  class="comment-textarea"
-  #commentInput
-  [(ngModel)]="newComment"
-  (input)="onInput($event)"
-  (keydown)="onKeyDown($event)"
-  placeholder="הוסף תגובה...">
-</textarea>
-   <ul *ngIf="showMentionList" class="mention-list">
-          <li *ngFor="let user of filteredUsers; let i = index" [class.active]="i === selectedUserIndex" 
-            (click)="selectUser(user)">
-            <app-user-profile [user]="user"></app-user-profile>
-          </li>
-        </ul>
+  <div class="add-section">
+    <ng-container *ngIf="isAuthorizedToComment">
+      <div *ngIf="adding" class="add-form">
+        <app-text-editor #textEditor [users]="userList"
+          (contentChanged)="onTextChanged($event)"
+          (enterPressed)="saveComment()">
+        </app-text-editor>
+        <div class="actions">
+          <button class="add-btn" (click)="saveComment()">
+            <i class="fas fa-arrow-up"></i>
+          </button>
+        </div>
       </div>
-      <div class="actions">
-        <button class="add-btn" (click)="saveComment()">
-          <i class="fas fa-arrow-up"></i>
-        </button>
-
-      </div>
-    </div>
+    </ng-container>
     <button *ngIf="!adding" class="add-btn" (click)="openAdd()">+</button>
-  </ng-container>
+  </div>
 </div>

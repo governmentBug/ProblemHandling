@@ -88,8 +88,9 @@
     <div class="bug-actions">
       <button class="toggle-attachments-btn" (click)="showAttachments = !showAttachments">
         {{ showAttachments ? 'הסתר קבצים' : 'הצג קבצים' }}
+      </button><button class="comment-btn" (click)="togglePanel()">
+        {{ isPannelOpen ? 'הסתר הודעות' : 'הצג הודעות' }}
       </button>
-
       <button class="edit-btn" *ngIf="AuthorizedUser && !isEditMode" (click)="toggleEdit()">עריכה</button>
       <button class="save-btn" *ngIf="isEditMode" (click)="saveChanges()">שמור</button>
       <button class="edit-btn" *ngIf="isEditMode" (click)="cancelEdit()">ביטול</button>

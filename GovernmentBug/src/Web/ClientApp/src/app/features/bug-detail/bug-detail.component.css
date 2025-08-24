@@ -178,7 +178,7 @@ textarea.edit-inline {
 button {
   font-family: inherit;
 }
-
+.comment-btn,
 .save-btn,
 .cancelEdit,
 .edit-btn,
@@ -197,6 +197,10 @@ button {
 
 .save-btn {
   background-color: #00c853;
+  color: white;
+}
+.comment-btn {
+  background-color: #d8ce1c;
   color: white;
 }
 

@@ -1,201 +1,129 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component, Input, Output, EventEmitter, ViewChild, OnInit, SimpleChanges
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CommentsBugDto, UserDto } from 'src/app/web-api-client';
 import { CommentService } from 'src/app/services/Comment.service';
-import { MentionModule } from 'angular-mentions';
 import { StateService } from 'src/app/services/state.service';
 import { UserProfileComponent } from "../user-profile/user-profile.component";
+import { MentionDisplayComponent } from '../mention-display/mention-display.component';
+import { TextEditorComponent } from '../text-editore/text-editore.component';
 @Component({
   selector: 'app-comment-panel',
   standalone: true,
-  imports: [FormsModule, CommonModule, MentionModule, UserProfileComponent],
+  imports: [
+    FormsModule,
+    CommonModule,
+    MentionDisplayComponent,
+    TextEditorComponent
+  ],
   templateUrl: './comment-panel.component.html',
   styleUrl: './comment-panel.component.css'
 })
 export class CommentPanelComponent implements OnInit {
-  @Input() comments: Array<CommentsBugDto>
-  @Input() bugId: number
+  @Input() comments: Array<CommentsBugDto> = [];
+  @Input() bugId: number;
   @Input() isAuthorizedToComment: boolean = false;
   @Input() currentUserName: string = '';
   @Output() closePanel = new EventEmitter<void>();
-  @ViewChild('commentInput') commentInput!: ElementRef;
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @Output() openPanel = new EventEmitter<void>();
+  @ViewChild('scrollContainer') scrollContainer!: any;
+  @ViewChild('textEditor') textEditor!: TextEditorComponent;
+
   adding = false;
-  newComment: string = '';
-  userList: Array<UserDto> = []
-  mentionUserIds = new Set<Number>
-  filteredUsers:  Array<UserDto> = []
-  mentions:  Array<UserDto> = []
-
+  userList: UserDto[] = [];
+  filteredUsers: Array<UserDto> = [];
   showMentionList = false;
-  caretPosition = 0;
   selectedUserIndex: number = 0;
+  caretPosition = 0;
+  lastContent: string = '';
 
+  constructor(
+    private stateService: StateService,
+    private commentService: CommentService
+  ) { }
 
-  onInput(eventK: Event) {
-    const event= eventK as KeyboardEvent;
-    const textarea = event.target as HTMLTextAreaElement;
-    this.newComment = textarea.value;
-    this.caretPosition = textarea.selectionStart || 0;
-
-    const textUpToCaret = this.newComment.substring(0, this.caretPosition);
-    const match = /@([\w\u0590-\u05FF]*)$/.exec(textUpToCaret);
-
-    if (match) {
-      const query = match[1];
-      this.filteredUsers = this.userList.filter(user =>
-        user.fullName.toLowerCase().includes(query.toLowerCase())
-      );
-      this.showMentionList = this.filteredUsers.length > 0;
-      this.selectedUserIndex = 0; // התחול מחדש בכל פעם
-    } else {
-      this.showMentionList = false;
-    }
-  }
-
-
-  selectUser(user:UserDto) {
-    const textUpToCaret = this.newComment.substring(0, this.caretPosition);
-    const textAfterCaret = this.newComment.substring(this.caretPosition);
-
-    // חפש את המילה שמתחילה ב־@ אחרונה
-    const mentionRegex = /@([\w\u0590-\u05FF]*)$/;
-    const match = mentionRegex.exec(textUpToCaret);
-
-    if (!match) return;
-
-    const mentionStartIndex = match.index;
-    const beforeMention = this.newComment.slice(0, mentionStartIndex);
-    const afterMention = textAfterCaret;
-
-    // החלפת המילה המתוייגת במשתמש שנבחר
-    this.newComment = `${beforeMention}@${user.fullName} ${afterMention}`.trim();
-    this.caretPosition = (beforeMention + '@' + user.fullName + ' ').length;
-    this.showMentionList = false;
-
-    if (!this.mentions.some(u => u.userId === user.userId)) {
-      this.mentions.push(user);
-    }
-  }
-  constructor(private stateService: StateService, private CommentService: CommentService) { }
   ngOnInit(): void {
-    this.loadComments()
-    this.loadUsers()
+    this.loadUsers();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isEditMode'] && this.bugId)
-      this.loadComments()
     if (changes['bugId'] && this.bugId) {
       this.loadComments();
     }
   }
-  onMentionSelect(user: any) {
-    this.mentionUserIds.add(user.id)
-    console.log(user);
 
+  onTextChanged(value: string): void {
+    this.lastContent = value;
   }
-  loadComments(): void {
-    this.CommentService.getCommentsByBugId(this.bugId).subscribe({
-      next: (res) => {
-        this.comments = res
-        console.log(res);
 
+  saveComment(): void {
+    const html = this.textEditor.getHtml().trim();
+    if (!html || html === '<p><br></p>') return;
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    const mentionElements = div.querySelectorAll('.ql-mention[data-id]');
+    const mentionedIds = new Set<number>();
+    mentionElements.forEach(el => {
+      const id = el.getAttribute('data-id');
+      if (id) mentionedIds.add(Number(id));
+    });
+
+    this.commentService.addComment(this.bugId, html, Array.from(mentionedIds)).subscribe({
+      next: () => {
+        this.loadComments();
+        this.adding = false;
+        this.lastContent = '';
+      },
+      error: (err) => console.error('שגיאה בהוספת תגובה', err)
+    });
+  }
+
+  loadComments(): void {
+    this.commentService.getCommentsByBugId(this.bugId).subscribe({
+      next: (res) => {
+        this.comments = res;
+        setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err) => console.error('שגיאה בשליפת תגובות', err)
     });
-  } loadUsers(): void {
+  }
+
+  loadUsers(): void {
     this.stateService.getAllUsers().subscribe({
       next: (users) => {
         this.userList = users;
-        console.log('משתמשים נטענו:', this.userList);
+        this.loadComments();
       },
-      error: (err) => {
-        console.error('שגיאה בטעינת משתמשים:', err);
-      }
+      error: (err) => console.error('שגיאה בטעינת משתמשים:', err)
     });
-  } saveComment() {
-    const trimmed = this.newComment.trim();
-    if (trimmed) {
-      this.CommentService.addComment(this.bugId, trimmed).subscribe({
-        next: () => {
-          this.loadComments()
-          this.newComment = '';
-          this.adding = false;
-          console.log(this.mentionUserIds);
-        },
-        error: (err) => console.error('שגיאה בהוספת תגובה', err)
-      });
-    }
-  }
-  deleteComment(id: number) {
-    this.CommentService.deleteComment(id).subscribe(() => {
-      this.loadComments();
-    })
   }
 
-  openAdd() {
+  deleteComment(id: number): void {
+    this.commentService.deleteComment(id).subscribe(() => this.loadComments());
+  }
+
+  openAdd(): void {
     this.adding = true;
-    setTimeout(() => {
-      this.commentInput?.nativeElement?.focus();
-    });
   }
 
-  cancelAdd() {
+  cancelAdd(): void {
     this.adding = false;
-    this.newComment = '';
+    this.lastContent = '';
   }
 
-  close() {
+  close(): void {
     this.closePanel.emit();
   }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom(): void {
+  private scrollToBottom(): void {
     try {
-      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) { }
-  }
-onKeyDown(event: KeyboardEvent) {
-  if (this.showMentionList) {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.selectedUserIndex = (this.selectedUserIndex + 1) % this.filteredUsers.length;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.selectedUserIndex = (this.selectedUserIndex - 1 + this.filteredUsers.length) % this.filteredUsers.length;
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      const selectedUser = this.filteredUsers[this.selectedUserIndex];
-      if (selectedUser) {
-        this.selectUser(selectedUser);
-      }
-    } else if (event.key === 'Escape') {
-      this.showMentionList = false;
-    }
-  } else if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    this.saveComment();
-  }
-}
-
-
-  handleEnter(event: KeyboardEvent) {
-    if (this.showMentionList) {
-      event.preventDefault();
-      const selectedUser = this.filteredUsers[this.selectedUserIndex];
-      if (selectedUser) {
-        this.selectUser(selectedUser);
-      }
-      return;
-    }
-
-    if (!event.shiftKey) {
-      event.preventDefault();
-      this.saveComment();
+      const container = this.scrollContainer.nativeElement;
+      container.scrollTop = container.scrollHeight;
+    } catch (err) {
+      console.error('גלילה נכשלה', err);
     }
   }
 

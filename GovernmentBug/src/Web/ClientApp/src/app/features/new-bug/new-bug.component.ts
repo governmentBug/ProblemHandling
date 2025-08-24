@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbbBug } from 'src/app/models/addBug.model';
 import { FormsModule } from '@angular/forms';
 import { BugService } from 'src/app/services/bug.service';
@@ -10,15 +10,18 @@ import { AttachmentService } from 'src/app/services/Attachment.Service';
 import { BugComparisonQuery } from 'src/app/web-api-client';
 import { SearchSameBugsComponent } from '../Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
 import { AllBugsComponent } from '../all-bugs/all-bugs.component';
+import * as JSZip from 'jszip';
+import { CategoryComponent } from '../category/category.component';
 
 @Component({
   selector: 'app-new-bug',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchSameBugsComponent],
+  imports: [CommonModule, FormsModule, SearchSameBugsComponent, CategoryComponent],
   templateUrl: './new-bug.component.html',
   styleUrls: ['./new-bug.component.css']
 })
 export class NewBugComponent implements OnInit {
+  @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent;
   createdDate: Date = new Date();
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
@@ -37,10 +40,15 @@ export class NewBugComponent implements OnInit {
   showSaveButton = true;
   qualityScore: number = 0;
   qualityMessage: string = '';
-  showQualityScore: boolean = false;
+  donTitel: boolean = false;
+  umountDiscripsion: number = 0;
+  donDiscripsion: boolean = false;
+  oneVidio: boolean = false;
+  oneAttachment: boolean = false;
 
   constructor(private bugService: BugService, private stateService: StateService,
     private attachmentService: AttachmentService, private router: Router, private AddBug: AllBugsComponent) { }
+
 
   ngOnInit(): void {
     this.loadAllCategory();
@@ -48,8 +56,6 @@ export class NewBugComponent implements OnInit {
     this.newBug.statusId = 3;
     this.newBug.created = this.formattedDateToSave;
     this.newBug.createdByUserId = 2;
-    // this.newBug.description = " ";
-    // this.newBug.title = " ";
   }
   onCheckDuplicates() {
     this.showDuplicateCheck = true;
@@ -58,8 +64,9 @@ export class NewBugComponent implements OnInit {
     this.showSaveButton = !this.showSaveButton;
   }
   onContinueAddBug() {
+    this.newBug.categoryId = this.categoryComponent.selectedCategoryId
     this.showDuplicateCheck = false;
-    this.calculateQualityScore();
+    this.setQualityMessage();
 
     if (!this.hasEnoughInfo()) return;
 
@@ -107,14 +114,14 @@ export class NewBugComponent implements OnInit {
     } as BugComparisonQuery;
   }
   async addBug() {
+    this.newBug.qualityScore = this.qualityScore;
+
     try {
       const response = await this.bugService.createBug(this.newBug).toPromise();
       this.bugId = Number(response);
       await this.attachmentService.createAttachments(this.allAttachment, this.bugId);
 
       Swal.fire({ title: 'הבאג נשמר!', text: 'הבאג נוסף בהצלחה.', icon: 'success', confirmButtonText: 'אוקי' });
-
-      this.AddBug.loadAllBugs(); // <--- הוספת השורה הזו
       this.AddBug.closePopup();
     } catch (error) {
       console.error('Error creating bug:', error);
@@ -149,6 +156,10 @@ export class NewBugComponent implements OnInit {
     if (this.showAttachments === true) this.allAttachments();
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      if (this.oneAttachment === false) {
+        this.qualityScore += 20;
+        this.oneAttachment = true;
+      }
       const track = stream.getVideoTracks()[0];
       const video = document.createElement('video');
       video.srcObject = stream;
@@ -171,11 +182,16 @@ export class NewBugComponent implements OnInit {
     } catch (err) {
       console.error('שגיאה בצילום מסך', err);
     }
+    this.setQualityMessage()
   }
   async onRecordVideo() {
     if (this.showAttachments === true) this.allAttachments();
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      if (this.oneVidio === false) {
+        this.qualityScore += 20;
+        this.oneVidio = true;
+      }
       const audioTracks = stream.getAudioTracks();
       if (audioTracks.length === 0 && !confirm("השמע לא דלוק. האם אתה רוצה להמשיך בהקלטה בלי שמע?")) {
         stream.getTracks().forEach(track => track.stop());
@@ -189,8 +205,6 @@ export class NewBugComponent implements OnInit {
       this.mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
         const videoFile = new File([blob], 'recording.webm', { type: 'video/webm' });
-        console.log(videoFile);
-
         this.allAttachment.push(videoFile);
         this.fileUrls.push(this.getFileUrl(videoFile));
         this.numFilm++;
@@ -201,6 +215,7 @@ export class NewBugComponent implements OnInit {
     } catch (err) {
       console.error('שגיאה בהקלטת וידאו', err);
     }
+    this.setQualityMessage();
   }
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
@@ -211,27 +226,105 @@ export class NewBugComponent implements OnInit {
   allAttachments() {
     this.showAttachments = !this.showAttachments;
   }
+  // onFileSelected(event: Event): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     const files: FileList = input.files;
+  //     const zip = new JSZip();
+  //     const zipFileName = 'attachments.zip'; // שם הקובץ ZIP
+
+  //     let hasLargeFile = false;
+
+  //     for (let i = 0; i < files.length; i++) {
+  //       const file = files[i];
+  //       if (file.size > 25 * 1024 * 1024) { // בדוק אם הקובץ גדול מ-25MB
+  //         zip.file(file.name, file); // הוסף את הקובץ ל-ZIP
+  //         hasLargeFile = true; // יש קובץ גדול
+  //       } else {
+  //         // אם יש קובץ גדול, אל תוסיף קבצים רגילים
+  //         if (!hasLargeFile) {
+  //           this.allAttachment.push(file);
+  //           this.fileUrls.push(this.getFileUrl(file));
+  //         }
+  //       }
+
+  //       if (file.type.startsWith('video/')) {
+  //         this.numFilm++;
+  //         if (this.oneVidio === false) {
+  //           this.qualityScore += 20;
+  //           this.oneVidio = true;
+  //         }
+  //       } else {
+  //         this.numDocuments++;
+  //         if (this.oneAttachment === false) {
+  //           this.qualityScore += 20;
+  //           this.oneAttachment = true;
+  //         }
+  //       }
+  //     }
+
+  //     // שמור את ה-ZIP אם יש קבצים בו
+  //     if (hasLargeFile) {
+  //       zip.generateAsync({ type: 'blob' })
+  //         .then(content => {
+  //           // כאן תוכל לשמור את ה-ZIP או להעלות אותו
+  //           const zipBlobUrl = URL.createObjectURL(content);
+  //           this.allAttachment.push(new File([content], zipFileName));
+  //           this.fileUrls.push(zipBlobUrl);
+  //         })
+  //         .catch(error => {
+  //           this.qualityScore -= 20;
+  //           alert('שגיאה ביצירת קובץ ה-ZIP: ' + error.message);
+  //         });
+  //     }
+  //   }
+  //   this.setQualityMessage();
+  // }
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const files: FileList = input.files;
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(file.size);
-        // 30191664
-        if (file.size > 27923020) {
-          alert(`הקובץ ${file.name} גדול מדי ואינו יכול להיכנס.`)
-          continue;
+        if (file.size > 25 * 1024 * 1024) { // בדוק אם הקובץ גדול מ-25MB
+          const zip = new JSZip();
+          zip.file(file.name, file); // הוסף את הקובץ ל-ZIP
+
+          // שמור את ה-ZIP אם יש קבצים כבדים
+          zip.generateAsync({ type: 'blob' })
+            .then(content => {
+              const zipBlobUrl = URL.createObjectURL(content);
+              const zipFileName = file.name.replace(/\.[^/.]+$/, "") + '.zip'; // שם הקובץ ZIP
+              this.allAttachment.push(new File([content], zipFileName));
+              this.fileUrls.push(zipBlobUrl);
+            })
+            .catch(error => {
+              this.qualityScore -= 20;
+              alert('שגיאה ביצירת קובץ ה-ZIP: ' + error.message);
+            });
+        } else {
+          // הוסף קבצים קלים לרשימה להעלאה בנפרד
+          this.allAttachment.push(file);
+          this.fileUrls.push(this.getFileUrl(file));
         }
-        this.allAttachment.push(file);
-        this.fileUrls.push(this.getFileUrl(file));
+
         if (file.type.startsWith('video/')) {
           this.numFilm++;
+          if (this.oneVidio === false) {
+            this.qualityScore += 20;
+            this.oneVidio = true;
+          }
         } else {
           this.numDocuments++;
+          if (this.oneAttachment === false) {
+            this.qualityScore += 20;
+            this.oneAttachment = true;
+          }
         }
       }
     }
+    this.setQualityMessage();
   }
   onUploadClick(fileInput: HTMLInputElement) {
     if (this.showAttachments === true) this.allAttachments();
@@ -242,19 +335,61 @@ export class NewBugComponent implements OnInit {
   }
   removeFileByIndex(index: number) {
     const file = this.allAttachment[index];
-    this.allAttachment.splice(index, 1);
-    this.fileUrls.splice(index, 1);
+    if (file.name.endsWith('.zip')) {
+      this.checkZipContent(file)
+    }
     if (file.type.startsWith('video/')) {
       this.numFilm--;
+      if (this.numFilm === 0) {
+        console.log(this.numFilm);
+        this.qualityScore -= 20;
+        this.oneVidio = false;
+      }
     } else {
       this.numDocuments--;
+      if (this.numDocuments === 0) {
+        this.qualityScore -= 20;
+        this.oneAttachment = false;
+      }
     }
+    this.allAttachment.splice(index, 1);
+    this.fileUrls.splice(index, 1);
+    this.setQualityMessage();
+  }
+  checkZipContent(file) {
+    const zip = new JSZip();
+    zip.loadAsync(file).then((contents) => {
+      Object.keys(contents.files).forEach((filename) => {
+        const fileType = filename.split('.').pop(); // קבלת הסיומת
+
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
+          this.numDocuments--;
+          if (this.numDocuments === 0) {
+            this.qualityScore -= 20;
+            this.oneAttachment = false;
+          }
+        } else if (['mp4', 'mov', 'avi'].includes(fileType.toLowerCase())) {
+          this.numFilm--;
+          if (this.numFilm === 0) {
+            console.log(this.numFilm);
+            this.qualityScore -= 20;
+            this.oneVidio = false;
+          }
+        }
+      });
+    }).catch((error) => {
+      console.error("שגיאה בטעינת קובץ ה-ZIP:", error);
+    });
   }
   renameFile(index: number) {
-    const newName = prompt("הכנס שם חדש לקובץ:", this.allAttachment[index].name);
+    const originalFileName = this.allAttachment[index].name;
+    const nameWithoutExtension = originalFileName.replace(/\.[^/.]+$/, ""); // הסרת הסיומת
+    const newName = prompt("הכנס שם חדש לקובץ:", nameWithoutExtension);
+
     if (newName) {
       const file = this.allAttachment[index];
-      const renamedFile = new File([file], newName, { type: file.type });
+      const extension = originalFileName.split('.').pop(); // קבלת הסיומת המקורית
+      const renamedFile = new File([file], newName + '.' + extension, { type: file.type });
       this.allAttachment[index] = renamedFile;
     }
   }
@@ -277,31 +412,41 @@ export class NewBugComponent implements OnInit {
     }
     return true;
   }
-  calculateQualityScore(): void {
-    let score = 0;
+  addPointTitle(): void {
+    if (this.newBug.title != undefined && this.newBug.title.length >= 10 && this.donTitel === false) {
+      this.donTitel = true;
+      this.qualityScore += 15;
+    }
+    if (this.newBug.title != undefined && this.newBug.title.length < 10 && this.donTitel === true) {
+      this.donTitel = false
+      this.qualityScore -= 15;
+    }
+    this.setQualityMessage();
+  }
+  addPointDescription(): void {
+    let nowUmount = 0;
     if (this.newBug.description != undefined) {
       const charCount = this.newBug.description.length;
-      score += Math.min(Math.floor(charCount / 10) * 3, 30);
+      nowUmount += Math.min(Math.floor(charCount / 10) * 3, 30);
     }
-    console.log("1 " + score);
+    if (this.umountDiscripsion < nowUmount) {
+      this.qualityScore += Math.abs(nowUmount - this.umountDiscripsion);
+      this.umountDiscripsion = nowUmount;
+    }
+    if (this.umountDiscripsion > nowUmount) {
+      this.qualityScore -= Math.abs(nowUmount - this.umountDiscripsion);
+      this.umountDiscripsion = nowUmount;
+    }
+
     const keywords = /לדוגמא|כאשר|תמיד/;
-    if (keywords.test(this.newBug.description)) score += 15;
-    console.log("2 " + score);
-
-    let image = 0, video = 0;
-
-    for (let i = 0; i < this.allAttachment.length; i++) {
-      const file = this.allAttachment[i];
-      const fileType = file.type;
-      if (fileType.startsWith('video/')) video++;
-      else image++;
+    if (keywords.test(this.newBug.description) && this.donDiscripsion === false) {
+      this.qualityScore += 15;
+      this.donDiscripsion = true;
     }
-    if (video > 0) score += 20;
-    if (image > 0) score += 20;
-
-    if (this.newBug.title != undefined && this.newBug.title.length >= 10) score += 15; console.log("5 " + score);
-
-    this.qualityScore = score;
+    if (keywords.test(this.newBug.description) === false && this.donDiscripsion === true) {
+      this.qualityScore -= 15;
+      this.donDiscripsion = false;
+    }
     this.setQualityMessage();
   }
   setQualityMessage(): void {
@@ -313,14 +458,9 @@ export class NewBugComponent implements OnInit {
       this.qualityMessage = 'דיווח מפורט וברור. תודה!';
     }
   }
-  toggleQualityScore() {
-    this.showQualityScore = !this.showQualityScore;
-    this.calculateQualityScore();
-  }
-  closeQualityScore(): void {
-    if (this.showQualityScore)
-      this.showQualityScore = false;
-    if (this.showAttachments)
-      this.showAttachments = false;
-  }
+  isFileType(fileName: string, extensions: string[]): boolean {
+  const lowerCaseFileName = fileName.toLowerCase();
+  return extensions.some(extension => lowerCaseFileName.endsWith(extension));
+}
+
 }

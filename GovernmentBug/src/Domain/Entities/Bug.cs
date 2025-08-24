@@ -15,7 +15,7 @@ namespace GovernmentBug.Domain.Entities
         public int BugID { get; set; }
         [StringLength(225)]
         public string Title { get; set; } = string.Empty;
-        [StringLength(50)]
+        [StringLength(1000)]
         public string Description { get; set; } = string.Empty;
         public int PriorityId { get; set; }
         public virtual Priority Priority  { get; set; } = null!;
@@ -26,6 +26,8 @@ namespace GovernmentBug.Domain.Entities
         public int CreatedByUserId { get; set; }
         public virtual Users CreatedByUser { get; set; } = null!;
         public DateTime CreatedDate { get; set; }
+        [Range(0, 100, ErrorMessage = "Quality Score must be between 0 and 100.")]
+        public int QualityScore { get; set; }
         [StringLength(100)]
         public string ReasonForClosure {  get; set; }=string.Empty;
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();

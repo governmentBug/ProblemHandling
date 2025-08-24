@@ -1,0 +1,28 @@
+<!-- <div class="preview">
+  <ng-container *ngFor="let part of parsedParts">
+    <ng-container *ngIf="part.isMention; else regularText">
+      <span class="mention"
+            (mouseenter)="startHover(part.user, $event)"
+            (mouseleave)="endHover()" >
+              <bdi dir="ltr">{{ part.text }}</bdi>
+       
+      </span>
+    </ng-container>
+    <ng-template #regularText>{{ part.text }}</ng-template>
+  </ng-container>
+</div>
+
+<div
+  class="mention-popup"
+  *ngIf="hoveredUser"
+  [ngStyle]="{ top: popupY + 'px', left: popupX + 'px' }"
+  (mouseenter)="clearHoverTimeout()"
+  (mouseleave)="endHover()"
+>
+  <app-user-profile [user]="hoveredUser"></app-user-profile>
+</div>
+
+
+  -->
+<!-- mention-html-viewer.component.html -->
+<div *ngIf="safeHtml" #container [innerHTML]="safeHtml"></div>

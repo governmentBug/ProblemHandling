@@ -1,112 +1,139 @@
-<div class="bug-form-container">
-  <div class="report-container">
-    <p class="report-info">
-      באג זה מדווח ע"י {{ userName }} בתאריך {{ formattedDate }}
-    </p>
-    <p class="report-infoR">
+<div class="report-container">
+<p class="report-info left-align">
+  באג זה מדווח ע"י {{ userName }} בתאריך {{ formattedDate }}
+</p>
+  <!-- <p class="report-infoR">
       יש {{numDocuments}} מסמכים מצורפים ו {{numFilm}} הסרטות מצורפות
-    </p>
+    </p> -->
+</div>
+
+<form (ngSubmit)="onCheckDuplicates()" #bugForm="ngForm" class="bug-form-grid">
+
+  <div class="bug-form">
+    <div class="row-full">
+      <label for="nameB">:שם/תקציר הבאג</label>
+      <input type="text" [(ngModel)]="newBug.title" name="title" required class="input-field" id="nameB"
+        (blur)="addPointTitle()" />
+    </div>
+
+    <div class="row-split">
+      <div class="left-col">
+        <label for="categoryId">:קטגוריה</label>
+        <app-category></app-category>
+
+        <label for="priorityId">:עדיפות</label>
+        <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>
+          <option value="0" disabled selected>עדיפות</option>
+          <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
+            {{ priority.priorityName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="right-col">
+        <label for="description">:תיאור הבאג</label>
+        <textarea [(ngModel)]="newBug.description" name="description" class="textarea-field" required
+          (blur)="addPointDescription()"></textarea>
+      </div>
+    </div>
   </div>
 
-  <form (ngSubmit)="onCheckDuplicates()" #bugForm="ngForm" class="bug-form-grid">
-
-    <div class="bug-form">
-      <div class="row-full">
-        <label for="nameB">:שם/תקציר הבאג</label>
-        <input type="text" [(ngModel)]="newBug.title" name="title" required class="input-field" id="nameB"
-          (click)="closeQualityScore()" />
-      </div>
-
-      <div class="row-split">
-        <div class="left-col">
-          <label for="categoryId">:קטגוריה</label>
-          <select [(ngModel)]="newBug.categoryId" name="categoryId" class="select-field" required
-            (click)="closeQualityScore()">
-            <option value="0" disabled selected>קטגוריה</option>
-            <option *ngFor="let category of allCategory" [ngValue]="category.categoryId">
-              {{ category.categoryName }}
-            </option>
-          </select>
-
-          <label for="priorityId">:עדיפות</label>
-          <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required
-            (click)="closeQualityScore()">
-            <option value="0" disabled selected>עדיפות</option>
-            <option *ngFor="let priority of allPriority" [ngValue]="priority.priorityId">
-              {{ priority.priorityName }}
-            </option>
-          </select>
-        </div>
-
-        <div class="right-col">
-          <label for="description">:תיאור הבאג</label>
-          <textarea [(ngModel)]="newBug.description" name="description" class="textarea-field" required
-            (click)="closeQualityScore()"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- שורת כפתורים -->
-    <div class="buttons-row">
-      <button type="button" class="screen-btn purple" (click)="toggleQualityScore()">
-        <i class="fas fa-check-circle"></i> {{ showQualityScore ? 'הסתר ציון איכות' : 'הצג ציון איכות' }}
-      </button>
-      <button type="button" class="screen-btn red" (click)="allAttachments()">
-        <i class="fas fa-folder-open"></i> {{ showAttachments ? 'הסתר מסמכים' : 'הצג מסמכים' }}
-      </button>
-      <button type="button" class="screen-btn yellow" (click)="onScreenshot(); closeQualityScore()">
-        <i class="fas fa-camera"></i> צילום מסך
-      </button>
-      <button type="button" class="screen-btn blue" (click)="onRecordVideo(); closeQualityScore()">
-        <i class="fas fa-video"></i> הקלטת מסך
-      </button>
-      <input type="file" #fileInput hidden (change)="onFileSelected($event); closeQualityScore()" multiple>
-      <button type="button" class="screen-btn green" (click)="onUploadClick(fileInput); closeQualityScore()">
-        <i class="fas fa-upload"></i> העלאת קובץ
-      </button>
-    </div>
-
-
-    <!-- כפתור שמירה -->
-    @if(showSaveButton) {
-    <button type="submit" class="save-btn" [disabled]="!bugForm.valid">
-      <i class="fas fa-save"></i> שמור
+  <!-- שורת כפתורים -->
+  <div class="buttons-row">
+    <button type="button" class="screen-btn red" (click)="allAttachments()">
+      <i class="fas fa-folder-open"></i> {{ showAttachments ? 'הסתר מסמכים' : 'הצג מסמכים' }}
     </button>
-    }
-  </form>
-  <app-search-same-bugs *ngIf="showDuplicateCheck" [bugComparisonQuery]="getBugComparisonQuery()"
-    (continue)="onContinueAddBug()" (cancel)="onCancel()" (change)="changeShowSaveButton()">
-  </app-search-same-bugs>
+    <button type="button" class="screen-btn yellow" (click)="onScreenshot()">
+      <i class="fas fa-camera"></i> צילום מסך
+    </button>
+    <button type="button" class="screen-btn blue" (click)="onRecordVideo()">
+      <i class="fas fa-video"></i> הקלטת מסך
+    </button>
+    <input type="file" #fileInput hidden (change)="onFileSelected($event)" multiple>
+    <button type="button" class="screen-btn green" (click)="onUploadClick(fileInput)">
+      <i class="fas fa-upload"></i> העלאת קובץ
+    </button>
+  </div>
 
-  <div *ngIf="showAttachments" class="attachments-container">
-    <h3><i class="fas fa-paperclip"></i> קבצים מצורפים</h3>
-    <ul class="attachments-list">
-      <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
-        <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ file.name }}</a>
+  <!-- כפתור שמירה -->
+  <button type="submit" class="save-btn" [disabled]="!bugForm.valid">
+    <i class="fas fa-save"></i> שמור
+  </button>
+</form>
+<app-search-same-bugs *ngIf="showDuplicateCheck" [bugComparisonQuery]="getBugComparisonQuery()"
+  (continue)="onContinueAddBug()" (cancel)="onCancel()" (change)="changeShowSaveButton()">
+</app-search-same-bugs>
 
-        <ng-container *ngIf="file.type.startsWith('image')">
-          <img [src]="fileUrls[i]" alt="{{file.name}}" class="attachment-preview" />
-        </ng-container>
+<div *ngIf="showAttachments" class="attachments-container">
+  <h3><i class="fas fa-paperclip"></i> קבצים מצורפים</h3>
+  <ul class="attachments-list">
+    <li *ngFor="let file of allAttachment; let i = index" class="attachment-item">
+      <a [href]="fileUrls[i]" target="_blank" class="attachment-link">{{ (file.name | slice:0:20) + (file.name.length >
+        20 ? '...' : '') }}</a>
 
-        <ng-container *ngIf="file.type.startsWith('video')">
+      <ng-container *ngIf="file.type.startsWith('image'); else videoOrOtherFileTypes">
+        <img [src]="fileUrls[i]" alt="{{file.name}}" class="attachment-preview" />
+      </ng-container>
+      <ng-template #videoOrOtherFileTypes>
+        <ng-container *ngIf="file.type.startsWith('video'); else fileIcons">
           <video [src]="fileUrls[i]" controls class="attachment-preview"></video>
         </ng-container>
+        <ng-template #fileIcons>
+          <ng-container *ngIf="isFileType(file.name, ['.zip', '.rar', '.tar', '.gz'])">
+            <i class="fas fa-file-archive attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.pdf'])">
+            <i class="fas fa-file-pdf attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.doc', '.docx'])">
+            <i class="fas fa-file-word attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.mp3'])">
+            <i class="fas fa-file-audio attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.txt', '.rtf'])">
+            <i class="fas fa-file-alt attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.xls', '.xlsx'])">
+            <i class="fas fa-file-excel attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.ppt', '.pptx'])">
+            <i class="fas fa-file-powerpoint attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container
+            *ngIf="isFileType(file.name, ['.html', '.css', '.js', '.java', '.py', '.cpp', '.c', '.rb', '.php'])">
+            <i class="fas fa-file-code attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container *ngIf="isFileType(file.name, ['.mp4', '.avi', '.mov', '.mkv'])">
+            <i class="fas fa-file-video attachment-preview" style="font-size: 150px;"></i>
+          </ng-container>
+          <ng-container
+            *ngIf="!isFileType(file.name, ['.zip', '.rar', '.tar', '.gz', '.pdf', '.doc', '.docx', '.mp3', '.txt', '.rtf', '.xls', '.xlsx', '.ppt', '.pptx', '.html', '.css', '.js', '.java', '.py', '.cpp', '.c', '.rb', '.php', '.mp4', '.avi', '.mov', '.mkv'])">
+            <i class="fas fa-file attachment-preview" style="font-size: 150px;"></i>
+              <!-- <i class="fas fa-question attachment-preview" style="font-size: 150px;"></i> -->
+          </ng-container>
+        </ng-template>
+      </ng-template>
 
-        <div class="attachment-actions">
-          <button (click)="renameFile(i)"><i class="fas fa-pencil-alt"></i> שנה שם</button>
-          <button (click)="removeFileByIndex(i)"><i class="fas fa-trash"></i> מחק</button>
-        </div>
-      </li>
-    </ul>
+      <div class="attachment-actions">
+        <button (click)="renameFile(i)"><i class="fas fa-pencil-alt"></i> שנה שם</button>
+        <button (click)="removeFileByIndex(i)"><i class="fas fa-trash"></i> מחק</button>
+      </div>
+    </li>
+  </ul>
+
+  <!-- <ng-container *ngIf="allAttachment.length === 0">
+    <i class="fas fa-file" style="font-size: 150px;"></i> 
+  </ng-container> -->
+
+  <hr style="margin: 20px 0;" />
+</div>
+
+<div>
+  <h3>ציון איכות: {{ qualityScore }}</h3>
+  <div class="progress-bar"
+    [ngClass]="{'low': qualityScore < 50, 'medium': qualityScore >= 50 && qualityScore < 80, 'high': qualityScore >= 80}">
+    <div class="progress" [style.width.%]="qualityScore"></div>
   </div>
-  <div *ngIf="showQualityScore">
-    <h3>ציון איכות: {{ qualityScore }}</h3>
-    <div class="progress-bar"
-      [ngClass]="{'low': qualityScore < 50, 'medium': qualityScore >= 50 && qualityScore < 80, 'high': qualityScore >= 80}">
-      <div class="progress" [style.width.%]="qualityScore"></div>
-    </div>
-    <p>{{ qualityMessage }}</p>
-  </div>
-
-
+  <p>{{ qualityMessage }}</p>
 </div>
