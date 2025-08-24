@@ -7,6 +7,7 @@ using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetOpenBugsByPriority;
 using GovernmentBug.Application.Bugs.Queries.GetAverageTreatmenTime;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus;
 using GovernmentBug.Application.Bugs.Queries.GetBugStats.getByCategory;
+using GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByUser;
 
 namespace GovernmentBug.Web.Endpoints;
 
@@ -18,6 +19,7 @@ public class BugStatistics : EndpointGroupBase
           MapGet(GetByStatus, "bystatus")
          .MapGet(TotalOpenBugs, "totalopenbugs")
          .MapGet(GetBugs)
+         .MapGet(GetByUser, "byuser/{userId}")
          .MapGet(AverageTreatmentTime, "averagetreatmenttime/{priorityId}/{categoryId}/{created}")
          .MapGet(GetOpenBugsByPriority, "openbugsbypriority")
          .MapGet(GetByMonths, "bymonth/{year}")
@@ -64,5 +66,10 @@ public class BugStatistics : EndpointGroupBase
     {
         var result = await sender.Send(new AverageTreatmentTimeQuery(priorityId, categoryId, created));
         return (int)result;
+    }
+    public async Task<ByUserDto> GetByUser(ISender sender, int userId)
+    {
+        var result = await sender.Send(new GetByUserQuery(userId));
+        return result;
     }
 }

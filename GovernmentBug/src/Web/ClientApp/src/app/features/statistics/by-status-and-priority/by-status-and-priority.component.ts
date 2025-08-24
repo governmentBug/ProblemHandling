@@ -45,8 +45,7 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
       intersect: false,
     },
     plugins: {
-          datalabels: { display: false },
-
+      datalabels: { display: false },
       legend: { display: false },
       tooltip: {
         titleColor: '#222',

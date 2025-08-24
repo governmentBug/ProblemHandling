@@ -1,0 +1,10 @@
+<div class="personal-tabs-container">
+  <button class="personal-tab" [class.active]="selectedTab === 'personal'" (click)="selectTab('personal')">
+    סטטיסטיקות אישיות
+  </button>
+  <button class="personal-tab" [class.active]="selectedTab === 'dashboard'" (click)="selectTab('dashboard')">
+    סטטיסטיקות כלליות
+  </button>
+</div>
+<router-outlet></router-outlet>
+<div>

@@ -1,5 +1,6 @@
 <div class="trends-container">
   <div class ="header">
+    @if(displayCategorySelector) {
   <div class="category-select-container">
     <label for="categorySelect" class="category-label">בחר קטגוריה</label>
     <select id="categorySelect" [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
@@ -9,6 +10,7 @@
       }
     </select>
   </div>
+}
   <!-- הוסף שדה אוטוקומפליט לבחירת קטגוריה -->
   <div class="chart-title">
     <span class="chart-title-text">

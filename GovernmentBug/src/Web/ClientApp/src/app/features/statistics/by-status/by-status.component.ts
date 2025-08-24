@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { display } from 'html2canvas/dist/types/css/property-descriptors/display';
 import { NgChartsModule } from 'ng2-charts';
 import { ByStatus } from 'src/app/models/byStatus.model';
 
@@ -15,16 +14,7 @@ export class ByStatusComponent implements OnChanges {
 
   pieChartLabels = ['פתוחים', 'בטיפול', 'נסגרו', 'בוטלו'];
   pieChartType = 'doughnut';
-  pieChartData: any = {
-    labels: this.pieChartLabels,
-    datasets: [{
-      data: [0, 0, 0, 0, 0],
-      backgroundColor: ['#ff5252', '#2196f3', '#4caf50', '#9c27b0', '#F57C00'],
-      hoverBackgroundColor: ['#ff7961', '#42a5f5', '#66bb6a', '#ab47bc', '#ff9800'],
-      hoverBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff'],
-      borderWidth: 2
-    }]
-  };
+  pieChartData = this.getPieChartData([0, 0, 0, 0, 0]);
   pieChartOptions = {
     cutout: '70%',
     plugins: {
@@ -34,9 +24,6 @@ export class ByStatusComponent implements OnChanges {
       }
     }
   };
-
-  dataReady = false;
-
   animatedPercents = {
     openBugs: 0,
     activeBugs: 0,
@@ -49,28 +36,31 @@ export class ByStatusComponent implements OnChanges {
     if (changes['byStatus'] && this.byStatus) {
       this.updateChartData();
       this.animatePercents();
-      this.dataReady = true;
     }
   }
 
+  getPieChartData(data: number[]): any {
+  return {
+    labels: this.pieChartLabels,
+    datasets: [{
+      data,
+      backgroundColor: ['#ff5252', '#2196f3', '#4caf50', '#9c27b0', '#F57C00'],
+      hoverBackgroundColor: ['#ff7961', '#42a5f5', '#66bb6a', '#ab47bc', '#ff9800'],
+      hoverBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff'],
+      borderWidth: 2,
+      hoverBorderWidth: 7
+    }]
+  };
+}
   updateChartData() {
     if (!this.byStatus) return;
-    this.pieChartData = {
-      labels: this.pieChartLabels,
-      datasets: [{
-        data: [
-          this.byStatus.openBugs,
-          this.byStatus.activeBugs,
-          this.byStatus.closedBugs,
-          this.byStatus.cancelledBugs,
-          this.byStatus.closeWithoutOpeningBugs
-        ],
-        backgroundColor: ['#ff5252', '#2196f3', '#4caf50', '#9c27b0', '#F57C00'],
-        hoverBackgroundColor: ['#ff7961', '#42a5f5', '#66bb6a', '#ab47bc', '#ff9800'],
-        hoverBorderColor: ['#fff', '#fff', '#fff', '#fff', '#fff'],
-        hoverBorderWidth: 7
-      }]
-    };
+    this.pieChartData = this.getPieChartData([
+      this.byStatus.openBugs,
+      this.byStatus.activeBugs,
+      this.byStatus.closedBugs,
+      this.byStatus.cancelledBugs,
+      this.byStatus.closeWithoutOpeningBugs
+    ]);
   }
 
   animatePercents() {

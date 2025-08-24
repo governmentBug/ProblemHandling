@@ -2,10 +2,10 @@
   background: #fff;
   border-radius: 10px;
   padding: 4px 0 0 0;
-  width: 100% ;
+  width: max-content;
   height: 44vh;
-  max-height: 44vh;
-  min-width: 44vw;
+  /* max-height: 44vh;
+  min-width: 44vw; */
   margin: 0;
   color: #222;
   box-shadow: 0 1px 6px #0001;
@@ -28,9 +28,10 @@
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  width: 100%;
+  width: max-content;
   height: auto;
   margin: 0;
+
 }
 
 .status-boxes {

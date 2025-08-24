@@ -1,0 +1,115 @@
+.personal-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #1976d2;
+  font-weight: bold;
+  margin: 32px 0 24px 0;
+}
+@media (max-width: 900px) {
+  .personal-drig {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .personal-item {
+    max-width: 100%;
+  }
+}
+.personal-drig {
+  display: grid;
+  margin: 32px 0;
+}
+.personal-item {
+  background: #f7f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px 32px;
+  min-width: 260px;
+  max-width: 350px;
+  flex: 1 1 260px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.by-priority
+{
+  background: #f7f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px 32px;
+  min-width: 40vw;
+  max-width: 40vw;
+  flex: 1 1 260px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.personal-item h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.15rem;
+  color: #2a3b4c;
+  font-weight: 600;
+  text-align: center;
+}
+.personal-item span {
+  font-size: 2.2rem;
+  color: #1976d2;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.priority-and-graph {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.priority-table {
+  min-width: 260px;
+  max-width: 350px;
+  flex: 1 1 260px;
+}
+.monthly-graph {
+  flex: 2 1 500px;
+  min-width: 320px;
+}
+.center-title {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+@media (max-width: 900px) {
+  .priority-and-graph {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .monthly-graph {
+    min-width: 0;
+  }
+}
+.personal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 32px 0;
+  justify-items: center;
+  align-items: start;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 900px) {
+  .personal-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    width: 100%;
+  }
+}
+
+
+
+

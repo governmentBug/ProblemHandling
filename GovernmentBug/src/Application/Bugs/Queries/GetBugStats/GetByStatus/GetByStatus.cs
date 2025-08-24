@@ -7,9 +7,7 @@ using GovernmentBug.Application.Common.Interfaces;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus
 {
-    public record class GetByStatusQuery : IRequest<ByStatusDto>
-    {
-    }
+    public record class GetByStatusQuery : IRequest<ByStatusDto>{}
     public class GetByStatusQueryHandler : IRequestHandler<GetByStatusQuery, ByStatusDto>
     {
         private readonly IApplicationDbContext _context;
@@ -22,7 +20,7 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus
             var byStatusDto = new ByStatusDto();
             byStatusDto.TotalBugs = await _context.Bugs.CountAsync(cancellationToken);
 
-            byStatusDto.OpenBugs.Total = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("פתוח"), cancellationToken);
+            byStatusDto.OpenBugs.Total = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("פתוח"),cancellationToken);
             byStatusDto.OpenBugs.Low = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("פתוח")
             && b.Priority.PriorityName.Equals("נמוך"), cancellationToken);
             byStatusDto.OpenBugs.Medium = await _context.Bugs.CountAsync(b => b.Status.StatusName.Equals("פתוח")

@@ -22,7 +22,8 @@ namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByMonth
             var bugs = _context.Bugs
                 .Where(b => b.Created >= minDate && b.Created < maxDate)
                 .Where(b => !request.CategoryId.HasValue || b.CategoryId == request.CategoryId)
-                .Where(b => !request.UserId.HasValue || b.CreatedByUserId == request.UserId).GroupBy(b => b.Created.Month);
+                .Where(b => !request.UserId.HasValue || b.CreatedByUserId == request.UserId)
+                .GroupBy(b => b.Created.Month);
             foreach (var b in bugs)
             {
                 byMonthsDto.Add(b.Key, b.Count());
