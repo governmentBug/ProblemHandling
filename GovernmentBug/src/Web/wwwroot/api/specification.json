@@ -475,6 +475,38 @@
         }
       }
     },
+    "/api/BugStatistics/byuser/{userId}": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BugStatistics/averagetreatmenttime/{priorityId}/{categoryId}/{created}": {
       "get": {
         "tags": [
@@ -1842,6 +1874,27 @@
           "critical": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "ByUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "treatBugs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageTreatmenTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "byPriority": {
+            "$ref": "#/components/schemas/ByPriorityDto"
           }
         }
       },

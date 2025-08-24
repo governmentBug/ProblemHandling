@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BugStatisticsClient, CategoryDto } from '../../../web-api-client'
 import { StateService } from 'src/app/services/state.service';
 
@@ -17,6 +16,8 @@ import { StateService } from 'src/app/services/state.service';
 })
 export class MonthlyTrendsComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  @Input() userId: number = null;
+  @Input() displayCategorySelector: boolean = true;
   months: string[] = [];
   bugCounts: number[] = [];
   loading = false;
@@ -51,7 +52,7 @@ export class MonthlyTrendsComponent implements OnInit {
       y: { 
     
         beginAtZero: true, 
-        title: { display: true, text: 'כמות באגים', align: 'start' } // align למעלה
+        title: { display: true, text: 'כמות באגים', align: 'start' }
       }
     }
   };
@@ -67,7 +68,7 @@ export class MonthlyTrendsComponent implements OnInit {
 
   loadYear() {
     this.loading = true;
-    this.bugStatisticsClient.getByMonths(this.selectedCategory, null, this.currentYearBack)
+    this.bugStatisticsClient.getByMonths(this.selectedCategory, this.userId, this.currentYearBack)
       .subscribe(data => {
         const monthNames = [
           'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
@@ -87,7 +88,6 @@ export class MonthlyTrendsComponent implements OnInit {
             lastYear--;
           }
         }
-        console.log(`Loaded data for ${this.currentYearBack} months:`, this.months, this.bugCounts);
         this.lineChartData.labels = [...this.months];
         this.lineChartData.datasets[0].data = [...this.bugCounts];
         this.chart?.update();
@@ -101,16 +101,11 @@ export class MonthlyTrendsComponent implements OnInit {
   }
 
   loadNextMonths() {
-    if (this.currentYearBack === 0) return; // לא ניתן לעבור לשנה עתידית
+    if (this.currentYearBack === 0) return;
     this.currentYearBack--;
     this.loadYear();
   }
-
-  updateChart() {
-    this.lineChartData.labels = [...this.months];
-    this.lineChartData.datasets[0].data = [...this.bugCounts];
-    this.chart?.update();
-  }
+  
   onCategoryChange() {
     this.loadYear();
   }

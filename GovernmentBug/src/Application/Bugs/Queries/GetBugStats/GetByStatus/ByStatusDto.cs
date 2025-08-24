@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GovernmentBug.Application.Common.Models;
 
 namespace GovernmentBug.Application.Bugs.Queries.GetBugStats.GetByStatus
 {

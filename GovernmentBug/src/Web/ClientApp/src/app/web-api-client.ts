@@ -760,6 +760,7 @@ export interface IBugStatisticsClient {
     getByStatus(): Observable<ByStatusDto>;
     totalOpenBugs(): Observable<number>;
     getBugs(): Observable<BugSummariesDto[]>;
+    getByUser(userId: number): Observable<ByUserDto>;
     averageTreatmentTime(priorityId: number, categoryId: number, created: Date): Observable<number>;
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
     getByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto>;
@@ -921,6 +922,57 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getByUser(userId: number): Observable<ByUserDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/byuser/{userId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ByUserDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ByUserDto>;
+        }));
+    }
+
+    protected processGetByUser(response: HttpResponseBase): Observable<ByUserDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ByUserDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3538,6 +3590,54 @@ export interface IByPriorityDto {
     medium?: number;
     high?: number;
     critical?: number;
+}
+
+export class ByUserDto implements IByUserDto {
+    totalBugs?: number;
+    treatBugs?: number;
+    averageTreatmenTime?: number;
+    byPriority?: ByPriorityDto;
+
+    constructor(data?: IByUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalBugs = _data["totalBugs"];
+            this.treatBugs = _data["treatBugs"];
+            this.averageTreatmenTime = _data["averageTreatmenTime"];
+            this.byPriority = _data["byPriority"] ? ByPriorityDto.fromJS(_data["byPriority"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ByUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalBugs"] = this.totalBugs;
+        data["treatBugs"] = this.treatBugs;
+        data["averageTreatmenTime"] = this.averageTreatmenTime;
+        data["byPriority"] = this.byPriority ? this.byPriority.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IByUserDto {
+    totalBugs?: number;
+    treatBugs?: number;
+    averageTreatmenTime?: number;
+    byPriority?: ByPriorityDto;
 }
 
 export class OpenBugsByPriorityDto implements IOpenBugsByPriorityDto {

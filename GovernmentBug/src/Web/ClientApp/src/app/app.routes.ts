@@ -3,12 +3,19 @@ import { AllBugsComponent } from './features/all-bugs/all-bugs.component';
 import { DemoComponent } from './features/demo/demo.component';
 import { NewBugComponent } from './features/new-bug/new-bug.component';
 import { SearchSameBugsComponent } from './features/Identifying-recurring-bugs/search-same-bugs/search-same-bugs.component';
+import { StatisticsComponent } from './features/statistics/statistics/statistics.component';
+import { PersonalStatisticsComponent } from './features/statistics/personal-statistics/personal-statistics.component';
 import { DashboardComponent } from './features/statistics/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: AllBugsComponent },
   { path: 'allBug', component: AllBugsComponent },
-  { path: 'statistics', component: DashboardComponent },
+  { path: 'statistics', component: StatisticsComponent,
+    children: [
+      { path: 'personal', component: PersonalStatisticsComponent },
+      { path: 'dashboard', component: DashboardComponent }
+    ]
+   },
   { path: 'addBug', component: NewBugComponent },
   { path: 'demo', component: DemoComponent },
   { path: 'demo/:id', component: DemoComponent },

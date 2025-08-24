@@ -1,0 +1,22 @@
+
+<h2 class="personal-title">
+  מספר הבאגים שפתחת: <span>{{ userData.totalBugs }}</span>
+</h2>
+<div class="personal-grid">
+  <div class="personal-item">
+    <h3>Azureכמות הבאגים שנפתחו ב</h3>
+    <span>{{ userData.treatBugs }}</span>
+  </div>
+  <div class="personal-item">
+    <h3>ממוצע זמן טיפול בבאגים (ימים)</h3>
+    <span>{{ userData.averageTreatmenTime }}</span>
+  </div>
+  <div class ="personal-item by-priority">
+    <h3 class="center-title">כמות באגים בטיפול לפי עדיפות</h3>
+    <app-priority-bar-chart [data]="userData.byPriority"></app-priority-bar-chart>
+  </div>
+  <div class="monthly-trends">
+    <app-monthly-trends [userId]="userId" [displayCategorySelector]="false"></app-monthly-trends>
+  </div>
+</div>
+
