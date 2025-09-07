@@ -1,40 +1,20 @@
-.by-category-container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 6px #0001;
-  min-width: 20vw;
-  height: 100%;
-}
-
-.by-category-container h2 {
-  color: #222;
-  font-size:1.3vw;
-  padding: 3px 3px 3px 3px;
-  text-align: center;
-  font-weight: 200;
-
-}
 .canvas-wrapper {
+  position: relative;
   width: 100%;
-  height: 320px;      /* גובה גדול יותר */
-  padding: 40px;      /* יותר מקום לתגיות */
-  box-sizing: border-box;
-}
-canvas {
-  width: 100% !important;
-  height: 100% !important;
+  height: 100%;
+  max-width: 100%;       /* לא יחרוג מרוחב הרבע */
+  max-height: 100%;      /* לא יחרוג מגובה הרבע */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (max-width: 700px) {
-  .by-category-container {
-    padding: 2px 0 0 0;
-  }
-  .by-category-container h2 {
-    font-size: 0.9rem;
-    padding-bottom: 2px;
-  }
-  canvas {
-    max-width: 98vw;
-    height: 80px !important;
-  }
+canvas {
+  width: auto !important;  /* רוחב אוטומטי לפי פרופורציה */
+  height: auto !important; /* גובה אוטומטי לפי פרופורציה */
+  max-width: 100%;         /* לא יחרוג מרוחב הרבע */
+  max-height: 100%;        /* לא יחרוג מגובה הרבע */
+  display: block;
 }
+h2 { text-align: center; font-size: 1.2rem; font-weight: 200; color: #222; margin: 0 0 10px 0; flex: 0 0 auto; }
+
