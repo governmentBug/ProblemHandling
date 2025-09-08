@@ -765,6 +765,7 @@ export interface IBugStatisticsClient {
     getOpenBugsByPriority(): Observable<OpenBugsByPriorityDto>;
     getByMonths(categoryId: number | null | undefined, userId: number | null | undefined, year: number): Observable<ByMonthsDto>;
     getByCategory(): Observable<ByCategoryDto>;
+    getByUsers(): Observable<ByUsersDto>;
 }
 
 @Injectable({
@@ -1182,6 +1183,54 @@ export class BugStatisticsClient implements IBugStatisticsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ByCategoryDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getByUsers(): Observable<ByUsersDto> {
+        let url_ = this.baseUrl + "/api/BugStatistics/byusers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ByUsersDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ByUsersDto>;
+        }));
+    }
+
+    protected processGetByUsers(response: HttpResponseBase): Observable<ByUsersDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ByUsersDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3790,6 +3839,74 @@ export class ByCategoryDto implements IByCategoryDto {
 export interface IByCategoryDto {
     totalBugs?: number;
     byCategory?: { [key: string]: number; };
+}
+
+export class ByUsersDto implements IByUsersDto {
+    usersName?: string[];
+    totalBugs?: number[];
+    treatedBugs?: number[];
+
+    constructor(data?: IByUsersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["usersName"])) {
+                this.usersName = [] as any;
+                for (let item of _data["usersName"])
+                    this.usersName!.push(item);
+            }
+            if (Array.isArray(_data["totalBugs"])) {
+                this.totalBugs = [] as any;
+                for (let item of _data["totalBugs"])
+                    this.totalBugs!.push(item);
+            }
+            if (Array.isArray(_data["treatedBugs"])) {
+                this.treatedBugs = [] as any;
+                for (let item of _data["treatedBugs"])
+                    this.treatedBugs!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ByUsersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ByUsersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.usersName)) {
+            data["usersName"] = [];
+            for (let item of this.usersName)
+                data["usersName"].push(item);
+        }
+        if (Array.isArray(this.totalBugs)) {
+            data["totalBugs"] = [];
+            for (let item of this.totalBugs)
+                data["totalBugs"].push(item);
+        }
+        if (Array.isArray(this.treatedBugs)) {
+            data["treatedBugs"] = [];
+            for (let item of this.treatedBugs)
+                data["treatedBugs"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IByUsersDto {
+    usersName?: string[];
+    totalBugs?: number[];
+    treatedBugs?: number[];
 }
 
 export class CategoryDto implements ICategoryDto {

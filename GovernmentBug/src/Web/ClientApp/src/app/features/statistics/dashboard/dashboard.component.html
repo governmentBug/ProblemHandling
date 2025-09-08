@@ -1,18 +1,88 @@
-
 <div class="dashboard-grid">
-  @if (byStatusDto) {
+  @if (!showCharts) {
+    <div class="dashboard-item">
+      <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+          <rect x="3" y="13" width="4" height="8" rx="1"/>
+          <rect x="10" y="9" width="4" height="12" rx="1"/>
+          <rect x="17" y="5" width="4" height="16" rx="1"/>
+        </svg>
+      </div>
+    </div>
+    <div class="dashboard-item">
+      <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+          <path d="M11 2v20a10 10 0 1 1 10-10h-10z"/>
+          <path d="M13 2a10 10 0 0 1 9.95 9H13V2z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="dashboard-item">
+      <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20v-1a7 7 0 0 1 14 0v1"/>
+        </svg>
+      </div>
+    </div>
+    <div class="dashboard-item">
+      <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+          <rect x="3" y="13" width="4" height="8" rx="1"/>
+          <rect x="10" y="9" width="4" height="12" rx="1"/>
+          <rect x="17" y="5" width="4" height="16" rx="1"/>
+        </svg>
+      </div>
+    </div>
+  } @else {
+    @if (byStatusDto) {
       <div class="dashboard-item">
-    <app-by-status-and-priority [byStatusAndPriority]="byStatusDto"></app-by-status-and-priority>
-  </div>
+        <app-by-status-and-priority [byStatusAndPriority]="byStatusDto"></app-by-status-and-priority>
+      </div>
       <div class="dashboard-item">
-    <app-by-status [byStatus]="byStatus"></app-by-status>
-  </div>
+        <app-by-status [byStatus]="byStatus"></app-by-status>
+      </div>
+    } @else {
+      <div class="dashboard-item">
+        <!-- אייקון עמודות אפור -->
+        <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+          <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+            <rect x="3" y="13" width="4" height="8" rx="1"/>
+            <rect x="10" y="9" width="4" height="12" rx="1"/>
+            <rect x="17" y="5" width="4" height="16" rx="1"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dashboard-item">
+        <!-- אייקון עוגה אפור -->
+        <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+          <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+            <path d="M11 2v20a10 10 0 1 1 10-10h-10z"/>
+            <path d="M13 2a10 10 0 0 1 9.95 9H13V2z"/>
+          </svg>
+        </div>
+      </div>
+    }
+    @if (byUsers) {
+      <div class="dashboard-item">
+        <app-by-users [byUsersData]="byUsers"></app-by-users>
+        <!-- <app-by-category></app-by-category> -->
+      </div>
+    } @else {
+      <div class="dashboard-item">
+        <!-- אייקון משתמשים אפור -->
+        <div class="dashboard-placeholder" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+          <svg width="48" height="48" fill="#b0b4bb" viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20v-1a7 7 0 0 1 14 0v1"/>
+          </svg>
+        </div>
+      </div>
+    }
+    <div class="dashboard-item">
+      <app-by-category></app-by-category>
+      <!-- <app-monthly-trends></app-monthly-trends> -->
+    </div>
+  }
+</div>
 
-}
-  <div class="dashboard-item">
-    <app-by-category></app-by-category>
-</div>
-<div class="dashboard-item">
-    <app-monthly-trends></app-monthly-trends>
-  </div>
-</div>

@@ -1,70 +1,52 @@
 <div class="by-status-container">
   <div class="by-status-grid">
-<div class="donut-chart-container">
-  <canvas
-    baseChart
-    [data]="pieChartData"
-    [type]="'doughnut'"
-    [options]="pieChartOptions"
-    style="position: relative; z-index: 1;"
-  ></canvas>
-  <div class="donut-center-text">
-    <span class="total-count">{{ byStatus.totalBugs }}</span>
-    <span class="center-label">באגים במערכת</span>
-  </div>
-</div>
-   <div class="status-boxes">
-  <div class="status-row">
-    <div class="status-box open">
-      <div class="status-count">
-        {{ byStatus.openBugs }}
+    <!-- גרף דונט -->
+    <div class="donut-chart-container">
+      <canvas
+        baseChart
+        [data]="pieChartData"
+        [type]="pieChartType"
+        [options]="pieChartOptions">
+      </canvas>
+      <div class="donut-center-text">
+        <span class="total-count">{{ byStatus.totalBugs }}</span>
+        <span class="center-label">באגים במערכת</span>
       </div>
-      <div class="status-title">פתוחים</div>
-      <span class="status-percent">
-        {{ animatedPercents.openBugs }}%
-      </span>
     </div>
-    <div class="status-box active">
-      <div class="status-count">
-        {{ byStatus.activeBugs }}
+
+    <!-- סטטוס-בוקסים -->
+    <div class="status-boxes">
+      <div class="status-row">
+        <div class="status-box open">
+          <div class="status-count">{{ byStatus.openBugs }}</div>
+          <div class="status-title">פתוחים</div>
+          <span class="status-percent">{{ animatedPercents.openBugs }}%</span>
+        </div>
+        <div class="status-box active">
+          <div class="status-count">{{ byStatus.activeBugs }}</div>
+          <div class="status-title">בטיפול</div>
+          <span class="status-percent">{{ animatedPercents.activeBugs }}%</span>
+        </div>
       </div>
-      <div class="status-title">בטיפול</div>
-      <span class="status-percent">
-        {{ animatedPercents.activeBugs }}%
-      </span>
-    </div>
-  </div>
-  <div class="status-row">
-    <div class="status-box closed">
-      <div class="status-count">
-        {{ byStatus.closedBugs }}
+      <div class="status-row">
+        <div class="status-box closed">
+          <div class="status-count">{{ byStatus.closedBugs }}</div>
+          <div class="status-title">נסגרו</div>
+          <span class="status-percent">{{ animatedPercents.closedBugs }}%</span>
+        </div>
+        <div class="status-box cancelled">
+          <div class="status-count">{{ byStatus.cancelledBugs }}</div>
+          <div class="status-title">בוטלו</div>
+          <span class="status-percent">{{ animatedPercents.cancelledBugs }}%</span>
+        </div>
       </div>
-      <div class="status-title">נסגרו</div>
-      <span class="status-percent">
-        {{ animatedPercents.closedBugs }}%
-      </span>
-    </div>
-    <div class="status-box cancelled">
-      <div class="status-count">
-        {{ byStatus.cancelledBugs }}
+      <div class="status-row full-width-row">
+        <div class="status-box close-without-opening">
+          <div class="status-count">{{ byStatus.closeWithoutOpeningBugs }}</div>
+          <div class="status-title">נסגר מבלי להיפתח</div>
+          <span class="status-percent">{{ animatedPercents.closeWithoutOpeningBugs }}%</span>
+        </div>
       </div>
-      <div class="status-title">בוטלו</div>
-      <span class="status-percent">
-        {{ animatedPercents.cancelledBugs }}%
-      </span>
     </div>
   </div>
-  <!-- שורה נפרדת לקופסה הכתומה -->
-  <div class="status-row full-width-row">
-    <div class="status-box close-without-opening">
-      <div class="status-count">
-        {{ byStatus.closeWithoutOpeningBugs }}
-      </div>
-      <div class="status-title">נסגר מבלי להיפתח</div>
-      <span class="status-percent">
-        {{ animatedPercents.closeWithoutOpeningBugs }}%
-      </span>
-    </div>
-  </div>
-</div>
 </div>
