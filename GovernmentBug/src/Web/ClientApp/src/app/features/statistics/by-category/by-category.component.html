@@ -1,10 +1,11 @@
-<div class="by-category-container">
-  <h2 >התפלגות באגים לפי קטגוריה</h2>
+<div class="card">
+  <h2>התפלגות באגים לפי קטגוריה</h2>
   <div class="canvas-wrapper">
     <canvas baseChart
-      [data]="pieChartData"
-      [type]="pieChartType"
-      [options]="pieChartOptions">
+            [data]="pieChartData"
+            [options]="pieChartOptions"
+            [plugins]="pieChartPlugins"
+            [type]="pieChartType">
     </canvas>
   </div>
 </div>
