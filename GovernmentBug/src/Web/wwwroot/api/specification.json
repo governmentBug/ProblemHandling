@@ -652,6 +652,26 @@
         }
       }
     },
+    "/api/BugStatistics/byusers": {
+      "get": {
+        "tags": [
+          "BugStatistics"
+        ],
+        "operationId": "GetByUsers",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByUsersDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Category/name/{name}": {
       "get": {
         "tags": [
@@ -1944,6 +1964,32 @@
           "byCategory": {
             "type": "object",
             "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "ByUsersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "usersName": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "totalBugs": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "treatedBugs": {
+            "type": "array",
+            "items": {
               "type": "integer",
               "format": "int32"
             }
