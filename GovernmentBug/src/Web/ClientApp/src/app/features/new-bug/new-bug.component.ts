@@ -26,7 +26,6 @@ export class NewBugComponent implements OnInit {
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
   public newBug: AbbBug = new AbbBug();
-  allCategory: any[] = [];
   allPriority: any[] = [];
   fileUrls: string[] = [];
   bugId: number = 0;
@@ -47,11 +46,10 @@ export class NewBugComponent implements OnInit {
   oneAttachment: boolean = false;
 
   constructor(private bugService: BugService, private stateService: StateService,
-    private attachmentService: AttachmentService, private router: Router, private AddBug: AllBugsComponent) { }
+    private attachmentService: AttachmentService, private AddBug: AllBugsComponent) { }
 
 
   ngOnInit(): void {
-    this.loadAllCategory();
     this.loadAllPriority();
     this.newBug.statusId = 3;
     this.newBug.created = this.formattedDateToSave;
@@ -107,7 +105,8 @@ export class NewBugComponent implements OnInit {
     }
   }
   getBugComparisonQuery(): BugComparisonQuery {
-    return {
+    this.newBug.categoryId = this.categoryComponent.selectedCategoryId    
+    return {      
       title: this.newBug.title,
       description: this.newBug.description,
       categoryId: this.newBug.categoryId
@@ -137,13 +136,7 @@ export class NewBugComponent implements OnInit {
       confirmButtonText: 'כן, בטל',
       cancelButtonText: 'לא, השאר'
     }).then((result) => {
-      if (result.isConfirmed) this.router.navigate(['/']);
-    });
-  }
-  loadAllCategory() {
-    this.stateService.getAllCategories().subscribe({
-      next: categories => this.allCategory = categories,
-      error: err => console.error('שגיאה בקבלת הCategory:', err)
+      if (result.isConfirmed) this.AddBug.closePopup();
     });
   }
   loadAllPriority() {
@@ -226,60 +219,6 @@ export class NewBugComponent implements OnInit {
   allAttachments() {
     this.showAttachments = !this.showAttachments;
   }
-  // onFileSelected(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //   if (input.files && input.files.length > 0) {
-  //     const files: FileList = input.files;
-  //     const zip = new JSZip();
-  //     const zipFileName = 'attachments.zip'; // שם הקובץ ZIP
-
-  //     let hasLargeFile = false;
-
-  //     for (let i = 0; i < files.length; i++) {
-  //       const file = files[i];
-  //       if (file.size > 25 * 1024 * 1024) { // בדוק אם הקובץ גדול מ-25MB
-  //         zip.file(file.name, file); // הוסף את הקובץ ל-ZIP
-  //         hasLargeFile = true; // יש קובץ גדול
-  //       } else {
-  //         // אם יש קובץ גדול, אל תוסיף קבצים רגילים
-  //         if (!hasLargeFile) {
-  //           this.allAttachment.push(file);
-  //           this.fileUrls.push(this.getFileUrl(file));
-  //         }
-  //       }
-
-  //       if (file.type.startsWith('video/')) {
-  //         this.numFilm++;
-  //         if (this.oneVidio === false) {
-  //           this.qualityScore += 20;
-  //           this.oneVidio = true;
-  //         }
-  //       } else {
-  //         this.numDocuments++;
-  //         if (this.oneAttachment === false) {
-  //           this.qualityScore += 20;
-  //           this.oneAttachment = true;
-  //         }
-  //       }
-  //     }
-
-  //     // שמור את ה-ZIP אם יש קבצים בו
-  //     if (hasLargeFile) {
-  //       zip.generateAsync({ type: 'blob' })
-  //         .then(content => {
-  //           // כאן תוכל לשמור את ה-ZIP או להעלות אותו
-  //           const zipBlobUrl = URL.createObjectURL(content);
-  //           this.allAttachment.push(new File([content], zipFileName));
-  //           this.fileUrls.push(zipBlobUrl);
-  //         })
-  //         .catch(error => {
-  //           this.qualityScore -= 20;
-  //           alert('שגיאה ביצירת קובץ ה-ZIP: ' + error.message);
-  //         });
-  //     }
-  //   }
-  //   this.setQualityMessage();
-  // }
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {

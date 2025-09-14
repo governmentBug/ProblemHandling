@@ -92,7 +92,7 @@ bugComparisonQuery: BugComparisonQuery = new BugComparisonQuery({
     if (mins > 0) str += `${mins} דקות`;
     return str.trim();
   }
-  onViewBug(id: number) {
+  onViewBug(id: number) { 
     if (id === -1) {
       this.closeDrawer();
       return;
