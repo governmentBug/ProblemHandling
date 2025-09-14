@@ -1,41 +1,34 @@
 <div class="trends-container">
-  <div class ="header">
+  <div class="header">
     @if(displayCategorySelector) {
-  <div class="category-select-container">
-    <label for="categorySelect" class="category-label">בחר קטגוריה</label>
-    <select id="categorySelect" [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
-      @for(category of categories; track category.categoryId)
-      {
-        <option [value]="category.categoryId">{{ category.categoryName }}</option>
-      }
-    </select>
+      <div class="category-select-container">
+        <app-category (categorySelected)="onCategoryChange($event)"></app-category>
+      </div>
+    }
+    <div class="chart-title">
+      <span class="current-year-label">{{ currentYear }}</span>
+            <span class="chart-title-text">-מגמות חודשיות</span>
+
+    </div>
   </div>
-}
-  <!-- הוסף שדה אוטוקומפליט לבחירת קטגוריה -->
-  <div class="chart-title">
-    <span class="chart-title-text">
-      מגמות חודשיות
-    </span>
-  </div>
-  </div>
+  
   <div class="chart-area">
     <button class="arrow-btn left" (click)="loadPreviousMonths()">
-      <!-- Left arrow SVG (שמאלה) -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
+
     <canvas baseChart
       [data]="lineChartData"
       [options]="lineChartOptions"
       [type]="'line'">
     </canvas>
+
     <button class="arrow-btn right" (click)="loadNextMonths()" [disabled]="currentYearBack === 0">
-      <!-- Right arrow SVG (ימינה) -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
   </div>
 </div>
-

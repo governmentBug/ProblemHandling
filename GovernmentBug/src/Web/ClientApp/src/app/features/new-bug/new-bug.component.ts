@@ -21,7 +21,7 @@ import { CategoryComponent } from '../category/category.component';
   styleUrls: ['./new-bug.component.css']
 })
 export class NewBugComponent implements OnInit {
-  @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent;
+  // @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent;
   createdDate: Date = new Date();
   formattedDate: string = this.createdDate.toLocaleDateString();
   formattedDateToSave: string = this.createdDate.toISOString();
@@ -45,7 +45,6 @@ export class NewBugComponent implements OnInit {
   donDiscripsion: boolean = false;
   oneVidio: boolean = false;
   oneAttachment: boolean = false;
-
   constructor(private bugService: BugService, private stateService: StateService,
     private attachmentService: AttachmentService, private router: Router, private AddBug: AllBugsComponent) { }
 
@@ -57,6 +56,10 @@ export class NewBugComponent implements OnInit {
     this.newBug.created = this.formattedDateToSave;
     this.newBug.createdByUserId = 2;
   }
+  onChangeCategory(categoryId: number) {
+    this.newBug.categoryId = categoryId;
+    console.log("Selected Category ID in NewBugComponent:", this.newBug.categoryId);
+  }
   onCheckDuplicates() {
     this.showDuplicateCheck = true;
   }
@@ -64,7 +67,8 @@ export class NewBugComponent implements OnInit {
     this.showSaveButton = !this.showSaveButton;
   }
   onContinueAddBug() {
-    this.newBug.categoryId = this.categoryComponent.selectedCategoryId
+    // this.newBug.categoryId = this.categoryComponent.selectedCategoryId
+    // this.newBug.categoryId = this.categoryId;
     this.showDuplicateCheck = false;
     this.setQualityMessage();
 

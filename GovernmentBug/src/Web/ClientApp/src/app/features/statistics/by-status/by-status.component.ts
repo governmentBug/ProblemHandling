@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import plugin from 'chartjs-plugin-datalabels';
 import { NgChartsModule } from 'ng2-charts';
 import { ByStatus } from 'src/app/models/byStatus.model';
 
@@ -15,16 +16,17 @@ export class ByStatusComponent implements OnChanges {
   pieChartLabels = ['פתוחים', 'בטיפול', 'נסגרו', 'בוטלו', 'נסגר מבלי להיפתח'];
   pieChartType: 'doughnut' = 'doughnut';
   pieChartData = this.getPieChartData([0, 0, 0, 0, 0]);
-
- pieChartOptions = {
-  cutout: '70%',
-  responsive: true,
-  maintainAspectRatio: true,
-  plugins: {
-    legend: { display: false },
-    datalabels: { display: false },
-  }
-};
+  pieChartPlugins = [];
+  pieChartOptions = {
+    cutout: '70%',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: { display: false },
+      leaderLine: { display: false }
+    },
+  };
 
 
   animatedPercents = {

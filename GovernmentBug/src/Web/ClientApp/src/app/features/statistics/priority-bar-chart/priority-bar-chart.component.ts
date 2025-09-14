@@ -17,32 +17,34 @@ export class PriorityBarChartComponent implements OnChanges {
   public priorities = ['low', 'medium', 'high', 'critical'];
 
   barChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#fff',
-        titleColor: '#1976d2',
-        bodyColor: '#333',
-        borderColor: '#1976d2',
-        borderWidth: 1
-      },
-      datalabels: { display: false } // ביטול תוויות על העמודות (אם מותקן chartjs-plugin-datalabels)
+  responsive: true,
+  maintainAspectRatio: false, // חשוב! מאפשר התאמה מלאה לדיב
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#fff',
+      titleColor: '#1976d2',
+      bodyColor: '#333',
+      borderColor: '#1976d2',
+      borderWidth: 1
     },
-    scales: {
-      x: {
-        grid: { color: '#e3eaf2' },
-        ticks: { color: '#1976d2', font: { size: 16} },
-        title: { display: false } // ביטול תגית ציר X
-      },
-      y: {
-        beginAtZero: true,
-        ticks: { stepSize: 1, color: '#1976d2',font: { size: 12 } },
-        grid: { color: '#e3eaf2' },
-        title: { display: false } // ביטול תגית ציר Y
-      }
+    datalabels: { display: false }
+  },
+  scales: {
+    x: {
+      grid: { color: '#e3eaf2' },
+      ticks: { color: '#1976d2', font: { size: 16} },
+      title: { display: false }
+    },
+    y: {
+      beginAtZero: true,
+      ticks: { stepSize: 1, color: '#1976d2', font: { size: 12 } },
+      grid: { color: '#e3eaf2' },
+      title: { display: false }
     }
-  };
+  }
+};
+
   barChartType: ChartType = 'bar';
   barChartData: ChartData<'bar'> = {
     labels: this.priorityLabels,

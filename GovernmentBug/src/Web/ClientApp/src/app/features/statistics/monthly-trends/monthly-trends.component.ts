@@ -6,11 +6,12 @@ import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BugStatisticsClient, CategoryDto } from '../../../web-api-client'
 import { StateService } from 'src/app/services/state.service';
+import { CategoryComponent } from "../../category/category.component";
 
 @Component({
   selector: 'app-monthly-trends',
   standalone: true,
-  imports: [NgChartsModule, ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [NgChartsModule, ReactiveFormsModule, CommonModule, FormsModule, CategoryComponent],
   templateUrl: './monthly-trends.component.html',
   styleUrl: './monthly-trends.component.css'
 })
@@ -22,6 +23,7 @@ export class MonthlyTrendsComponent implements OnInit {
   bugCounts: number[] = [];
   loading = false;
   currentYearBack: number = 0;
+  currentYear: number = new Date().getFullYear(); // שנה נוכחית להצגה
   categories: CategoryDto[] = [];
   selectedCategory: number = null;
   lineChartData: ChartData<'line'> = {
@@ -48,13 +50,14 @@ export class MonthlyTrendsComponent implements OnInit {
       legend: { display: false }
     },
     scales: {
-      x: { title: { display: false} },
+      x: { 
+        title: { display: false },
+      },
       y: { 
-    
         beginAtZero: true, 
         title: { display: true, text: 'כמות באגים', align: 'start' }
       }
-    }
+    },
   };
   constructor(private bugStatisticsClient: BugStatisticsClient,private stateService: StateService) {}
 
@@ -79,8 +82,9 @@ export class MonthlyTrendsComponent implements OnInit {
         const now = new Date();
         let lastMonth = now.getMonth();
         let lastYear = now.getFullYear() - this.currentYearBack;
+        this.currentYear = lastYear; // עדכון השנה הנוכחית להצגה
         for (let i = data.byMonth.length - 1; i >= 0; i--) {
-          this.months.unshift(monthNames[lastMonth] + ' ' + lastYear);
+          this.months.unshift(monthNames[lastMonth]); // רק שם החודש
           this.bugCounts.unshift(data.byMonth[lastMonth]);
           lastMonth--;
           if (lastMonth < 0) {
@@ -106,7 +110,9 @@ export class MonthlyTrendsComponent implements OnInit {
     this.loadYear();
   }
   
-  onCategoryChange() {
+  onCategoryChange(categoryId: any) {
+    this.selectedCategory = categoryId;
+    console.log("Selected Category ID in MonthlyTrendsComponent:", this.selectedCategory);
     this.loadYear();
   }
 }

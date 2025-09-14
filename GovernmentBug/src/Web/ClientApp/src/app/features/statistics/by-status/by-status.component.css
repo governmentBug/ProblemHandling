@@ -1,41 +1,45 @@
 .by-status-container {
-  background: #fff;
-  border-radius: 10px;
   width: 100%;
-  height: 44vh;
+  height: 100%;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
-  box-shadow: 0 1px 6px #0001;
   color: #222;
+  background: transparent; /* בלי רקע */
+  border: none;            /* בלי גבולות */
+  box-shadow: none;        /* בלי צל */
 }
 
 .by-status-grid {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
   width: 100%;
   height: 100%;
+  /* overflow: hidden;  <<== גורם לחיתוך, להסיר! */
 }
 
+/* תרשים דונאט */
 .donut-chart-container {
   position: relative;
-  width: 30%;
-  max-width: 200px;
-  aspect-ratio: 1 / 1;
+  flex: 0 0 50%;       /* תופס בערך שליש מהרוחב */
+  aspect-ratio: 1 / 1; /* תמיד ריבוע */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-canvas {
+.donut-chart-container canvas {
   width: 100% !important;
   height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* שמירה על פרופורציות */
+  display: block;
 }
 
 .donut-center-text {
@@ -48,27 +52,29 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
 }
 
 .total-count {
-  font-size: 2rem !important;
-  font-weight: 900 !important;
+  font-size: 1.8rem;
+  font-weight: 900;
   color: #111;
-  margin-bottom: 0.05em;
+  margin-bottom: 0.1em;
 }
 
 .center-label {
   font-size: 1rem;
   font-weight: 500;
-  color: #222;
+  color: #333;
 }
 
+/* סטטוס בוקסים */
 .status-boxes {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 50%;
+  overflow: visible;
+  padding-left: 0; /* ביטול ריווח משמאל */
 }
 
 .status-row {
@@ -76,67 +82,117 @@ canvas {
   gap: 0.5rem;
 }
 
-.status-row.full-width-row .status-box {
-  flex: 1 1 100%;
-  min-width: 0;
-  margin: 0;
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3rem;
-  font-weight: bold;
-}
 
 .status-box {
   background: #f5f5f5;
-  border-radius: 10px;
-  padding: 0.3rem;
+  border-radius: 8px;
+  padding: clamp(0.08rem, 0.7vw, 0.22rem) clamp(0.12rem, 1.2vw, 0.7rem);
   text-align: center;
-  font-size: 0.9rem;
-  flex: 1;
+  font-size: clamp(0.6rem, 1.2vw, 0.95rem);
+  flex: 1; /* חזרה להגדרה המקורית של האורך */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  cursor: pointer;
+  box-shadow: none;
+  cursor: default;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .status-box.open { border-right: 6px solid #ff5252; }
-.status-box.active { border-right: 6px solid #2196f3; }
+.status-box.active { 
+  border-right: 6px solid #2196f3; 
+}
 .status-box.closed { border-right: 6px solid #4caf50; }
 .status-box.cancelled { border-right: 6px solid #9c27b0; }
-.status-box.close-without-opening { border-right: 6px solid #F57C00;
-  font-weight: bold;
-  padding: 0.4rem 0.7rem;
-  text-align: center;
-  width: 100%;
-  min-height: 4vw; /* שמור גובה מינימלי */
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  white-space: normal; /* מאפשר טקסט לשבור שורה */
-  overflow-wrap: break-word; /* מאפשר למילים ארוכות להישבר */
-}
-
+.status-box.close-without-opening { border-right: 6px solid #F57C00; }
 
 .status-count {
-  font-size: 1rem;
+  font-size: clamp(0.7rem, 1.2vw, 1rem);
   font-weight: bold;
 }
-
 .status-title {
-  font-size: 0.95rem;
+  font-size: clamp(0.55rem, 1vw, 0.8rem);
   font-weight: bold;
 }
-
 .status-percent {
-  font-size: 0.8rem;
+  font-size: clamp(0.45rem, 0.8vw, 0.7rem);
   color: #888;
   margin-top: 0;
   text-align: center;
 }
+.total-count {
+  font-size: clamp(1.2rem, 3vw, 2.8rem); /* מוגדל יחסית */
+  font-weight: 900;
+  color: #111;
+  margin-bottom: 0.1em;
+}
+
+.center-label {
+  font-size: clamp(0.9rem, 1.5vw, 1.4rem);
+  font-weight: 600;
+  color: #333;
+}
+
+.status-row.full-width-row .status-box {
+  flex: 1 1 100%;
+  min-height: clamp(28px, 5vw, 44px);
+  padding: clamp(0.18rem, 0.7vw, 0.3rem) clamp(0.2rem, 1vw, 0.7rem);
+  white-space: normal;        /* מאפשר ירידת שורה */
+  word-break: break-word;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-box.close-without-opening .status-title {
+  font-size: clamp(0.45rem, 0.8vw, 0.7rem);
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .by-status-grid {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .status-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    width: 100%;
+    overflow: visible;
+    padding-left: 0; /* ביטול ריווח משמאל גם במסך קטן */
+  }
+  .status-row {
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  .status-box {
+    font-size: clamp(0.45rem, 2vw, 0.7rem);
+    padding: clamp(0.04rem, 0.7vw, 0.12rem) clamp(0.08rem, 1vw, 0.3rem);
+    flex: 1; /* חזרה להגדרה המקורית של האורך גם במסך קטן */
+  }
+  .status-row.full-width-row .status-box {
+    min-height: clamp(18px, 7vw, 28px);
+    padding: clamp(0.08rem, 0.7vw, 0.18rem) clamp(0.1rem, 1vw, 0.3rem);
+  }
+  .status-count {
+    font-size: clamp(0.5rem, 2vw, 0.7rem);
+  }
+  .status-title {
+    font-size: clamp(0.38rem, 1vw, 0.6rem);
+  }
+  .status-percent {
+    font-size: clamp(0.32rem, 0.8vw, 0.5rem);
+  }
+  .status-box.close-without-opening .status-title {
+    font-size: clamp(0.32rem, 0.8vw, 0.5rem);
+  }
+}
+
+

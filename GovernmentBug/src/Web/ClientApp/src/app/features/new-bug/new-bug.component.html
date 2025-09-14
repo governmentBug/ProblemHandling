@@ -19,7 +19,7 @@
     <div class="row-split">
       <div class="left-col">
         <label for="categoryId">:קטגוריה</label>
-        <app-category></app-category>
+        <app-category (categorySelected)="onChangeCategory($event)"></app-category>
 
         <label for="priorityId">:עדיפות</label>
         <select [(ngModel)]="newBug.priorityId" name="priorityId" class="select-field" required>

@@ -3,11 +3,12 @@ import { ByStatusDto } from 'src/app/web-api-client';
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { NgStyle } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-by-status-and-priority',
   standalone: true,
-  imports: [NgChartsModule, NgStyle],
+  imports: [NgChartsModule, NgStyle, CommonModule],
   templateUrl: './by-status-and-priority.component.html',
   styleUrl: './by-status-and-priority.component.css'
 })
@@ -18,6 +19,7 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
   private currentStatusIndex = 0;
   public barChartType: ChartType = 'bar';
   public barChartLabels: string[] = ['פתוחים', 'בטיפול', 'נסגרו', 'בוטלו','נסגרו מבלי להיפתח'];
+  public statusLabelClasses = ['status-open', 'status-active', 'status-close', 'status-cancelled','status-close-without-opening'];
   public barChartData: ChartData<'bar'>['datasets'] = [];
   private statusMainColors = [
     '#D32F2F',
@@ -72,7 +74,7 @@ export class ByStatusAndPriorityComponent implements OnInit, OnChanges, OnDestro
         ticks: {
           color: '#222',
           font: { size: 14 },
-          stepSize: 5
+          // stepSize: 5
         }
       }
     }

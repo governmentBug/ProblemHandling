@@ -6,7 +6,8 @@
         baseChart
         [data]="pieChartData"
         [type]="pieChartType"
-        [options]="pieChartOptions">
+        [options]="pieChartOptions"
+        [plugins]="[]">
       </canvas>
       <div class="donut-center-text">
         <span class="total-count">{{ byStatus.totalBugs }}</span>

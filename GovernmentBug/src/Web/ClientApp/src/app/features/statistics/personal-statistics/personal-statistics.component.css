@@ -1,115 +1,119 @@
-.personal-title {
-  text-align: center;
-  font-size: 2rem;
-  color: #1976d2;
-  font-weight: bold;
-  margin: 32px 0 24px 0;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  overflow-x: hidden; /* אין גלילה רוחבית */
 }
-@media (max-width: 900px) {
-  .personal-drig {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .personal-item {
-    max-width: 100%;
-  }
+
+/* מקום לכותרת עליונה */
+.header-space {
+  height: 60px;
 }
-.personal-drig {
-  display: grid;
-  margin: 32px 0;
-}
-.personal-item {
-  background: #f7f9fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 24px 32px;
-  min-width: 260px;
-  max-width: 350px;
-  flex: 1 1 260px;
-  margin-bottom: 12px;
+
+/* גריד של שלוש הכותרות למעלה */
+.personal-stats-header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-}
-.by-priority
-{
-  background: #f7f9fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 24px 32px;
-  min-width: 40vw;
-  max-width: 40vw;
-  flex: 1 1 260px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.personal-item h3 {
-  margin: 0 0 12px 0;
-  font-size: 1.15rem;
-  color: #2a3b4c;
-  font-weight: 600;
-  text-align: center;
-}
-.personal-item span {
-  font-size: 2.2rem;
-  color: #1976d2;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-.priority-and-graph {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  align-items: flex-start;
+  gap: 10px;
   flex-wrap: wrap;
+  margin: 10px 0;
+  padding: 0 10px;
 }
-.priority-table {
-  min-width: 260px;
-  max-width: 350px;
-  flex: 1 1 260px;
+
+/* דיבים של הכותרות */
+.stat-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 15px;
+  text-align: center;
+  flex: 1 1 calc(33.33% - 20px);
+  min-width: 120px; /* קטן מאוד כדי לא לגרום לגלילה */
+  opacity: 0;
+  transform: translateX(100px);
+  animation: slideRightToLeft 1.2s ease forwards;
 }
-.monthly-graph {
-  flex: 2 1 500px;
-  min-width: 320px;
+
+/* סדר הכניסה מהימני לשמאלי */
+.stat-box:nth-child(3) { animation-delay: 0.5s; }
+.stat-box:nth-child(2) { animation-delay: 0.9s; }
+.stat-box:nth-child(1) { animation-delay: 1.3s; }
+
+.stat-box h3 {
+  font-size: 1.1rem;
+  color: #2563eb;
+  margin-bottom: 5px;
 }
+
+.stat-box span {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ef4444;
+  margin-top: 5px;
+}
+
+/* גריד לתרשימים */
+.personal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 10px 10px 10px;
+  height: calc(100% - 60px - 120px);
+  overflow-y: auto; /* גלילה אנכית אם צריך */
+}
+
+/* דיבים של התרשימים */
+.personal-item,
+.monthly-trends {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 15px;
+  flex: 1 1 48%;
+  min-width: 150px; /* נמוך מאוד כדי לא לגרום לגלילה */
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* אנימציות כניסה */
+.by-priority { transform: translateX(-100px); animation: chartFromLeft 1.2s ease forwards; animation-delay: 1.5s; }
+.monthly-trends { transform: translateX(100px); animation: chartFromRight 1.2s ease forwards; animation-delay: 1.8s; }
+
+@keyframes slideRightToLeft { to { opacity: 1; transform: translateX(0); } }
+@keyframes chartFromLeft { to { opacity: 1; transform: translateX(0); } }
+@keyframes chartFromRight { to { opacity: 1; transform: translateX(0); } }
+
+.stat-box:hover,
+.personal-item:hover,
+.monthly-trends:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
 .center-title {
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 18px;
-}
-@media (max-width: 900px) {
-  .priority-and-graph {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .monthly-graph {
-    min-width: 0;
-  }
-}
-.personal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin: 32px 0;
-  justify-items: center;
-  align-items: start;
-  width: max-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-@media (max-width: 900px) {
-  .personal-grid {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    width: 100%;
-  }
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 10px;
 }
 
+/* רספונסיביות לניידים קטנים */
+@media (max-width: 768px) {
+  .personal-stats-header { flex-direction: column; align-items: center; }
+  .stat-box { flex: 1 1 80%; }
+  .personal-grid { flex-direction: column; height: auto; }
+  .personal-item, .monthly-trends { flex: 1 1 100%; }
+}
 
-
-
+@media (max-width: 480px) {
+  .stat-box { flex: 1 1 100%; padding: 10px; font-size: 0.9rem; }
+  .stat-box span { font-size: 1.8rem; }
+  .personal-item, .monthly-trends { padding: 10px; }
+}
