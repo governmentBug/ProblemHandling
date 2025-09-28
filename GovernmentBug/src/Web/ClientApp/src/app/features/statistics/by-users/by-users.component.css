@@ -11,7 +11,7 @@ h2 {
   font-size: clamp(0.9rem, 1.2vw, 1.2rem); /* טיפה קטן יותר במסכים צרים */
   font-weight: 200;
   color: #222;
-  margin: 0 0 6px 0;         /* פחות מרגין */
+  margin: 0 0 6px 0;   
 }
 
 .chart-wrapper {

@@ -10,10 +10,6 @@
   overflow: hidden;    /* אין גלילה */
   margin: 0;           /* ביטול מרווחים חיצוניים */
 }
-
-
-
-
 /* ---------- פריט הדשבורד ---------- */
 .dashboard-item {
   background: #ffffff;
@@ -26,7 +22,6 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   overflow: hidden;
 }
-
 /* קומפוננטות פנימיות ימלאו את כל השטח */
 .dashboard-item app-by-status-and-priority,
 .dashboard-item app-by-status,

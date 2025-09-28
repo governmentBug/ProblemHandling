@@ -15,7 +15,7 @@ export class PriorityBarChartComponent implements OnChanges {
 
   public priorityLabels = ['נמוכה', 'בינונית', 'גבוהה', 'קריטית'];
   public priorities = ['low', 'medium', 'high', 'critical'];
-
+  title = " באגים בטיפול לפי עדיפות";
   barChartOptions: ChartOptions<'bar'> = {
   responsive: true,
   maintainAspectRatio: false, // חשוב! מאפשר התאמה מלאה לדיב

@@ -7,13 +7,14 @@ import { PriorityBarChartComponent } from "../priority-bar-chart/priority-bar-ch
 @Component({
   selector: 'app-personal-statistics',
   standalone: true,
-  imports: [MonthlyTrendsComponent, PriorityBarChartComponent, RouterLink],
+  imports: [MonthlyTrendsComponent, PriorityBarChartComponent],
   templateUrl: './personal-statistics.component.html',
   styleUrls: ['./personal-statistics.component.css'] // שם נכון של הקובץ הוא styleS ולא styleUrl
 })
 export class PersonalStatisticsComponent implements OnInit {
   @Input() userId: number = 1;
-
+  showStats = false;
+  showCharts = false;
   userData: ByUserDto;
 
   // ערכים להצגה עם אנימציית ספירה
@@ -24,6 +25,16 @@ export class PersonalStatisticsComponent implements OnInit {
   constructor(private bugStatisticsClient: BugStatisticsClient) {}
 
   ngOnInit(): void {
+        // מציג placeholders בהתחלה
+    this.showStats = false;
+    this.showCharts = false;
+
+    // אחרי 2 שניות מחליפים לתוכן אמיתי
+    setTimeout(() => {
+      this.showStats = true;
+      this.showCharts = true;
+    }, 1500);
+
     this.bugStatisticsClient.getByUser(this.userId).subscribe(data => {
       this.userData = data;
 
