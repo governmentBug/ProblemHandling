@@ -56,7 +56,6 @@ export class NewBugComponent implements OnInit {
   }
   onChangeCategory(categoryId: number) {
     this.newBug.categoryId = categoryId;
-    console.log("Selected Category ID in NewBugComponent:", this.newBug.categoryId);
   }
   onCheckDuplicates() {
     this.showDuplicateCheck = true;
@@ -109,7 +108,6 @@ export class NewBugComponent implements OnInit {
     }
   }
   getBugComparisonQuery(): BugComparisonQuery {
-    this.newBug.categoryId = this.categoryComponent.selectedCategoryId    
     return {      
       title: this.newBug.title,
       description: this.newBug.description,
