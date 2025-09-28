@@ -1,115 +1,75 @@
-.personal-title {
-  text-align: center;
-  font-size: 2rem;
-  color: #1976d2;
-  font-weight: bold;
-  margin: 32px 0 24px 0;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  overflow: hidden; /* אין גלילה כלל */
 }
-@media (max-width: 900px) {
-  .personal-drig {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .personal-item {
-    max-width: 100%;
-  }
-}
-.personal-drig {
+
+.dashboard-grid {
   display: grid;
-  margin: 32px 0;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 0.75fr 1.25fr; 
+  gap: 12px;
+  height: calc(100vh - 60px - 20vh); /* פחות הטאב העליון */
+  width: calc(100% - 20vw); /* פחות מרווחי הצד */
+  padding: 12px; /* פדינג פנימי ל-grid */
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top:10vh;
+  margin-bottom: 10vh;
+  margin-left: 10vw;
+  margin-right: 10vw; 
 }
-.personal-item {
-  background: #f7f9fa;
+
+.dashboard-item {
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 24px 32px;
-  min-width: 260px;
-  max-width: 350px;
-  flex: 1 1 260px;
-  margin-bottom: 12px;
+  padding: 15px; 
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
 }
-.by-priority
-{
-  background: #f7f9fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 24px 32px;
-  min-width: 40vw;
-  max-width: 40vw;
-  flex: 1 1 260px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+.dashboard-item app-priority-bar-chart,
+.dashboard-item app-monthly-trends {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-.personal-item h3 {
-  margin: 0 0 12px 0;
-  font-size: 1.15rem;
-  color: #2a3b4c;
-  font-weight: 600;
-  text-align: center;
-}
-.personal-item span {
-  font-size: 2.2rem;
-  color: #1976d2;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-.priority-and-graph {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-.priority-table {
-  min-width: 260px;
-  max-width: 350px;
-  flex: 1 1 260px;
-}
-.monthly-graph {
-  flex: 2 1 500px;
-  min-width: 320px;
-}
+
+/* סידור הפריטים */
+.dashboard-grid > .dashboard-item:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
+.dashboard-grid > .dashboard-item:nth-child(2) { grid-column: 3 / span 2; grid-row: 1; }
+.dashboard-grid > .dashboard-item:nth-child(3) { grid-column: 5 / span 2; grid-row: 1; }
+.dashboard-grid > .dashboard-item:nth-child(4) { grid-column: 1 / span 3; grid-row: 2; }
+.dashboard-grid > .dashboard-item:nth-child(5) { grid-column: 4 / span 3; grid-row: 2; }
+
 .center-title {
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 18px;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 300;
+  color: #222;
+  margin: 0 0 12px 0;
 }
-@media (max-width: 900px) {
-  .priority-and-graph {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .monthly-graph {
-    min-width: 0;
-  }
+.stat-box h3 {
+ text-align: center;
+ font-size: clamp(1rem, 4vh, 1.5rem);
+ color: #2563eb;
+ margin-bottom: 2vh;
+} 
+
+.stat-box span {
+  /* display: block; */
+  font-size: clamp(1rem, 5vh, 3rem);
+  font-weight: bold;
+  color: #ef4444;
 }
-.personal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin: 32px 0;
-  justify-items: center;
-  align-items: start;
-  width: max-content;
-  margin-left: auto;
-  margin-right: auto;
+.dashboard-placeholder{
+  margin-top: 15vh;
 }
-@media (max-width: 900px) {
-  .personal-grid {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    width: 100%;
-  }
-}
-
-
-
-

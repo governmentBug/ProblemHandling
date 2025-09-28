@@ -1,59 +1,66 @@
-.chart-scroll-wrapper {
-  width: 100%;
-  max-width: 40vw;
-  min-width: 40vw;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-canvas {
-  align-self: center  ;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  /* max-width: 34vw;
-  min-width: 34vw;
-  height: 40vh !important;
-  min-height: 40vh !important; */
-  margin: 0;
-}
-
-/* Container styling */
 .trends-container {
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 6px #0001;
-  padding: 4px 0 0 0;
-  /* max-width: 100%;
-  width: 44vw;
-  min-width: 44vw; */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0;
-}
-
-/* Chart area */
-.chart-area {
+  /* border-radius: 10px; */
   width: 100%;
-  position: relative;
-  padding: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  box-sizing: border-box;
 }
 
-/* Arrow navigation styling */
-.trends-arrows {
+/* שורת עליונה */
+.header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 32px;
-  margin: 16px 0 8px 0;
+  width: 100%;
 }
 
+/* כפתור קטגוריה בצד שמאל למעלה */
+.category-select-container {
+  display: flex;
+  align-items: center;
+}
+
+/* כותרת + שנה באותה שורה */
+.chart-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+}
+
+.chart-title-text {
+  font-size: clamp(0.8rem, 1.8vw, 1.5rem);
+  font-weight: 300;
+  color: #222;
+}
+
+.current-year-label {
+  font-size: clamp(1rem, 2vw, 1.6rem);
+  font-weight: 500;
+  color: #333;
+}
+
+/* שטח הגרף */
+.chart-area {
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding-bottom: 5vh; /* משאיר מקום לתגיות */
+}
+
+canvas {
+  flex: 1 1 auto;
+}
+
+/* חיצים - ללא שינוי */
 .arrow-btn {
   position: absolute;
   top: 50%;
@@ -61,182 +68,24 @@ canvas {
   background: #fff;
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
   box-shadow: 0 2px 8px rgba(33, 150, 243, 0.13);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  font-size: 1.7rem;
-  color: #2196f3;
-  outline: none;
-  z-index: 2;
-  padding: 0;
+  z-index: 10;
+  color: #1976d2;
+
+  /* גודל רספונסיבי במקום קבוע */
+  width: clamp(32px, 4vw, 44px);
+  height: clamp(32px, 4vw, 44px);
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
 }
 
 .arrow-btn.left {
-  position: absolute;
-  top: 40%;
-  left: 2vw;
-  transform: translateY(-50%);
-  z-index: 2;
+  left: clamp(6px, 1vw, 12px);
 }
 
 .arrow-btn.right {
-  position: absolute;
-  top: 40%;
-  right: 2vw;
-  transform: translateY(-50%);
-  z-index: 2;
-}
-
-.arrow-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.arrow-btn:hover:not(:disabled) {
-  background: #e3f2fd;
-  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.18);
-}
-
-/* מרווח בין המספרים (ציר Y) לגרף */
-.chart-area canvas {
-  margin-right: 0;
-  margin-left: 0;
-}
-
-.header {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  justify-content: center;
-  position: relative;
-}
-
-.category-label {
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin-bottom: 0;
-  margin-left: 6px;
-}
-
-.category-select {
-  width: 100px;
-  padding: 7px 10px;
-  font-size: 1rem;
-  border: 1.5px solid #bfc7d5;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 1px 4px #0001;
-  outline: none;
-  transition: border-color 0.2s;
-  margin-bottom: 0;
-}
-
-.category-select:focus {
-  border-color: #1976d2;
-}
-
-.chart-title {
-  flex: 1;
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.chart-title-text {
-  font-weight: 600;
-  font-size: 1.25rem;
-}
-
-.chart-area {
-  position: relative;
-}
-
-.category-select-container {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  gap: 8px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-bottom: 0;
-}
-
-@media (max-width: 700px) {
-  .trends-container {
-    padding: 2px 0 0 0;
-  }
-  .chart-title {
-    margin-bottom: 2px;
-  }
-  .chart-title-text {
-    font-size: 0.9rem;
-  }
-  canvas {
-    max-width: 98vw;
-    height: 80px !important;
-  }
-  .chart-title-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-  .category-select-container {
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    gap: 4px;
-  }
-  .category-select {
-    width: 120px;
-    font-size: 0.9rem;
-  }
-  .chart-title-text {
-    font-size: 1rem;
-    margin-left: 0;
-    text-align: right;
-  }
-}
-
-.chart-scroll-wrapper {
-  width: 100%;
-  /* הסר את השורות הבאות: */
-  /* max-width: 40vw; */
-  /* min-width: 40vw; */
-  /* overflow-x: auto; */
-  padding-bottom: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-canvas {
-  align-self: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  width: 100%; /* שנה ל-100% כדי שיתאים לרוחב ההורה */
-  height: auto; /* שנה ל-auto כדי למנוע גלילה אנכית */
-  margin: 0;
-}
-.trends-container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 6px #0001;
-  padding: 4px 0 0 0;
-  max-width: 100%;
-  /* הסר את השורות הבאות: */
-  /* width: 44vw; */
-  /* min-width: 44vw; */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0;
+  right: clamp(6px, 1vw, 12px);
 }

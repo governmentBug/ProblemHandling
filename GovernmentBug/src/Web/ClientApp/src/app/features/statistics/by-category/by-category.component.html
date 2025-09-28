@@ -2,9 +2,10 @@
   <h2>התפלגות באגים לפי קטגוריה</h2>
   <div class="canvas-wrapper">
     <canvas baseChart
+      id="categoryPieChart"
             [data]="pieChartData"
             [options]="pieChartOptions"
-            [plugins]="pieChartPlugins"
+            [plugins]="myPieChartPlugins"
             [type]="pieChartType">
     </canvas>
   </div>

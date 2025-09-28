@@ -1,7 +1,10 @@
-<div style="width:100%;min-height:220px;">
+<div class="by-priority-container">
+  <h2>{{ title }}</h2>
+  <div class="chart-wrapper">
   <canvas baseChart
     [data]="barChartData"
     [options]="barChartOptions"
     [type]="barChartType">
   </canvas>
+</div>
 </div>

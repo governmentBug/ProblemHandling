@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StateService } from 'src/app/services/state.service';
 
@@ -16,6 +16,7 @@ interface Category {
   styleUrls: ['./category.component.css'] // שים לב לשם הנכון של הקובץ
 })
 export class CategoryComponent {
+  @Output() categorySelected = new EventEmitter();
   query: string = '';
   filteredItems: { name: string; id: number }[] = []; // עדכון לסוג של filteredItems
   isDropdownOpen: boolean = false;
@@ -52,6 +53,7 @@ export class CategoryComponent {
   selectItem(item: { name: string; id: number }) {
     this.query = item.name; // עדכון השדה עם הקטגוריה הנבחרת
     this.selectedCategoryId = item.id; // שמור את הקוד של הקטגוריה הנבחרת
+    this.categorySelected.emit(this.selectedCategoryId);
     this.filteredItems = []; // סגור את הרשימה
     this.isDropdownOpen = false; // ודא שהרשימה נסגרת לאחר הבחירה
     console.log('Selected Category ID:', this.selectedCategoryId); // תוכל להשתמש בקוד הקטגוריה לפי הצורך

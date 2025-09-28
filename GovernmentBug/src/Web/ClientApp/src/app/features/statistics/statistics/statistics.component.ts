@@ -12,7 +12,6 @@ export class StatisticsComponent {
   selectedTab: 'dashboard' | 'personal' = 'dashboard';
 
   constructor(private router: Router, private route: ActivatedRoute) {
-    // Detect active tab by route on init
     this.route.firstChild?.url.subscribe(url => {
       if (url.length > 0) {
         this.selectedTab = url[0].path === 'dashboard' ? 'dashboard' : 'personal';

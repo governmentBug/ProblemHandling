@@ -1,26 +1,30 @@
-  <div class="chart-container">
-    <h2 class="chart-title">התפלגות באגים לפי סטטוס ועדיפות</h2>
-    <ul class="custom-legend-list legend-row">
-      @for(priorityLabel of priorityLabels;track priorityLabel; let index = $index)
-      {
-        <li>
-          <span [ngStyle]="{'color': legendColors[index]}" class="legend-label">{{ priorityLabel }}</span>
-        </li>
-      }
-    </ul>
-      <div class="chart-main-area">
-        <canvas
+<div class="chart-container">
+  <h2 class="chart-title">התפלגות באגים לפי סטטוס ועדיפות</h2>
+
+  <ul class="custom-legend-list legend-row">
+    @for(priorityLabel of priorityLabels; track priorityLabel; let i = $index)
+{
+    <li>   <span [ngStyle]="{'color': legendColors[i]}" class="legend-label">{{ priorityLabel }}</span>
+    </li>
+}
+  </ul>
+
+
+  <div class="chart-main-area">
+      <canvas
           baseChart
           [datasets]="barChartData"
           [labels]="barChartLabels"
           [options]="barChartOptions"
         ></canvas>
-        <div class="status-labels-row">
-          <span class="status-label status-open">פתוחים</span>
-          <span class="status-label status-active">בטיפול</span>
-          <span class="status-label status-close">נסגרו</span>
-          <span class="status-label status-cancelled">בוטלו</span>
-          <span class="status-label status-close-without-opening">נסגרו <br/>מבלי להיפתח</span>
-        </div>
-      </div>
   </div>
+
+    <div class="status-labels-row">
+      @for(label of barChartLabels; track label; let i = $index)
+      {
+      <div class="status-label" [ngClass]="statusLabelClasses[i]">
+        {{ label }}
+      </div>
+    }
+    </div>
+</div>

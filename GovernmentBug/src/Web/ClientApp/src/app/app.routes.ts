@@ -15,7 +15,9 @@ export const routes: Routes = [
   { path: 'statistics', component: StatisticsComponent,
     children: [
       { path: 'personal', component: PersonalStatisticsComponent },
-      { path: 'dashboard', component: DashboardComponent }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+
     ]
    },
   { path: 'addBug', component: NewBugComponent },

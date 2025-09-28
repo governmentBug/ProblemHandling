@@ -8,12 +8,13 @@ import { BugStatisticsClient, ByUsersDto } from 'src/app/web-api-client';
   standalone: true,
   imports: [CommonModule, NgChartsModule],
   templateUrl: './by-users.component.html',
-  styleUrl: './by-users.component.css'
+  styleUrls: ['./by-users.component.css']
 })
 export class ByUsersComponent implements OnInit {
   @Input() byUsersData: ByUsersDto;
   title = 'פילוח לפי משתמשים';
   barChartData: any;
+
   ngOnInit(): void {
     this.barChartData = {
       labels: this.byUsersData?.usersName || [],
@@ -34,31 +35,38 @@ export class ByUsersComponent implements OnInit {
     };
   }
 
-  barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top' as const
+ barChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top' as const
+    },
+    title: { display: false }
+  },
+  scales: {
+    x: { 
+      stacked: true,
+      ticks: {
+        font: { size: 10 },  // מקטין טקסט של הציר
+        maxRotation: 30,     // מקסימום 30 מעלות
+        minRotation: 0       // לא באלכסון חד
       },
-      title: {
-        display: false
-      }
+      grid: { display: false, drawBorder: true }
     },
-    scales: {
-      x: { 
-        stacked: true,
-        grid: { display: false, drawBorder: true }
+    y: { 
+      stacked: true,
+      ticks: {
+        font: { size: 10 }   // גם כאן טיפה מקטין
       },
-      y: { 
-        stacked: true,
-        grid: { display: false, drawBorder: true }
-      }
-    },
-    elements: {
-      bar: {
-        borderRadius: 10,
-      }
-    },
-  };
+      grid: { display: false, drawBorder: true }
+    }
+  },
+  elements: {
+    bar: {
+      borderRadius: 10,
+    }
+  },
+};
 }

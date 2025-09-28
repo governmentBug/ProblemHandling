@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartOptions, ChartData } from 'chart.js';
 import { BugStatisticsClient } from 'src/app/web-api-client';
-import { NgChartsModule } from 'ng2-charts';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Chart } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';;
 
 const LeaderLinePlugin = {
   id: 'leaderLine',
   afterDraw(chart: any) {
+    if (chart.canvas.id !== 'categoryPieChart') return;
     const ctx = chart.ctx;
     const meta = chart.getDatasetMeta(0);
 
@@ -60,7 +59,15 @@ export class ByCategoryComponent implements OnInit {
             backgroundColor: [
               '#ff5252', '#2196f3', '#4caf50', '#9c27b0',
               '#F57C00', '#FFC107', '#FFEB3B'
-            ]
+            ],
+            hoverBackgroundColor: [
+              '#ff867f', '#64b5f6', '#81c784', '#ba68c8',
+              '#ffb74d', '#ffd54f', '#fff176'
+            ],
+            borderColor: 'white',
+            borderWidth: 0,
+            hoverBorderColor: 'white',
+            hoverBorderWidth: 2
           }
         ]
       };
@@ -71,7 +78,7 @@ export class ByCategoryComponent implements OnInit {
   public pieChartData: ChartData<'pie', number[], string | string[]>;
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
-    maintainAspectRatio: true, // שומר על פרופורציה
+    maintainAspectRatio: false, // שומר על פרופורציה
     layout: {
       padding: 30 // מקום לתגיות
     },
@@ -80,5 +87,5 @@ export class ByCategoryComponent implements OnInit {
     }
   };
 
-  public pieChartPlugins = [LeaderLinePlugin];
+  public myPieChartPlugins = [LeaderLinePlugin];
 }
